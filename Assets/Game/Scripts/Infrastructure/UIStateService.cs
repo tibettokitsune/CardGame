@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -11,49 +12,40 @@ namespace Game.Scripts.Infrastructure
         Menu
     }
 
-    internal class UIStateEntity
-    {
-        public GameObject Root;
-    }
-
     public interface IUIStateService
     {
         UniTask Open(UIState state);
         UniTask Close(UIState state);
     }
 
-    public class UIStateService : IUIStateService
+    public class UIStateService : IUIStateService, IInitializable
     {
-        private Dictionary<UIState, UIStateEntity> _uiStateEntities = new();
-
-
-        public async UniTask Open(UIState state)
+        public UniTask Open(UIState state)
         {
-            if (_uiStateEntities.ContainsKey(state))
-            {
-                _uiStateEntities[state].Root.SetActive(true);
-            }
-            else
-            {
-                await Resources.LoadAsync<>()
-            }
+            return UniTask.CompletedTask;
         }
 
         public UniTask Close(UIState state)
         {
-            if (_uiStateEntities.ContainsKey(state))
-            {
-                _uiStateEntities[state].Root.SetActive(false);
-            }
-            else
-            {
-                
-            }
+            return UniTask.CompletedTask;
+        }
+
+        public async void Initialize()
+        {
+            var configs = await Resources.LoadAsync<UIStateConfig>("Configs");
+            
         }
     }
 
     [CreateAssetMenu(menuName = "Config/UIState")]
     public class UIStateConfig : ScriptableObject
     {
+        public GameObject prefab;
+    }
+    
+    [CreateAssetMenu(menuName = "Config/UIState")]
+    public class UIConfig : ScriptableObject
+    {
+        
     }
 }

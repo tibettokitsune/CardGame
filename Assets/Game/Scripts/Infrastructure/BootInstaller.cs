@@ -1,3 +1,4 @@
+using Game.Scripts.UI;
 using Zenject;
 
 namespace Game.Scripts.Infrastructure
@@ -6,8 +7,9 @@ namespace Game.Scripts.Infrastructure
     {
         public override void InstallBindings()
         {
-            Container.BindInterfacesTo<GameManager>().AsSingle();
+            Container.Bind<LoadingScreen>().FromComponentInHierarchy(true).AsSingle();
             Container.BindInterfacesTo<SceneManagementService>().AsSingle();
+            Container.BindInterfacesTo<GameManager>().AsSingle();
         }
     }
 }

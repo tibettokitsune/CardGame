@@ -1,5 +1,7 @@
+using Game.Scripts.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Zenject;
 
 namespace Game.Scripts.Infrastructure
 {

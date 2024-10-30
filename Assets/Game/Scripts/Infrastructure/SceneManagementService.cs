@@ -32,11 +32,11 @@ namespace Game.Scripts.Infrastructure
             {
                 SceneManager.SetActiveScene(targetScene);
                 DisableInactiveListeners();
-                Debug.Log($"—цена {scene} установлена активной.");
+                Debug.Log($"The scene {scene} has been set as active.");
             }
             else
             {
-                Debug.LogWarning($"—цена {scene} не загружена или недействительна.");
+                Debug.LogWarning($"The scene {scene} is not loaded or is invalid");
             }
         }
 

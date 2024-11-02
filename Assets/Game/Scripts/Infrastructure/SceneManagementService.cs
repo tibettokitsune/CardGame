@@ -1,7 +1,7 @@
 using Game.Scripts.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Zenject;
+using System.Threading.Tasks;
 
 namespace Game.Scripts.Infrastructure
 {
@@ -9,11 +9,20 @@ namespace Game.Scripts.Infrastructure
     {
         AsyncOperation LoadScene(string scene);
         AsyncOperation UnloadScene(string scene);
-        void SelectScene(string scene);
+        void LoadScenes(string[] scenes);
+        void SelectActiveScene(string scene);
     }
-    
+
     public class SceneManagementService : ISceneManagementService
     {
+        private string[] _currentScenes = { "Menu" };
+
+        private readonly LoadingScreen _loadingScreen;
+        public SceneManagementService(LoadingScreen loadingScreen)
+        {
+            _loadingScreen = loadingScreen;
+        }
+
         public AsyncOperation LoadScene(string scene)
         {
             return SceneManager.LoadSceneAsync(scene, LoadSceneMode.Additive);
@@ -24,39 +33,38 @@ namespace Game.Scripts.Infrastructure
             return SceneManager.UnloadSceneAsync(scene);
         }
 
-        public void SelectScene(string scene)
+        public void SelectActiveScene(string scene)
         {
             Scene targetScene = SceneManager.GetSceneByName(scene);
 
             if (targetScene.IsValid() && targetScene.isLoaded)
-            {
                 SceneManager.SetActiveScene(targetScene);
-                DisableInactiveListeners();
-                Debug.Log($"The scene {scene} has been set as active.");
-            }
             else
-            {
                 Debug.LogWarning($"The scene {scene} is not loaded or is invalid");
-            }
         }
 
-        private void DisableInactiveListeners()
+        public async void LoadScenes(string[] scenes)
         {
-            for (int i = 0; i < SceneManager.sceneCount; i++)
-            {
-                Scene scene = SceneManager.GetSceneAt(i);
 
-                bool isActiveScene = scene == SceneManager.GetActiveScene();
+            foreach (var scene in _currentScenes)
+                await UnLoadSceneProcess(scene);
 
-                foreach (GameObject rootObj in scene.GetRootGameObjects())
-                {
-                    var audioListener = rootObj.GetComponentInChildren<AudioListener>();
-                    if (audioListener != null)
-                    {
-                        audioListener.enabled = isActiveScene;
-                    }
-                }
-            }
+            foreach (var scene in scenes)
+                await LoadSceneProcess(scene);
+
+            _currentScenes = scenes;
+        }
+
+        private async Task UnLoadSceneProcess(string scene)
+        {
+            var loading = UnloadScene(scene);
+            await _loadingScreen.Loading(loading);
+        }
+
+        private async Task LoadSceneProcess(string scene)
+        {
+            var loading = LoadScene(scene);
+            await _loadingScreen.Loading(loading);
         }
     }
 }

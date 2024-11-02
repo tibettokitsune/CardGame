@@ -9,7 +9,7 @@ namespace Game.Scripts.Infrastructure
         {
             Container.Bind<LoadingScreen>().FromComponentInHierarchy(true).AsSingle();
             Container.BindInterfacesTo<SceneManagementService>().AsSingle();
-            Container.BindInterfacesAndSelfTo<GameManager>().AsSingle();
+            Container.BindInterfacesTo<GameManager>().AsSingle();
         }
     }
 }

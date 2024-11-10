@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,13 +9,14 @@ namespace Game.Scripts.UI
     public class LoadingScreen : UIScreen
     {
         [SerializeField] private Image fill;
-        public async UniTask Loading(AsyncOperation loadingOperation)
+        public async UniTask Loading(List<AsyncOperation> loadingOperation)
         {
             Open();
             await UniTask.WaitUntil(() =>
             {
-                fill.fillAmount = loadingOperation.progress;
-                return loadingOperation.isDone;
+                // var sumFill = loadingOperation.Sum(x => x.progress) / loadingOperation.Count;
+                // fill.fillAmount = sumFill;
+                return loadingOperation.Count(x => x.isDone) < loadingOperation.Count;
             });
             Close();
         }

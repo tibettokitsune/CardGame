@@ -28,16 +28,14 @@ namespace Game.Scripts.Infrastructure
 
         public async void  GoToMenu()
         {
-            var op = _sceneManagementService.LoadScene("Menu");
+            var op = _sceneManagementService.LoadScene("Menu", new string[]{});
             await _loadingScreen.Loading(op);
             _dataProvider.GameState.Value = GameState.MainMenu;
         }
 
         public async void GoToGame()
         {
-            var op = _sceneManagementService.UnloadScene("Menu");
-            await _loadingScreen.Loading(op);
-            op = _sceneManagementService.LoadScene("Game");
+            var op = _sceneManagementService.LoadScene("Game", new string[]{});
             await _loadingScreen.Loading(op);
             _dataProvider.GameState.Value = GameState.Game;
         }

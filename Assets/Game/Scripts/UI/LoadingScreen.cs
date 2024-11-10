@@ -14,8 +14,6 @@ namespace Game.Scripts.UI
             Open();
             await UniTask.WaitUntil(() =>
             {
-                // var sumFill = loadingOperation.Sum(x => x.progress) / loadingOperation.Count;
-                // fill.fillAmount = sumFill;
                 return loadingOperation.Count(x => x.isDone) < loadingOperation.Count;
             });
             Close();

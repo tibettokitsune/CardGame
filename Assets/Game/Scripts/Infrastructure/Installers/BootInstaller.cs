@@ -1,7 +1,7 @@
 using Game.Scripts.UI;
 using Zenject;
 
-namespace Game.Scripts.Infrastructure
+namespace Game.Scripts.Infrastructure.Installers
 {
     public class BootInstaller : MonoInstaller
     {

@@ -7,9 +7,25 @@ namespace Game.Scripts.Infrastructure
     {
         public override void InstallBindings()
         {
+            InstallDataLayer();
+            InstallLogic();
+            InstallUI();
+        }
+
+        private void InstallUI()
+        {
             Container.Bind<LoadingScreen>().FromComponentInHierarchy(true).AsSingle();
+        }
+
+        private void InstallLogic()
+        {
             Container.BindInterfacesTo<SceneManagementService>().AsSingle();
             Container.BindInterfacesTo<GameManager>().AsSingle();
+        }
+
+        private void InstallDataLayer()
+        {
+            Container.BindInterfacesTo<GameStateDataProvider>().AsSingle();
         }
     }
 }

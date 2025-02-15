@@ -1,3 +1,4 @@
+using Game.Scripts.Gameplay.Lobby.Player;
 using Zenject;
 
 namespace Game.Scripts.Gameplay.Lobby
@@ -9,6 +10,7 @@ namespace Game.Scripts.Gameplay.Lobby
             Container.BindInterfacesAndSelfTo<LobbyPresenter>().AsSingle();
             Container.BindInterfacesAndSelfTo<DeckPresenter>().AsSingle();
             Container.BindInterfacesAndSelfTo<PlayerPresenter>().AsSingle();
+            Container.BindInterfacesAndSelfTo<PlayerDataProvider>().AsSingle();
             Container.BindInterfacesAndSelfTo<FirstEnterInGameState>().AsSingle();
             Container.BindInterfacesAndSelfTo<PreparePlayerState>().AsSingle();
         }

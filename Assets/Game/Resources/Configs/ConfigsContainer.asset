@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp:Game.Scripts.Infrastructure.Configs:ScriptableConfigsContainer
   uiConfigs:
   - {fileID: 11400000, guid: d2dddf2d8a29f410a958b023e47d0fab, type: 2}
+  - {fileID: 11400000, guid: 4b3df99d2a81346ffa2984440694231a, type: 2}
+  - {fileID: 11400000, guid: a8b21dd6f3b8d4afbab404d799e13511, type: 2}

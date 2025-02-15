@@ -1,3 +1,5 @@
+using Game.Scripts.Gameplay.Lobby.Player;
+using Game.Scripts.UI;
 using UnityEngine;
 using Zenject;
 
@@ -38,16 +40,21 @@ namespace Game.Scripts.Gameplay.Lobby
     
     public class FirstEnterInGameState : IState
     {
+        
         private readonly IPlayerPresenter _playerPresenter;
+        private readonly IUIService<UIScreen> _uiService;
 
-        public FirstEnterInGameState(IPlayerPresenter playerPresenter)
+        public FirstEnterInGameState(IPlayerPresenter playerPresenter, IUIService<UIScreen> uiService)
         {
             _playerPresenter = playerPresenter;
+            _uiService = uiService;
         }
 
-        public void Enter()
+        public async void Enter()
         {
             Debug.Log("FirstEnterInGameState Enter");
+            await _uiService.ShowScreen<CharacterActiveCardsScreen>("CharacterActiveCards");
+            await _uiService.ShowScreen<CharacterStatsScreen>("CharacterStats");
             FillPlayerStartHand();
         }
 

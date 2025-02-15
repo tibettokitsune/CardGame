@@ -1,33 +1,43 @@
 using System;
+using System.Threading.Tasks;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Zenject;
 
 namespace Game.Scripts.UI
 {
     [RequireComponent(typeof(CanvasGroup))]
     public class UIScreen : MonoBehaviour
     {
-        [SerializeField] private CanvasGroup cg;
-
-        private void OnValidate()
+        public virtual Task ShowAsync()
         {
-            if (!cg) cg = GetComponent<CanvasGroup>();
+            gameObject.SetActive(true);
+            return Task.CompletedTask;
         }
 
-        [Button]
-        public void Open()
+        public virtual Task HideAsync()
         {
-            cg.alpha = 1f;
-            cg.blocksRaycasts = true;
-            cg.interactable = true;
+            gameObject.SetActive(false);
+            return Task.CompletedTask;
+        }
+        
+        public class Factory : PlaceholderFactory<UnityEngine.Object, UIScreen>
+        {
+        }
+    }
+    
+    public class ScreensFactory : IFactory<UnityEngine.Object, UIScreen>
+    {
+        readonly DiContainer _container;
+
+        public ScreensFactory(DiContainer container)
+        {
+            _container = container;
         }
 
-        [Button]
-        public void Close()
+        public UIScreen Create(UnityEngine.Object prefab)
         {
-            cg.alpha = 0f;
-            cg.blocksRaycasts = false;
-            cg.interactable = false;
+            return _container.InstantiatePrefabForComponent<UIScreen>(prefab);
         }
     }
 }

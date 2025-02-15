@@ -1,27 +1,65 @@
-using System.Linq;
+using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
-using Newtonsoft.Json;
 using UnityEngine;
 
-namespace Game.Scripts.Infrastructure
+namespace Game.Scripts.Infrastructure.Configs
 {
-    public class ConfigService : DataStorage<BaseConfigData>
+    public interface IBaseConfig
     {
-        private const string filePath = "";
-        public async UniTask Initialize()
+        string Id { get; }
+    }
+    
+    [Serializable]
+    public abstract class BaseConfig : IBaseConfig
+    {
+        public string Id { get; set; }
+    }
+
+    public interface IConfigService<T>
+    {
+        TC Get<TC>(string id) where TC : T;
+    }
+
+    public class ConfigService : IConfigService<BaseConfig>, IAsyncInitializable
+    {
+        private const string ScriptableConfigsPath = "Configs/ConfigsContainer";
+        private Dictionary<string, BaseConfig> _dictionary = new();
+        public async Task InitializeAsync(CancellationToken cancellationToken = default)
         {
-            var content = await GetConfigData();
-            var dictionary = content.ToDictionary(x => x.Id, x => (BaseConfigData)x);
-            Load(dictionary);
-            Debug.Log($"[CONFIG]: {Dictionary.Count} config loaded");
+            Debug.Log("Config service start initialization");
+            await LoadScriptableConfigs();
+            await Task.Delay(3000);
+            Debug.Log("Config service initialized");
+            await Task.CompletedTask;
         }
 
-        private async UniTask<IConfigEntity[]> GetConfigData()
+        private async Task LoadScriptableConfigs()
         {
-            var json = await Resources.LoadAsync(filePath) as TextAsset;
-            
-            return await Task.FromResult(JsonConvert.DeserializeObject<IConfigEntity[]>(json.text, App.JsonSettings));
+            var container = await Resources.LoadAsync<ScriptableConfigsContainer>(ScriptableConfigsPath) as ScriptableConfigsContainer;
+            await container.LoadUIConfigs(_dictionary);
         }
+
+        public T Get<T>(string id) where T : BaseConfig
+        {
+            if (_dictionary.TryGetValue(id, out var value) && value is T t)
+                return t;
+            Debug.LogWarning($"'Couldn't find {typeof(T).Name} id={id}");
+            return default;
+        }
+    }
+
+    public enum UILayer
+    {
+        Window, Popup
+    }
+
+    public class UIDataConfig : BaseConfig
+    {
+        public string PrefabPath;
+        public UILayer Layer;
+        
     }
 }

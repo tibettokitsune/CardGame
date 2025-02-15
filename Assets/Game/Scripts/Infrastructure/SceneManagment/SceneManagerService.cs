@@ -15,7 +15,7 @@ namespace Game.Scripts.Infrastructure.SceneManagment
     }
     public interface ISceneManagerService
     {
-        Task LoadScene(string sceneName, SceneLayer layer);
+        Task LoadScene(string sceneName, SceneLayer layer, bool isActivateAfterLoad = false);
     }
     public class SceneManagerService : IAsyncInitializable, ISceneManagerService
     {
@@ -29,7 +29,7 @@ namespace Game.Scripts.Infrastructure.SceneManagment
             Debug.Log($"Initialize SceneManagerService finished");
         }
 
-        public async Task LoadScene(string sceneName, SceneLayer layer)
+        public async Task LoadScene(string sceneName, SceneLayer layer, bool isActivateAfterLoad = false)
         {
             _scenes.TryGetValue(layer, out var sceneToUnload);
             using var loadingScreen = _loadingScreen.Show();
@@ -39,6 +39,8 @@ namespace Game.Scripts.Infrastructure.SceneManagment
                 _scenes.Remove(layer);
             }
             await  SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+            if(isActivateAfterLoad)
+                SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
             _scenes.Add(layer, sceneName);
         }
     }

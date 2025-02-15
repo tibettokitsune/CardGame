@@ -14,7 +14,7 @@ namespace Game.Scripts.Infrastructure.Menu
 
     public interface IStartGameUseCase
     {
-        Task StartGame();
+        Task StartLobby();
     }
 
     public interface IShowSettingsUseCase
@@ -41,13 +41,13 @@ namespace Game.Scripts.Infrastructure.Menu
             Debug.Log("Menu loaded");
         }
 
-        public async Task StartGame()
+        public async Task StartLobby()
         {
-            Debug.Log("Starting game...");
+            Debug.Log("Starting lobby...");
             using var loadingScreen = _loadingScreen.Show();
             await uiService.Clear();
-            await sceneManagerService.LoadScene("Game", SceneLayer.GameStage);
-            Debug.Log("Game started");
+            await sceneManagerService.LoadScene("Lobby", SceneLayer.GameStage, true);
+            Debug.Log("Lobby started");
         }
 
         public Task ShowSettings()

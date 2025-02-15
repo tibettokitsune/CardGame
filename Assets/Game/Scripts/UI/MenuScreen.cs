@@ -33,7 +33,7 @@ namespace Game.Scripts.UI
 
         private void OnStartClick()
         {
-            startGameUseCase.StartGame();
+            startGameUseCase.StartLobby();
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Game.Scripts.UI
         private readonly Dictionary<string, UIScreen> _loadedScreens = new();
         private readonly Transform _uiRoot;
 
-        private Dictionary<UILayer, UIScreen> _activeScreens = new();
+        private Dictionary<UILayer, List<UIScreen>> _activeScreens = new();
         private List<string> _history = new();
 
         public UIService(Transform uiRoot)
@@ -47,7 +47,9 @@ namespace Game.Scripts.UI
 
             screen.transform.SetParent(_uiRoot);
             screen.gameObject.SetActive(true);
-            _activeScreens.Add(config.Layer, screen);
+            if (!_activeScreens.ContainsKey(config.Layer))
+                _activeScreens.Add(config.Layer, new List<UIScreen>());
+            _activeScreens[config.Layer].Add(screen);
             _history.Add(id);
 
             return (TC) screen;
@@ -55,11 +57,14 @@ namespace Game.Scripts.UI
 
         public Task Clear()
         {
-            foreach (var screensValue in _activeScreens)
+            foreach (var (layer, screens) in _activeScreens)
             {
-                GameObject.Destroy(screensValue.Value.gameObject);
+                foreach (var screen in screens)
+                {
+                    GameObject.Destroy(screen.gameObject);
+                }
             }
-            
+
             _activeScreens.Clear();
             _history.Clear();
             return Task.CompletedTask;

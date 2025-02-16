@@ -16,8 +16,8 @@ namespace Game.Scripts.UI
         private readonly Dictionary<string, UIScreen> _loadedScreens = new();
         private readonly Transform _uiRoot;
 
-        private Dictionary<UILayer, List<UIScreen>> _activeScreens = new();
-        private List<string> _history = new();
+        private readonly Dictionary<UILayer, List<UIScreen>> _activeScreens = new();
+        private readonly List<string> _history = new();
 
         public UIService(Transform uiRoot)
         {

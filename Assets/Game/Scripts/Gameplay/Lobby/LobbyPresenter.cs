@@ -40,7 +40,6 @@ namespace Game.Scripts.Gameplay.Lobby
     
     public class FirstEnterInGameState : IState
     {
-        
         private readonly IPlayerPresenter _playerPresenter;
         private readonly IUIService<UIScreen> _uiService;
 

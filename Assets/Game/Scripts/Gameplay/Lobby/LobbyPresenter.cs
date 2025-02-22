@@ -54,6 +54,7 @@ namespace Game.Scripts.Gameplay.Lobby
             Debug.Log("FirstEnterInGameState Enter");
             await _uiService.ShowScreen<CharacterActiveCardsScreen>("CharacterActiveCards");
             await _uiService.ShowScreen<CharacterStatsScreen>("CharacterStats");
+            await _uiService.ShowScreen<PlayerHandScreen>("PlayerHand");
             FillPlayerStartHand();
         }
 

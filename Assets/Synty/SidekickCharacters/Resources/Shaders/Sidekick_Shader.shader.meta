@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 8aad7d64ebaffab40bd7146242935061
+ShaderImporter:
+  externalObjects: {}
+  defaultTextures:
+  - _DarkMaskTexture: {fileID: 2800000, guid: 08475d8495d3e8c45b04efee61a5f57e, type: 3}
+  - _DirtMaskTexture: {fileID: 2800000, guid: e7c56d4419b4d144ca3f5af3ee0c81cb, type: 3}
+  - _CutsMaskTexture: {fileID: 2800000, guid: 75ccb45ed310e81409b3f9d13dce709d, type: 3}
+  nonModifiableTextures: []
+  preprocessorOverride: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

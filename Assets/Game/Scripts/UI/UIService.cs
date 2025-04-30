@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Game.Scripts.Infrastructure;
 using Game.Scripts.Infrastructure.Configs;
+using Game.Scripts.Infrastructure.Configs.Configs;
 using UnityEngine;
 using Zenject;
 
@@ -27,7 +28,6 @@ namespace Game.Scripts.UI
         public async Task InitializeAsync(CancellationToken cancellationToken = default)
         {
             Debug.Log("Initializing UI start");
-            await Task.Delay(1000);
             Debug.Log("Initializing UI finished");
         }
 

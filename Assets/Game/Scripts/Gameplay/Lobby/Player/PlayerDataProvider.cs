@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Game.Scripts.Gameplay.Lobby.Deck;
 
 namespace Game.Scripts.Gameplay.Lobby.Player
 {

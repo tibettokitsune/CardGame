@@ -25,7 +25,6 @@ namespace Game.Scripts.Infrastructure.SceneManagment
         public async Task InitializeAsync(CancellationToken cancellationToken = default)
         {
             Debug.Log($"Initialize SceneManagerService start");
-            await Task.Delay(1000, cancellationToken);
             Debug.Log($"Initialize SceneManagerService finished");
         }
 

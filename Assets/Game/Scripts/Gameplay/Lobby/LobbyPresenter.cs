@@ -1,6 +1,6 @@
-using Game.Scripts.Gameplay.Lobby.Player;
-using Game.Scripts.UI;
+using Game.Scripts.Gameplay.Lobby.GameStates;
 using UnityEngine;
+using UnityHFSM;
 using Zenject;
 
 namespace Game.Scripts.Gameplay.Lobby
@@ -9,12 +9,12 @@ namespace Game.Scripts.Gameplay.Lobby
     {
     }
     
-    public class LobbyPresenter : ILobbyPresenter, IInitializable
+    public class LobbyPresenter : ILobbyPresenter, IInitializable, ITickable
     {
         private readonly PreparePlayerState _preparePlayerState;
         private readonly FirstEnterInGameState _firstEnterInGameState;
         
-        private GameStateMachine _gameStateMachine;
+        private StateMachine _gameStateMachine;
 
         public LobbyPresenter(PreparePlayerState preparePlayerState, 
             FirstEnterInGameState firstEnterInGameState
@@ -27,70 +27,22 @@ namespace Game.Scripts.Gameplay.Lobby
         public void Initialize()
         {
             Debug.Log("LobbyPresenter Initialize");
-            _gameStateMachine = new GameStateMachine();
-            _gameStateMachine.SetState(_firstEnterInGameState);
-        }
-    }
-    
-    public interface IState
-    {
-        public void Enter();
-        public void Exit();
-    }
-    
-    public class FirstEnterInGameState : IState
-    {
-        private readonly IPlayerPresenter _playerPresenter;
-        private readonly IUIService<UIScreen> _uiService;
-
-        public FirstEnterInGameState(IPlayerPresenter playerPresenter, IUIService<UIScreen> uiService)
-        {
-            _playerPresenter = playerPresenter;
-            _uiService = uiService;
+            _gameStateMachine = new StateMachine();
+            
+            _gameStateMachine.AddState("FirstEnter", _firstEnterInGameState);
+            _gameStateMachine.AddState("PrepareRound", _preparePlayerState);
+            
+            _gameStateMachine.AddTransition(new Transition("FirstEnter", "PrepareRound", 
+                condition => _firstEnterInGameState.IsReadyToSwitch));
+            
+            _gameStateMachine.SetStartState("FirstEnter");
+            
+            _gameStateMachine.Init();
         }
 
-        public async void Enter()
+        public void Tick()
         {
-            Debug.Log("FirstEnterInGameState Enter");
-            await _uiService.ShowScreen<CharacterActiveCardsScreen>("CharacterActiveCards");
-            await _uiService.ShowScreen<CharacterStatsScreen>("CharacterStats");
-            await _uiService.ShowScreen<PlayerHandScreen>("PlayerHand");
-            FillPlayerStartHand();
-        }
-
-        private async void FillPlayerStartHand()
-        {
-            await _playerPresenter.FillStartHand();
-        }
-
-        public void Exit()
-        {
-            Debug.Log("FirstEnterInGame Exit");
-        }
-    }
-
-    public class PreparePlayerState : IState
-    {
-        public void Enter()
-        {
-            Debug.Log("PreparePlayerState Enter");
-        }
-
-        public void Exit()
-        {
-            Debug.Log("PreparePlayerState Exit");
-        }
-    }
-
-    public class GameStateMachine
-    {
-        private IState currentState;
-        
-        public void SetState(IState newState)
-        {
-            currentState?.Exit();
-            currentState = newState;
-            currentState.Enter();
+            _gameStateMachine?.OnLogic();
         }
     }
 }

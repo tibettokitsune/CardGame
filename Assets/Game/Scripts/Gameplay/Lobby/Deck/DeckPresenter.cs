@@ -38,6 +38,8 @@ namespace Game.Scripts.Gameplay.Lobby.Deck
         {
             _config = config;
             CardType = cardType;
+            MainLayer = mainLayer;
+            BackgroundLayer = backgroundLayer;
         }
     }
 

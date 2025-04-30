@@ -1,0 +1,24 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Game/Content/UI/GameCardEditor.uss?fileID=7433441132597879392&amp;guid=00b8baa7ddc244ec49473cd8f63428e8&amp;type=3#GameCardEditor" />
+    <engine:TabView>
+        <engine:Tab label="Cards" name="Cards">
+            <engine:VisualElement style="flex-grow: 1; flex-direction: row;">
+                <engine:VisualElement style="flex-grow: 1; width: 250px;">
+                    <engine:ListView name="ListView" style="width: 250px;" />
+                    <engine:VisualElement style="flex-grow: 1; flex-direction: row; right: auto; left: auto; flex-wrap: nowrap; justify-content: flex-end; width: 250px;">
+                        <engine:Button text="-" name="Remove" style="width: 30px; height: 30px;" />
+                        <engine:Button text="+" name="Add" style="width: 30px; height: 30px;" />
+                        <engine:Button text="S" name="Add" style="width: 30px; height: 30px;" />
+                    </engine:VisualElement>
+                </engine:VisualElement>
+                <engine:VisualElement name="DetailPanel" style="flex-grow: 1;">
+                    <engine:Label text="Label" name="ID" />
+                    <engine:Label text="Label" name="Description" />
+                    <engine:Label text="Label" name="MainLayerId" />
+                    <engine:Label text="Label" name="ID" />
+                </engine:VisualElement>
+            </engine:VisualElement>
+        </engine:Tab>
+        <engine:Tab label="Layers" name="Layers" />
+    </engine:TabView>
+</engine:UXML>

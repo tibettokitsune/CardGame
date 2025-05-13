@@ -1,55 +1,37 @@
 {
   "UIConfigs": [
     {
-      "%type": "Game.Scripts.Infrastructure.Configs.UIDataConfig",
-      "Id": "Menu",
       "PrefabPath": "Prefabs/UI/Menu/MenuScreen",
-      "Layer": "Window"
+      "Layer": 0,
+      "Id": "Menu"
     },
     {
-      "%type": "Game.Scripts.Infrastructure.Configs.UIDataConfig",
-      "Id": "CharacterActiveCards",
       "PrefabPath": "Prefabs/UI/Gameplay/CharacterActiveCardsScreen",
-      "Layer": "Popup"
+      "Layer": 1,
+      "Id": "CharacterActiveCards"
     },
     {
-      "%type": "Game.Scripts.Infrastructure.Configs.UIDataConfig",
-      "Id": "CharacterStats",
       "PrefabPath": "Prefabs/UI/Gameplay/CharacterStatsScreen",
-      "Layer": "Popup"
+      "Layer": 1,
+      "Id": "CharacterStats"
     },
     {
-      "%type": "Game.Scripts.Infrastructure.Configs.UIDataConfig",
-      "Id": "CharacterStats",
-      "PrefabPath": "Prefabs/UI/Gameplay/CharacterStatsScreen",
-      "Layer": "Popup"
-    },
-    {
-      "%type": "Game.Scripts.Infrastructure.Configs.UIDataConfig",
-      "Id": "PlayerHand",
       "PrefabPath": "Prefabs/UI/Gameplay/PlayerHandScreen",
-      "Layer": "Popup"
+      "Layer": 1,
+      "Id": "PlayerHand"
     }
   ],
   "CardConfigs": [
     {
-      "Id": "card_1",
       "Name": "Test card 1",
       "Description": "Test card",
       "MainLayerId": "card_main_layer_1",
-      "BackgroundLayerId": "card_background_1"
-    },
-    {
-      "Id": "card_2",
-      "Name": "Test card 2",
-      "Description": "Test card",
-      "MainLayerId": "card_main_layer_1",
-      "BackgroundLayerId": "card_background_1"
+      "BackgroundLayerId": "card_background_1",
+      "Id": "card_1"
     }
   ],
   "CardLayersConfigs": [
     {
-      "Id": "card_main_layer_1",
       "Layers": [
         {
           "SpritePath": "",
@@ -69,10 +51,10 @@
             "Z": 0.0
           }
         }
-      ]
+      ],
+      "Id": "card_main_layer_1"
     },
     {
-      "Id": "card_background_1",
       "Layers": [
         {
           "SpritePath": "",
@@ -92,7 +74,8 @@
             "Z": 0.0
           }
         }
-      ]
+      ],
+      "Id": "card_background_1"
     }
   ]
 }

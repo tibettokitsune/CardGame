@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Game.Scripts.Infrastructure.Configs.Configs;
 using Newtonsoft.Json;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Game.Scripts.Infrastructure.Configs
 {
@@ -16,12 +20,12 @@ namespace Game.Scripts.Infrastructure.Configs
         public async Task InitializeAsync(CancellationToken cancellationToken = default)
         {
             Debug.Log("Config service start initialization");
-            await LoadJsonData();
+            await LoadJsonData(_dictionary);
             Debug.Log("Config service initialized");
             await Task.CompletedTask;
         }
 
-        private async Task LoadJsonData()
+        public static async Task LoadJsonData(Dictionary<string, BaseConfig> source)
         {
             var jsonFile = await Resources.LoadAsync<TextAsset>($"configs") as TextAsset;
 
@@ -34,19 +38,19 @@ namespace Game.Scripts.Infrastructure.Configs
                 var data = JsonConvert.DeserializeObject<ConfigsWrapper>(jsonFile.text, settings);
                 foreach (var config in data.UIConfigs)
                 {
-                    _dictionary.TryAdd(config.Id, config);
+                    source.TryAdd(config.Id, config);
                     Debug.Log($"UI config {config.Id} loaded");
                 }
-                
+
                 foreach (var config in data.CardLayersConfigs)
                 {
-                    _dictionary.TryAdd(config.Id, config);
+                    source.TryAdd(config.Id, config);
                     Debug.Log($"Card layer config {config.Id} loaded");
                 }
-                
+
                 foreach (var config in data.CardConfigs)
                 {
-                    _dictionary.TryAdd(config.Id, config);
+                    source.TryAdd(config.Id, config);
                     Debug.Log($"Card config {config.Id} loaded");
                 }
             }
@@ -63,13 +67,69 @@ namespace Game.Scripts.Infrastructure.Configs
             Debug.LogWarning($"'Couldn't find {typeof(T).Name} id={id}");
             return default;
         }
-    }
 
-    [Serializable]
-    public class ConfigsWrapper
-    {
-        public List<UIDataConfig> UIConfigs { get; set; }
-        public List<CardDataConfig> CardConfigs { get; set; }
-        public List<CardLayerDataConfig> CardLayersConfigs { get; set; }
+        public static async void PatchSourceData(Dictionary<string, BaseConfig> source)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Formatting.Indented
+            };
+
+            var data = new ConfigsWrapper
+            {
+                UIConfigs = new List<UIDataConfig>(),
+                CardLayersConfigs = new List<CardLayerDataConfig>(),
+                CardConfigs = new List<CardDataConfig>()
+            };
+
+            foreach (var config in source.Values)
+            {
+                switch (config)
+                {
+                    case UIDataConfig ui:
+                        data.UIConfigs.Add(ui);
+                        break;
+                    case CardLayerDataConfig layer:
+                        data.CardLayersConfigs.Add(layer);
+                        break;
+                    case CardDataConfig card:
+                        data.CardConfigs.Add(card);
+                        break;
+                    default:
+                        Debug.LogWarning($"Неизвестный тип конфигурации: {config.GetType()}");
+                        break;
+                }
+            }
+
+            string json = JsonConvert.SerializeObject(data, settings);
+
+#if UNITY_EDITOR
+            string resourcePath = Path.Combine(Application.dataPath, "Resources/configs.json");
+
+            try
+            {
+                File.WriteAllText(resourcePath, json);
+                Debug.Log($"Конфигурации успешно сохранены в {resourcePath}");
+
+                // Обновим ассеты
+                AssetDatabase.Refresh();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Ошибка при сохранении конфигураций: {ex.Message}");
+            }
+#else
+        Debug.LogWarning("Сохранение в Resources запрещено во время выполнения вне редактора. Используйте Application.persistentDataPath вместо этого.");
+#endif
+        }
     }
+}
+
+[Serializable]
+public class ConfigsWrapper
+{
+    public List<UIDataConfig> UIConfigs { get; set; }
+    public List<CardDataConfig> CardConfigs { get; set; }
+    public List<CardLayerDataConfig> CardLayersConfigs { get; set; }
 }

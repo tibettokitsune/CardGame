@@ -24,6 +24,7 @@ public class GameCardEditor : EditorWindow
     private VisualElement _detailPanel;
     private List<CardDataConfig> _cardItems;
     private readonly Dictionary<string, BaseConfig> _dictionary = new();
+    private Label _currentCardLabel;
     public async void CreateGUI()
     {
         var ui = m_VisualTreeAsset.CloneTree();
@@ -32,7 +33,7 @@ public class GameCardEditor : EditorWindow
         _listView = rootVisualElement.Q<ListView>("ListView");
         _detailPanel = rootVisualElement.Q<VisualElement>("DetailPanel");
 
-        await LoadJsonData();
+        await ConfigService.LoadJsonData(_dictionary);
 
         _cardItems = _dictionary
             .Where(x => x.Value is CardDataConfig)
@@ -61,7 +62,10 @@ public class GameCardEditor : EditorWindow
         var idField = new TextField("ID") { value = selected.Id };
         idField.RegisterValueChangedCallback(evt =>
         {
+            _dictionary.Remove(selected.Id);
             selected.Id = evt.newValue;
+            _dictionary.Add(selected.Id, selected);
+            ConfigService.PatchSourceData(_dictionary);
         });
         
         var descField = new TextField("Description") { value = selected.Description };
@@ -86,34 +90,6 @@ public class GameCardEditor : EditorWindow
         _detailPanel.Add(descField);
         _detailPanel.Add(mainLayerField);
         _detailPanel.Add(bgLayerField);
-    }
-    
-    private async Task LoadJsonData()
-    {
-        var req = Resources.LoadAsync<TextAsset>("configs");
-        await req;
-
-        var jsonFile = req.asset as TextAsset;
-        if (jsonFile == null)
-        {
-            Debug.LogError("Не удалось загрузить JSON файл.");
-            return;
-        }
-
-        var settings = new JsonSerializerSettings
-        {
-            TypeNameHandling = TypeNameHandling.Auto
-        };
-        var data = JsonConvert.DeserializeObject<ConfigsWrapper>(jsonFile.text, settings);
-
-        foreach (var config in data.UIConfigs)
-            _dictionary.TryAdd(config.Id, config);
-
-        foreach (var config in data.CardLayersConfigs)
-            _dictionary.TryAdd(config.Id, config);
-
-        foreach (var config in data.CardConfigs)
-            _dictionary.TryAdd(config.Id, config);
     }
 
 }

@@ -10,7 +10,7 @@ namespace Game.Scripts.Infrastructure
     public class ServiceInitializer : IInitializable
     {
         [Inject] private LoadingScreen _screen;
-        [Inject] private IMenuPresenter _menuPresenter;
+        [Inject] private IMenuController _menuController;
         private readonly IEnumerable<IAsyncInitializable> _services;
 
         public ServiceInitializer(IEnumerable<IAsyncInitializable> services)
@@ -28,7 +28,7 @@ namespace Game.Scripts.Infrastructure
             }
             Debug.Log("Finish services initialization");
 
-            await _menuPresenter.LoadMenu();
+            await _menuController.LoadMenu();
         }
     }
 }

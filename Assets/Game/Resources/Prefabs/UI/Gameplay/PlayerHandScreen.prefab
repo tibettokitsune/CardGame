@@ -261,7 +261,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 7
-  angle1: 5
-  angle2: -5
-  spacing: 250
-  height1: 25
+  angle1: 10
+  angle2: -10
+  spacing: 200
+  height1: 80

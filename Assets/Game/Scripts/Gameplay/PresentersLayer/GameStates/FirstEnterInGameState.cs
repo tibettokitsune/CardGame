@@ -10,7 +10,6 @@ namespace Game.Scripts.Gameplay.Lobby.GameStates
     {
         private readonly IFillStartHandUseCase _fillStartHandUseCase;
         private readonly IUIService<UIScreen> _uiService;
-        private PlayerHandScreen _handScreen;
         public bool IsReadyToSwitch { get; private set; }
         public FirstEnterInGameState(IFillStartHandUseCase fillStartHandUseCase, IUIService<UIScreen> uiService) 
             : base(needsExitTime: false, isGhostState: false)
@@ -24,9 +23,9 @@ namespace Game.Scripts.Gameplay.Lobby.GameStates
         public override async void OnEnter()
         {
             Debug.Log("FirstEnterInGameState Enter");
-            await _uiService.ShowScreen<CharacterActiveCardsScreen>("CharacterActiveCards");
-            await _uiService.ShowScreen<CharacterStatsScreen>("CharacterStats");
-            _handScreen = await _uiService.ShowScreen<PlayerHandScreen>("PlayerHand");
+            await _uiService.ShowScreen<UIScreen>("CharacterActiveCards");
+            await _uiService.ShowScreen<UIScreen>("CharacterStats");
+            await _uiService.ShowScreen<UIScreen>("PlayerHand");
             await FillPlayerStartHand();
             IsReadyToSwitch = true;
         }

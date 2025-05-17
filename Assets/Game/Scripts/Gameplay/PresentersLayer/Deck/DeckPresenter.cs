@@ -1,48 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Game.Scripts.Gameplay.DataLayer;
 using Game.Scripts.Infrastructure.Configs;
 using Game.Scripts.Infrastructure.Configs.Configs;
 using UnityEngine;
 
 namespace Game.Scripts.Gameplay.Lobby.Deck
 {
-    public enum CardType
-    {
-        Door,
-        Treasure
-    }
-
-    public interface IBaseCard
-    {
-        string Name { get; }
-        string Description { get; }
-        public CardLayerDataConfig MainLayer { get; }
-        public CardLayerDataConfig BackgroundLayer { get; }
-    }
-
-    public class BaseCard : IBaseCard
-    {
-        private readonly CardDataConfig _config;
-
-        public string Name => _config.Name;
-        public string Description => _config.Description;
-        public CardLayerDataConfig MainLayer { get; private set; }
-        public CardLayerDataConfig BackgroundLayer { get; private set; }
-        public CardType CardType { get; }
-
-        public BaseCard(CardDataConfig config, 
-            CardLayerDataConfig mainLayer, 
-            CardLayerDataConfig backgroundLayer,
-            CardType cardType)
-        {
-            _config = config;
-            CardType = cardType;
-            MainLayer = mainLayer;
-            BackgroundLayer = backgroundLayer;
-        }
-    }
-
     public interface IDeckPresenter
     {
         Task<IBaseCard> ClaimRandomCardFromDeck(CardType cardType);

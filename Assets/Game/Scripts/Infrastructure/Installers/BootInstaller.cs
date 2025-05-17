@@ -17,7 +17,7 @@ namespace Game.Scripts.Infrastructure.Installers
             InstallService();
             Container.BindFactory<Object, UIScreen, UIScreen.Factory>().FromFactory<ScreensFactory>();
 
-            Container.BindInterfacesTo<MenuPresenter>().AsSingle();
+            Container.BindInterfacesTo<MenuController>().AsSingle();
         }
 
         private void InstallService()
@@ -26,7 +26,6 @@ namespace Game.Scripts.Infrastructure.Installers
             Container.BindInterfacesAndSelfTo<ConfigService>().AsSingle();
             Container.BindInterfacesAndSelfTo<ServiceInitializer>().AsSingle();
             Container.BindInterfacesAndSelfTo<UIService>().AsSingle().WithArguments(uiRoot);
-            Container.BindInterfacesAndSelfTo<GameplayEventBus>().AsSingle();
         }
 
         private void InstallUI()

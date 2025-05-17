@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Game.Scripts.Gameplay.Lobby.Deck;
+using Game.Scripts.Gameplay.DataLayer;
 
 namespace Game.Scripts.Gameplay.Lobby.Player
 {

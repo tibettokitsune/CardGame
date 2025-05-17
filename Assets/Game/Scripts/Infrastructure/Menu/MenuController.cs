@@ -7,27 +7,7 @@ using Zenject;
 
 namespace Game.Scripts.Infrastructure.Menu
 {
-    public interface IMenuPresenter
-    {
-        Task LoadMenu();
-    }
-
-    public interface IStartGameUseCase
-    {
-        Task StartLobby();
-    }
-
-    public interface IShowSettingsUseCase
-    {
-        Task ShowSettings();
-    }
-    
-    public interface IExitGameUseCase
-    {
-        Task ExitGame();
-    }
-
-    public class MenuPresenter : IMenuPresenter, IStartGameUseCase, IShowSettingsUseCase, IExitGameUseCase
+    public class MenuController : IMenuController, IStartGameUseCase, IShowSettingsUseCase, IExitGameUseCase
     {
         [Inject] private ISceneManagerService sceneManagerService;
         [Inject] private LoadingScreen _loadingScreen;

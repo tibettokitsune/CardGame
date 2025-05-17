@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Game.Scripts.Gameplay.DataLayer;
 using Game.Scripts.Gameplay.Lobby.Deck;
 using Game.Scripts.Infrastructure;
 
@@ -15,22 +16,14 @@ namespace Game.Scripts.Gameplay.Lobby.Player
     public class PlayerPresenter : IFillStartHandUseCase
     {
         private readonly IDeckPresenter _deckPresenter;
-        private readonly HandCardFactory _handCardFactory;
-        private readonly IGameplayNotifier _notifier;
         private readonly IPlayerDataProvider _playerDataProvider;
         private const int StartDoorsLimit = 4;
         private const int StartTreasuresLimit = 4;
-        
-        private Dictionary<IBaseCard, HandCardView> _handCardViews = new();
 
         public PlayerPresenter(IDeckPresenter deckPresenter,
-            HandCardFactory handCardFactory,
-            IGameplayNotifier notifier,
             IPlayerDataProvider playerDataProvider)
         {
             _deckPresenter = deckPresenter;
-            _handCardFactory = handCardFactory;
-            _notifier = notifier;
             _playerDataProvider = playerDataProvider;
         }
 
@@ -47,10 +40,11 @@ namespace Game.Scripts.Gameplay.Lobby.Player
         {
             var card = await _deckPresenter.ClaimRandomCardFromDeck(cardType);
             await _playerDataProvider.ClaimCard(card);
-            var view = _handCardFactory.Create();
-            view.Setup(card.Name, card.Description, card.MainLayer, card.BackgroundLayer);
-            _handCardViews.Add(card, view);
-            _notifier.NotifyAddCardToHand(card, view);
+            // var view = _handCardFactory.Create();
+            // view.Setup(card.Name, card.Description, card.MainLayer, card.BackgroundLayer);
+            // _handCardViews.Add(card, view);
+            //TODO: notify gameplay bus about changes
+            // _notifier.NotifyAddCardToHand(card, view);
         }
 
         private async Task FillStartDoors()

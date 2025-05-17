@@ -23,11 +23,18 @@
   ],
   "CardConfigs": [
     {
-      "Name": "Test card 1",
-      "Description": "Test card",
+      "Name": "Test door card",
+      "Description": "Test door card",
       "MainLayerId": "card_main_layer_1",
       "BackgroundLayerId": "card_background_1",
       "Id": "card_1"
+    },
+    {
+      "Name": "Test treasure card",
+      "Description": "Test treasure card",
+      "MainLayerId": "card_main_layer_1",
+      "BackgroundLayerId": "card_background_1",
+      "Id": "card_2"
     }
   ],
   "CardLayersConfigs": [

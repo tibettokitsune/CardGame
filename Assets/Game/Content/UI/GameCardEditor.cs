@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Game.Scripts.Infrastructure.Configs;
 using Game.Scripts.Infrastructure.Configs.Configs;
+using Game.Scripts.Infrastructure.Helpers;
 using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
@@ -33,7 +34,7 @@ public class GameCardEditor : EditorWindow
         _listView = rootVisualElement.Q<ListView>("ListView");
         _detailPanel = rootVisualElement.Q<VisualElement>("DetailPanel");
 
-        await ConfigService.LoadJsonData(_dictionary);
+        await DataSaveHelper.LoadJsonData(_dictionary);
 
         _cardItems = _dictionary
             .Where(x => x.Value is CardDataConfig)
@@ -65,7 +66,7 @@ public class GameCardEditor : EditorWindow
             _dictionary.Remove(selected.Id);
             selected.Id = evt.newValue;
             _dictionary.Add(selected.Id, selected);
-            ConfigService.PatchSourceData(_dictionary);
+            DataSaveHelper.PatchSourceData(_dictionary);
         });
         
         var descField = new TextField("Description") { value = selected.Description };

@@ -9,6 +9,7 @@ namespace Game.Scripts.Gameplay.DataLayer.Models
     }
     public interface IBaseCard
     {
+        string ID { get; }
         string Name { get; }
         string Description { get; }
         public CardLayerDataConfig MainLayer { get; }

@@ -1,7 +1,9 @@
+using System;
 using System.Threading.Tasks;
 using Game.Scripts.Gameplay.DataLayer.Models;
 using Game.Scripts.Gameplay.Lobby.Deck;
 using Game.Scripts.Gameplay.Lobby.Player;
+using UniRx;
 
 namespace Game.Scripts.Gameplay.PresentersLayer.Player
 {
@@ -9,25 +11,40 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
     {
         Task Execute();
     }
-    
+
     public interface IPlayerPresenter
     {
-        
+        ReactiveCollection<CardEntity> PlayerHand { get; }
     }
 
 
-    public class PlayerPresenter : IPlayerPresenter, IFillStartHandUseCase
+    public class PlayerPresenter : IPlayerPresenter, IFillStartHandUseCase, IDisposable
     {
         private readonly IDeckPresenter _deckPresenter;
         private readonly IPlayerDataProvider _playerDataProvider;
         private const int StartDoorsLimit = 4;
         private const int StartTreasuresLimit = 4;
 
+        private readonly CompositeDisposable _disposables = new();
+        public ReactiveCollection<CardEntity> PlayerHand { get; } = new();
+
         public PlayerPresenter(IDeckPresenter deckPresenter,
             IPlayerDataProvider playerDataProvider)
         {
             _deckPresenter = deckPresenter;
             _playerDataProvider = playerDataProvider;
+            _playerDataProvider.PlayersHand.ObserveAdd().Subscribe(OnCollectionChange).AddTo(_disposables);
+            _playerDataProvider.PlayersHand.ObserveRemove().Subscribe(OnCollectionChange).AddTo(_disposables);
+        }
+
+        private void OnCollectionChange(CollectionAddEvent<string> collectionAddEvent)
+        {
+            PlayerHand.Add(new CardEntity( _deckPresenter.GetCardById(collectionAddEvent.Value)));
+        }
+
+        private void OnCollectionChange(CollectionRemoveEvent<string> collectionRemoveEvent)
+        {
+            PlayerHand.Remove(new CardEntity( _deckPresenter.GetCardById(collectionRemoveEvent.Value)));
         }
 
         #region usecases
@@ -41,8 +58,8 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
 
         private async Task AddRandomCardByType(CardType cardType)
         {
-            var card = await _deckPresenter.ClaimRandomCardFromDeck(cardType);
-            await _playerDataProvider.ClaimCard(card);
+            var cardId = await _deckPresenter.ClaimRandomCardFromDeck(cardType);
+            await _playerDataProvider.ClaimCard(cardId);
             // var view = _handCardFactory.Create();
             // view.Setup(card.Name, card.Description, card.MainLayer, card.BackgroundLayer);
             // _handCardViews.Add(card, view);
@@ -69,5 +86,10 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
         }
 
         #endregion
+
+        public void Dispose()
+        {
+            PlayerHand?.Dispose();
+        }
     }
 }

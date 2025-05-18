@@ -6,6 +6,7 @@ namespace Game.Scripts.Gameplay.DataLayer.Models
     {
         private readonly CardDataConfig _config;
 
+        public string ID => _config.Id;
         public string Name => _config.Name;
         public string Description => _config.Description;
         public CardLayerDataConfig MainLayer { get; }

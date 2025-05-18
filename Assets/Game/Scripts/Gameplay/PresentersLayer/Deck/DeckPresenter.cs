@@ -11,7 +11,8 @@ namespace Game.Scripts.Gameplay.Lobby.Deck
 {
     public interface IDeckPresenter
     {
-        Task<IBaseCard> ClaimRandomCardFromDeck(CardType cardType);
+        Task<string> ClaimRandomCardFromDeck(CardType cardType);
+        BaseCard GetCardById(string cardId);
     }
 
     public class DeckPresenter : IDeckPresenter
@@ -21,6 +22,7 @@ namespace Game.Scripts.Gameplay.Lobby.Deck
         private readonly Queue<BaseCard> _doorsQueue = new();
         private readonly Queue<BaseCard> _treasuresQueue = new();
 
+        private Dictionary<string, BaseCard> _cardsCollection = new();
         public DeckPresenter(IConfigService<BaseConfig> configService)
         {
             _configService = configService;
@@ -94,23 +96,27 @@ namespace Game.Scripts.Gameplay.Lobby.Deck
                 default:
                     throw new Exception("Unknown card type");
             }
+            
+            _cardsCollection.TryAdd(card.ID, card);
         }
 
-        private BaseCard FilterAndReturnCard(CardType cardType)
+        private string FilterAndReturnCard(CardType cardType)
         {
             return cardType switch
             {
-                CardType.Door => _doorsQueue.Dequeue(),
-                CardType.Treasure => _treasuresQueue.Dequeue(),
+                CardType.Door => _doorsQueue.Dequeue().ID,
+                CardType.Treasure => _treasuresQueue.Dequeue().ID,
                 _ => throw new Exception("Unknown card type")
             };
         }
 
-        public async Task<IBaseCard> ClaimRandomCardFromDeck(CardType cardType)
+        public async Task<string> ClaimRandomCardFromDeck(CardType cardType)
         {
             Debug.Log($"ClaimRandomCardFromDeck {cardType.ToString()}");
 
             return FilterAndReturnCard(cardType);
         }
+
+        public BaseCard GetCardById(string cardId) => _cardsCollection[cardId];
     }
 }

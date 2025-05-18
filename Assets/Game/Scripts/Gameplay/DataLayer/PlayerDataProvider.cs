@@ -1,22 +1,22 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Game.Scripts.Gameplay.DataLayer;
-using Game.Scripts.Gameplay.DataLayer.Models;
+using UniRx;
 
 namespace Game.Scripts.Gameplay.Lobby.Player
 {
     public interface IPlayerDataProvider
     {
-        Task ClaimCard(IBaseCard claimRandomCardFromDeck);
+        public ReactiveCollection<string> PlayersHand { get; }
+        Task ClaimCard(string cardId);
     }
 
     public class PlayerDataProvider : IPlayerDataProvider
     {
-        private readonly List<IBaseCard> _playersHand = new();
+        public ReactiveCollection<string> PlayersHand { get; } = new();
 
-        public Task ClaimCard(IBaseCard card)
+        public Task ClaimCard(string cardId)
         {
-            _playersHand.Add(card);
+            PlayersHand.Add(cardId);
             return Task.CompletedTask;
         }
     }

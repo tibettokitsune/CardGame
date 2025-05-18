@@ -3,26 +3,30 @@
     {
       "PrefabPath": "Prefabs/UI/Menu/MenuScreen",
       "Layer": 0,
-      "Id": "Menu",
-      "ScreenType" : "Game.Scripts.Infrastructure.UI.MenuScreen"
+      "HideOtherScreensOnLayer": false,
+      "ScreenType": "Game.Scripts.Infrastructure.UI.MenuScreen",
+      "Id": "Menu"
     },
     {
       "PrefabPath": "Prefabs/UI/Gameplay/CharacterActiveCardsScreen",
       "Layer": 1,
-      "Id": "CharacterActiveCards",
-      "ScreenType" : "Game.Scripts.Gameplay.ViewsLayer.CharacterActiveCardsScreen"
+      "HideOtherScreensOnLayer": false,
+      "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.CharacterActiveCardsScreen",
+      "Id": "CharacterActiveCards"
     },
     {
       "PrefabPath": "Prefabs/UI/Gameplay/CharacterStatsScreen",
       "Layer": 1,
-      "Id": "CharacterStats",
-      "ScreenType" : "Game.Scripts.Gameplay.ViewsLayer.CharacterStatsScreen"
+      "HideOtherScreensOnLayer": false,
+      "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.CharacterStatsScreen",
+      "Id": "CharacterStats"
     },
     {
       "PrefabPath": "Prefabs/UI/Gameplay/PlayerHandScreen",
       "Layer": 1,
-      "Id": "PlayerHand",
-      "ScreenType" : "Game.Scripts.Gameplay.ViewsLayer.PlayerHandScreen"
+      "HideOtherScreensOnLayer": false,
+      "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.PlayerHandScreen",
+      "Id": "PlayerHand"
     }
   ],
   "CardConfigs": [

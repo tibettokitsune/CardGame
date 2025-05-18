@@ -1,7 +1,9 @@
+using System;
 using Game.Scripts.Infrastructure.Configs;
 using Game.Scripts.Infrastructure.Loading;
 using Game.Scripts.Infrastructure.Menu;
 using Game.Scripts.Infrastructure.SceneManagment;
+using Game.Scripts.Infrastructure.UI;
 using Game.Scripts.UI;
 using UnityEngine;
 using Zenject;
@@ -15,8 +17,6 @@ namespace Game.Scripts.Infrastructure.Installers
         {
             InstallUI();
             InstallService();
-            Container.BindFactory<Object, UIScreen, UIScreen.Factory>().FromFactory<ScreensFactory>();
-
             Container.BindInterfacesTo<MenuController>().AsSingle();
         }
 
@@ -31,6 +31,9 @@ namespace Game.Scripts.Infrastructure.Installers
         private void InstallUI()
         {
             Container.Bind<LoadingScreen>().FromComponentInHierarchy(true).AsSingle();
+            Container.BindFactory<UIScreen, Transform, Type, UIScreen, UIScreenFactory>()
+                .FromFactory<UIScreenFactory>();
+
         }
     }
 }

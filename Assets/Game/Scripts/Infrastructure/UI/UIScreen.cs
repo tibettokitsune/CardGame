@@ -1,43 +1,51 @@
-using System;
 using System.Threading.Tasks;
-using Sirenix.OdinInspector;
 using UnityEngine;
-using Zenject;
 
 namespace Game.Scripts.UI
 {
     [RequireComponent(typeof(CanvasGroup))]
-    public class UIScreen : MonoBehaviour
+    public abstract class UIScreen : MonoBehaviour
     {
-        public virtual Task ShowAsync()
+        [SerializeField] private CanvasGroup _canvasGroup;
+        [SerializeField] private float _fadeDuration = 0.3f;
+
+        protected virtual void Awake()
+        {
+            if (_canvasGroup == null)
+                _canvasGroup = GetComponent<CanvasGroup>();
+        }
+
+        public virtual async Task ShowAsync()
         {
             gameObject.SetActive(true);
-            return Task.CompletedTask;
+            
+            if (_canvasGroup != null)
+            {
+                _canvasGroup.alpha = 0;
+                await LerpAlpha(0, 1, _fadeDuration);
+            }
         }
 
-        public virtual Task HideAsync()
+        public virtual async Task HideAsync()
         {
+            if (_canvasGroup != null)
+            {
+                await LerpAlpha(1, 0, _fadeDuration);
+            }
+            
             gameObject.SetActive(false);
-            return Task.CompletedTask;
-        }
-        
-        public class Factory : PlaceholderFactory<UnityEngine.Object, UIScreen>
-        {
-        }
-    }
-    
-    public class ScreensFactory : IFactory<UnityEngine.Object, UIScreen>
-    {
-        readonly DiContainer _container;
-
-        public ScreensFactory(DiContainer container)
-        {
-            _container = container;
         }
 
-        public UIScreen Create(UnityEngine.Object prefab)
+        private async Task LerpAlpha(float from, float to, float duration)
         {
-            return _container.InstantiatePrefabForComponent<UIScreen>(prefab);
+            float elapsed = 0;
+            while (elapsed < duration)
+            {
+                _canvasGroup.alpha = Mathf.Lerp(from, to, elapsed / duration);
+                elapsed += Time.deltaTime;
+                await Task.Yield();
+            }
+            _canvasGroup.alpha = to;
         }
     }
 }

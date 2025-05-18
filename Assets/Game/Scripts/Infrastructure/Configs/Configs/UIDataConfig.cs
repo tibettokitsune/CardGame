@@ -13,5 +13,7 @@ namespace Game.Scripts.Infrastructure.Configs.Configs
     {
         public string PrefabPath { get; set; }
         public UILayer Layer { get; set; }
+        public bool HideOtherScreensOnLayer { get; set; }
+        public string ScreenType { get; set; }
     }
 }

@@ -129,8 +129,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea8a25d8a89d44a1a4035a3a55b96ad7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _canvasGroup: {fileID: 0}
+  _fadeDuration: 0.3
+  cardPrefab: {fileID: 1188105076795616026, guid: 3d9d85c7fc417461a9d1df961dc15023,
+    type: 3}
   cardsContainer: {fileID: 5002482128566214566}
-  fromPos: {fileID: 5002482128566214566}
   group: {fileID: 1532917624623879113}
 --- !u!1 &3616387536290368293
 GameObject:

@@ -1,9 +1,10 @@
 using Game.Scripts.Infrastructure.Menu;
+using Game.Scripts.UI;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-namespace Game.Scripts.UI
+namespace Game.Scripts.Infrastructure.UI
 {
     public class MenuScreen : UIScreen
     {

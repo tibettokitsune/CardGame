@@ -3,22 +3,26 @@
     {
       "PrefabPath": "Prefabs/UI/Menu/MenuScreen",
       "Layer": 0,
-      "Id": "Menu"
+      "Id": "Menu",
+      "ScreenType" : "Game.Scripts.Infrastructure.UI.MenuScreen"
     },
     {
       "PrefabPath": "Prefabs/UI/Gameplay/CharacterActiveCardsScreen",
       "Layer": 1,
-      "Id": "CharacterActiveCards"
+      "Id": "CharacterActiveCards",
+      "ScreenType" : "Game.Scripts.Gameplay.ViewsLayer.CharacterActiveCardsScreen"
     },
     {
       "PrefabPath": "Prefabs/UI/Gameplay/CharacterStatsScreen",
       "Layer": 1,
-      "Id": "CharacterStats"
+      "Id": "CharacterStats",
+      "ScreenType" : "Game.Scripts.Gameplay.ViewsLayer.CharacterStatsScreen"
     },
     {
       "PrefabPath": "Prefabs/UI/Gameplay/PlayerHandScreen",
       "Layer": 1,
-      "Id": "PlayerHand"
+      "Id": "PlayerHand",
+      "ScreenType" : "Game.Scripts.Gameplay.ViewsLayer.PlayerHandScreen"
     }
   ],
   "CardConfigs": [

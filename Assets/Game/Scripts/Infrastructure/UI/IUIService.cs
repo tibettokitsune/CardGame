@@ -2,9 +2,9 @@ using System.Threading.Tasks;
 
 namespace Game.Scripts.UI
 {
-    public interface IUIService<T>
+    public interface IUIService
     {
-        Task<TC> ShowScreen<TC>(string id) where TC : T;
+        Task<UIScreen> ShowScreen(string id);
         Task Clear();
     }
 }

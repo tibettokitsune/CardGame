@@ -3,6 +3,7 @@ using Game.Scripts.Gameplay.Lobby.Deck;
 using Game.Scripts.Gameplay.Lobby.GameStates;
 using Game.Scripts.Gameplay.Lobby.Player;
 using Game.Scripts.Gameplay.PresentersLayer.Player;
+using Game.Scripts.Infrastructure.UI;
 using Zenject;
 
 namespace Game.Scripts.Gameplay.PresentersLayer
@@ -11,6 +12,8 @@ namespace Game.Scripts.Gameplay.PresentersLayer
     {
         public override void InstallBindings()
         {
+            Container.Resolve<UIScreenFactory>().SetGameplayContainer(Container);
+            
             Container.BindInterfacesAndSelfTo<LobbyPresenter>().AsSingle();
             Container.BindInterfacesAndSelfTo<DeckPresenter>().AsSingle();
             Container.BindInterfacesAndSelfTo<FirstEnterInGameState>().AsSingle();

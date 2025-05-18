@@ -11,12 +11,12 @@ namespace Game.Scripts.Infrastructure.Menu
     {
         [Inject] private ISceneManagerService sceneManagerService;
         [Inject] private LoadingScreen _loadingScreen;
-        [Inject] private IUIService<UIScreen> uiService;
+        [Inject] private IUIService uiService;
         public async Task LoadMenu()
         {
             Debug.Log("Loading menu...");
             using var loadingScreen = _loadingScreen.Show();
-            await uiService.ShowScreen<MenuScreen>("Menu");
+            await uiService.ShowScreen("Menu");
             await sceneManagerService.LoadScene("Menu", SceneLayer.GameStage);
             Debug.Log("Menu loaded");
         }

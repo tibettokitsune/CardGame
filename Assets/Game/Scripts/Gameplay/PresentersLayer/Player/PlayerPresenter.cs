@@ -60,11 +60,6 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
         {
             var cardId = await _deckPresenter.ClaimRandomCardFromDeck(cardType);
             await _playerDataProvider.ClaimCard(cardId);
-            // var view = _handCardFactory.Create();
-            // view.Setup(card.Name, card.Description, card.MainLayer, card.BackgroundLayer);
-            // _handCardViews.Add(card, view);
-            //TODO: notify gameplay bus about changes
-            // _notifier.NotifyAddCardToHand(card, view);
         }
 
         private async Task FillStartDoors()

@@ -1,31 +1,28 @@
-using DG.Tweening;
 using Game.Scripts.Gameplay.Lobby.Deck;
 using Game.Scripts.Gameplay.PresentersLayer.Player;
+using Game.Scripts.UI;
 using UniRx;
 using UnityEngine;
 using Zenject;
 
-namespace Game.Scripts.UI
+namespace Game.Scripts.Gameplay.ViewsLayer
 {
     public class PlayerHandScreen : UIScreen
     {
+        [SerializeField] private HandCardView cardPrefab;
         [Inject] private IPlayerPresenter _playerPresenter;
-        [Inject] private HandCardFactory _handCardFactory;
         [SerializeField] public Transform cardsContainer;
-        [SerializeField] public Transform fromPos;
         [SerializeField] public HandLayoutGroup group;
         
         private void OnEnable()
         {
-            //TODO: recieve deck changes
-            // _receiver.OnCardGenerated += HandleIncrease;
             _playerPresenter.PlayerHand.ObserveAdd().Subscribe(OnChange).AddTo(this);
             _playerPresenter.PlayerHand.ObserveRemove().Subscribe(OnChange).AddTo(this);
         }
         
         private void OnChange(CollectionAddEvent<CardEntity> collectionAddEvent)
         {
-            var view = _handCardFactory.Create();
+            var view = Instantiate(cardPrefab, cardsContainer);
             var card = collectionAddEvent.Value;
             view.Setup(card.Name, card.Description, card.MainLayer, card.BackgroundLayer);
             view.transform.SetParent(cardsContainer);
@@ -34,11 +31,6 @@ namespace Game.Scripts.UI
         
         private void OnChange(CollectionRemoveEvent<CardEntity> collectionAddEvent)
         {
-            var view = _handCardFactory.Create();
-            var card = collectionAddEvent.Value;
-            view.Setup(card.Name, card.Description, card.MainLayer, card.BackgroundLayer);
-            view.transform.SetParent(cardsContainer);
-            group.SetLayoutHorizontal();
         }
         
         //

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Game.Scripts.Infrastructure.Loading;
 using Game.Scripts.Infrastructure.Menu;
-using Game.Scripts.UI;
 using UnityEngine;
 using Zenject;
 

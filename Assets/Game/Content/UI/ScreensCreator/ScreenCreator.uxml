@@ -1,0 +1,5 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Game/Content/UI/ScreensCreator/ScreenCreator.uss?fileID=7433441132597879392&amp;guid=d36de2c577d8648dab141b18ae48f349&amp;type=3#ScreenCreator" />
+    <engine:TextField label="id" placeholder-text="filler text" name="id-field" />
+    <engine:Button text="save" />
+</engine:UXML>

@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Game.Scripts.Gameplay.Lobby.Player;
+using Game.Scripts.Gameplay.PresentersLayer.Player;
 using Game.Scripts.UI;
 using UnityEngine;
 using UnityHFSM;

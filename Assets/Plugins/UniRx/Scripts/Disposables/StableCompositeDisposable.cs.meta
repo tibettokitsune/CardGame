@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 3a9cd9fa22bc6a5439484581f5049cf8
 timeCreated: 1455373898
-licenseType: Pro
+licenseType: Store
 MonoImporter:
   serializedVersion: 2
   defaultReferences: []
@@ -10,3 +10,10 @@ MonoImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 17276
+  packageName: UniRx - Reactive Extensions for Unity
+  packageVersion: 7.1.0
+  assetPath: Assets/Plugins/UniRx/Scripts/Disposables/StableCompositeDisposable.cs
+  uploadId: 318694

@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: a731a1a74be20a04a9d7dedc5ceefab2
 timeCreated: 1467771656
-licenseType: Pro
+licenseType: Store
 MonoImporter:
   serializedVersion: 2
   defaultReferences: []
@@ -10,3 +10,10 @@ MonoImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 17276
+  packageName: UniRx - Reactive Extensions for Unity
+  packageVersion: 7.1.0
+  assetPath: Assets/Plugins/UniRx/Scripts/UnityEngineBridge/Operators/FrameInterval.cs
+  uploadId: 318694

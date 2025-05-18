@@ -1,19 +1,22 @@
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Game.Scripts.Gameplay.DataLayer;
+using Game.Scripts.Gameplay.DataLayer.Models;
 using Game.Scripts.Gameplay.Lobby.Deck;
-using Game.Scripts.Infrastructure;
+using Game.Scripts.Gameplay.Lobby.Player;
 
-namespace Game.Scripts.Gameplay.Lobby.Player
+namespace Game.Scripts.Gameplay.PresentersLayer.Player
 {
     public interface IFillStartHandUseCase
     {
         Task Execute();
     }
+    
+    public interface IPlayerPresenter
+    {
+        
+    }
 
 
-    public class PlayerPresenter : IFillStartHandUseCase
+    public class PlayerPresenter : IPlayerPresenter, IFillStartHandUseCase
     {
         private readonly IDeckPresenter _deckPresenter;
         private readonly IPlayerDataProvider _playerDataProvider;

@@ -2,6 +2,7 @@ using Game.Scripts.Gameplay.Lobby;
 using Game.Scripts.Gameplay.Lobby.Deck;
 using Game.Scripts.Gameplay.Lobby.GameStates;
 using Game.Scripts.Gameplay.Lobby.Player;
+using Game.Scripts.Gameplay.PresentersLayer.Player;
 using Zenject;
 
 namespace Game.Scripts.Gameplay.PresentersLayer

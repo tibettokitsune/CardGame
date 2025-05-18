@@ -1,9 +1,11 @@
 using UnityEngine;
+using Zenject;
 
 namespace Game.Scripts.UI
 {
     public class PlayerHandScreen : UIScreen
     {
+        
         [SerializeField] public Transform cardsContainer;
         [SerializeField] public Transform fromPos;
         [SerializeField] public HandLayoutGroup group;

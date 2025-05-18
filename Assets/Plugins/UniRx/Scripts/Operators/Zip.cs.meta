@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 4e92e25f9bb221d478d4af5bcd8b8a2c
 timeCreated: 1455373899
-licenseType: Pro
+licenseType: Store
 MonoImporter:
   serializedVersion: 2
   defaultReferences: []
@@ -10,3 +10,10 @@ MonoImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 17276
+  packageName: UniRx - Reactive Extensions for Unity
+  packageVersion: 7.1.0
+  assetPath: Assets/Plugins/UniRx/Scripts/Operators/Zip.cs
+  uploadId: 318694

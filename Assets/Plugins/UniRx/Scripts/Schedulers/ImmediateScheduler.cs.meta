@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 87be5fca34f9b44428b7fb1ce9147860
 timeCreated: 1455373900
-licenseType: Pro
+licenseType: Store
 MonoImporter:
   serializedVersion: 2
   defaultReferences: []
@@ -10,3 +10,10 @@ MonoImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 17276
+  packageName: UniRx - Reactive Extensions for Unity
+  packageVersion: 7.1.0
+  assetPath: Assets/Plugins/UniRx/Scripts/Schedulers/ImmediateScheduler.cs
+  uploadId: 318694

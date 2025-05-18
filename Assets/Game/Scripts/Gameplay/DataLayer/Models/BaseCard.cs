@@ -1,6 +1,6 @@
 using Game.Scripts.Infrastructure.Configs.Configs;
 
-namespace Game.Scripts.Gameplay.DataLayer
+namespace Game.Scripts.Gameplay.DataLayer.Models
 {
     public class BaseCard : IBaseCard
     {
@@ -8,8 +8,8 @@ namespace Game.Scripts.Gameplay.DataLayer
 
         public string Name => _config.Name;
         public string Description => _config.Description;
-        public CardLayerDataConfig MainLayer { get; private set; }
-        public CardLayerDataConfig BackgroundLayer { get; private set; }
+        public CardLayerDataConfig MainLayer { get; }
+        public CardLayerDataConfig BackgroundLayer { get; }
         public CardType CardType { get; }
 
         public BaseCard(CardDataConfig config, 

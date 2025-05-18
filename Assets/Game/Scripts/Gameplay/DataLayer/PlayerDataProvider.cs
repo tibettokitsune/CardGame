@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Game.Scripts.Gameplay.DataLayer;
+using Game.Scripts.Gameplay.DataLayer.Models;
 
 namespace Game.Scripts.Gameplay.Lobby.Player
 {

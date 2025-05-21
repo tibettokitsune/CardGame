@@ -5,7 +5,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
 {
     public class CardEntity
     {
-        private IBaseCard _card;
+        private readonly IBaseCard _card;
 
         public string ID => _card.ID;
         public string Name => _card.Name;

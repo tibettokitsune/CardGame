@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityHFSM;
 
-namespace Game.Scripts.Gameplay.Lobby.GameStates
+namespace Game.Scripts.Gameplay.PresentersLayer.GameStates
 {
     public class PreparePlayerState : StateBase
     {

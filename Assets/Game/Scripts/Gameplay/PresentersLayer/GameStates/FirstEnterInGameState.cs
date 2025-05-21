@@ -1,11 +1,10 @@
 using System.Threading.Tasks;
-using Game.Scripts.Gameplay.Lobby.Player;
 using Game.Scripts.Gameplay.PresentersLayer.Player;
 using Game.Scripts.UI;
 using UnityEngine;
 using UnityHFSM;
 
-namespace Game.Scripts.Gameplay.Lobby.GameStates
+namespace Game.Scripts.Gameplay.PresentersLayer.GameStates
 {
     public class FirstEnterInGameState : StateBase
     {

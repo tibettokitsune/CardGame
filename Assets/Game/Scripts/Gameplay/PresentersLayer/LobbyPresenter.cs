@@ -1,4 +1,4 @@
-using Game.Scripts.Gameplay.Lobby.GameStates;
+using Game.Scripts.Gameplay.PresentersLayer.GameStates;
 using UnityEngine;
 using UnityHFSM;
 using Zenject;

@@ -1,15 +1,17 @@
+using Game.Scripts.Gameplay.Lobby.Deck;
 using Game.Scripts.Infrastructure.Configs.Configs;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.Scripts.Gameplay.Lobby.Deck
+namespace Game.Scripts.Gameplay.ViewsLayer
 {
     public class HandCardView : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI attackLbl;
         [SerializeField] private TextMeshProUGUI hpLbl;
         [SerializeField] private TextMeshProUGUI descriptionLbl;
+        [SerializeField] private HandCardAnimation animation;
 
         [SerializeField] private MultipleLayerImageWidget mainIcon;
         [SerializeField] private MultipleLayerImageWidget bgIcon;
@@ -28,6 +30,11 @@ namespace Game.Scripts.Gameplay.Lobby.Deck
         {
             layoutElement.enabled = true;
             controller = gameObject.AddComponent<CardController>();
+        }
+
+        private async void OnEnable()
+        {
+            await animation.PlayEnterAnimation();
         }
     }
 }

@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 namespace Game.Scripts
 {
+    //script for prototype only
     public class CardController : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler, IPointerMoveHandler,
         IPointerExitHandler
     {

@@ -16,7 +16,6 @@ namespace Game.Scripts.Gameplay.ViewsLayer
         [SerializeField] private MultipleLayerImageWidget mainIcon;
         [SerializeField] private MultipleLayerImageWidget bgIcon;
         [SerializeField] private LayoutElement layoutElement;
-        [SerializeField] private CardController controller;
         
         public void Setup(string cardName, string cardDescription, CardLayerDataConfig mainLayer, CardLayerDataConfig backgroundLayer)
         {
@@ -29,7 +28,6 @@ namespace Game.Scripts.Gameplay.ViewsLayer
         public void EnableGrouping()
         {
             layoutElement.enabled = true;
-            controller = gameObject.AddComponent<CardController>();
         }
 
         private async void OnEnable()

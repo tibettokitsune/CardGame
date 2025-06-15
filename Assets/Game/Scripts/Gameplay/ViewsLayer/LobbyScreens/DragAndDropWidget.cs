@@ -3,12 +3,13 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Game.Scripts.Gameplay.ViewsLayer
+namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
 {
     [RequireComponent(typeof(RectTransform), typeof(CanvasGroup))]
     public class DragAndDropWidget : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         public event Action OnDrop;
+
         [Header("Drag Settings")] [SerializeField]
         private float dragAlpha = 0.6f;
 
@@ -92,16 +93,12 @@ namespace Game.Scripts.Gameplay.ViewsLayer
                 {
                     wasDropped = true;
                     dropZone.HandleDrop(rectTransform);
-                    OnDrop?.Invoke();
                     break;
                 }
             }
 
-            // Если не был сброшен в зону - возвращаем на место
-            if (!wasDropped && returnIfNotDropped)
-            {
-                ReturnToOriginalParent();
-            }
+            ReturnToOriginalParent();
+            if (wasDropped) OnDrop?.Invoke();
         }
 
         private void ReturnToOriginalParent()

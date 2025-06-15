@@ -4,23 +4,20 @@ using UniRx;
 using UnityEngine;
 using Zenject;
 
-namespace Game.Scripts.Gameplay.ViewsLayer
+namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
 {
-    public class PlayerHandScreen : UIScreen
+    public class CharacterActiveCardsScreen : UIScreen
     {
-        [Inject] private IEquipCardUseCase _equipCardUseCase;
-        [SerializeField] private HandCardView cardPrefab;
         [Inject] private IPlayerPresenter _playerPresenter;
-        [SerializeField] private PlayerListContainer _container;
+        [SerializeField] private EquipmentCardsContainer _container;
 
         private void Start()
         {
             _container.Bind(
-                _playerPresenter.PlayerHand,
+                _playerPresenter.PlayerEquipment,
                 (data, element) =>
                 {
-                    element.Setup(data.Name, data.Description, data.MainLayer, data.BackgroundLayer, data.ID,
-                        _equipCardUseCase);
+                    element.Setup(data);
                     return Disposable.Empty;
                 },
                 element =>
@@ -29,5 +26,6 @@ namespace Game.Scripts.Gameplay.ViewsLayer
                 }
             );
         }
+        
     }
 }

@@ -7,6 +7,7 @@ namespace Game.Scripts.Gameplay.Lobby.Player
     public interface IPlayerDataProvider
     {
         public ReactiveCollection<string> PlayersHand { get; }
+        public ReactiveCollection<string> PlayersEquipment { get; }
         Task ClaimCard(string cardId);
         bool IsPlayerCanEquipCard(string cardId);
         Task EquipCard(string cardId);
@@ -15,7 +16,7 @@ namespace Game.Scripts.Gameplay.Lobby.Player
     public class PlayerDataProvider : IPlayerDataProvider
     {
         public ReactiveCollection<string> PlayersHand { get; } = new();
-        public ReactiveCollection<string> Equipment { get; } = new();
+        public ReactiveCollection<string> PlayersEquipment { get; } = new();
 
         public Task ClaimCard(string cardId)
         {
@@ -30,7 +31,8 @@ namespace Game.Scripts.Gameplay.Lobby.Player
 
         public Task EquipCard(string cardId)
         {
-            Equipment.Add(cardId);
+            PlayersEquipment.Add(cardId);
+            PlayersHand.RemoveAt(PlayersHand.IndexOf(cardId));
             return Task.CompletedTask;
         }
     }

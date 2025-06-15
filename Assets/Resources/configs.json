@@ -11,21 +11,21 @@
       "PrefabPath": "Prefabs/UI/Gameplay/CharacterActiveCardsScreen",
       "Layer": 1,
       "HideOtherScreensOnLayer": false,
-      "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.CharacterActiveCardsScreen",
+      "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.LobbyScreens.CharacterActiveCardsScreen",
       "Id": "CharacterActiveCards"
     },
     {
       "PrefabPath": "Prefabs/UI/Gameplay/CharacterStatsScreen",
       "Layer": 1,
       "HideOtherScreensOnLayer": false,
-      "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.CharacterStatsScreen",
+      "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.LobbyScreens.CharacterStatsScreen",
       "Id": "CharacterStats"
     },
     {
       "PrefabPath": "Prefabs/UI/Gameplay/PlayerHandScreen",
       "Layer": 1,
       "HideOtherScreensOnLayer": false,
-      "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.PlayerHandScreen",
+      "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.LobbyScreens.PlayerHandScreen",
       "Id": "PlayerHand"
     }
   ],

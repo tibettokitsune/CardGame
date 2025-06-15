@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
+using Cysharp.Threading.Tasks;
 using UniRx;
+using UnityEngine;
+using UnityEngine.UI;
 
-namespace Game.Scripts.Gameplay.ViewsLayer
+namespace Game.Scripts.Gameplay.ViewsLayer.Base
 {
     public class DynamicUIContainer<TData, TElement> : DynamicUIContainerBase
         where TElement : MonoBehaviour
@@ -72,7 +74,7 @@ namespace Game.Scripts.Gameplay.ViewsLayer
             _boundCollection = null;
         }
 
-        private void OnItemAdded(TData item, int index)
+        private async void OnItemAdded(TData item, int index)
         {
             var element = Instantiate(_prefab, _container);
             element.transform.SetSiblingIndex(index);
@@ -93,6 +95,8 @@ namespace Game.Scripts.Gameplay.ViewsLayer
 
             // Обновляем индексы для последующих элементов
             ReindexElementsFrom(index + 1);
+            await UniTask.Yield();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_container.transform as RectTransform);
         }
 
         private void OnItemRemoved(TData item, int index)

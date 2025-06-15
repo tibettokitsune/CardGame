@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Game.Scripts.Gameplay.ViewsLayer
+namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
 {
     public class HandCardView : MonoBehaviour
     {
@@ -38,14 +38,13 @@ namespace Game.Scripts.Gameplay.ViewsLayer
                 dragAndDropWidget = GetComponent<DragAndDropWidget>();
         }
 
-        public void Setup(string cardName, string cardDescription, CardLayerDataConfig mainLayer,
-            CardLayerDataConfig backgroundLayer, string cardId, IEquipCardUseCase equipCardUseCase)
+        public void Setup(CardEntity cardEntity, IEquipCardUseCase equipCardUseCase)
         {
-            _cardId = cardId;
+            _cardId = cardEntity.ID;
             _equipCardUseCase = equipCardUseCase;
-            descriptionLbl.text = $"{cardName}\n{cardDescription}";
-            mainIcon.Setup(mainLayer);
-            bgIcon.Setup(backgroundLayer);
+            descriptionLbl.text = $"{cardEntity.Name}\n{cardEntity.Description}";
+            mainIcon.Setup(cardEntity.MainLayer);
+            bgIcon.Setup(cardEntity.BackgroundLayer);
         }
 
         public void EnableGrouping()

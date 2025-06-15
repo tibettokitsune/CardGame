@@ -3,7 +3,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Playables;
 
-namespace Game.Scripts.Gameplay.ViewsLayer
+namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
 {
     public class HandCardAnimation : MonoBehaviour
     {

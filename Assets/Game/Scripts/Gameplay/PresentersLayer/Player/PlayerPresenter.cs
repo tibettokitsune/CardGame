@@ -1,8 +1,10 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Game.Scripts.Gameplay.DataLayer.Models;
 using Game.Scripts.Gameplay.Lobby.Deck;
 using Game.Scripts.Gameplay.Lobby.Player;
+using ModestTree;
 using UniRx;
 using UnityEngine;
 
@@ -50,18 +52,30 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
         {
             _deckPresenter = deckPresenter;
             _playerDataProvider = playerDataProvider;
-            _playerDataProvider.PlayersHand.ObserveAdd().Subscribe(OnCollectionChange).AddTo(_disposables);
-            _playerDataProvider.PlayersHand.ObserveRemove().Subscribe(OnCollectionChange).AddTo(_disposables);
+            _playerDataProvider.PlayersHand.ObserveAdd().Subscribe(OnHandChange).AddTo(_disposables);
+            _playerDataProvider.PlayersHand.ObserveRemove().Subscribe(OnHandChange).AddTo(_disposables);
+            _playerDataProvider.PlayersEquipment.ObserveAdd().Subscribe(OnEquipmentChange).AddTo(_disposables);
+            _playerDataProvider.PlayersEquipment.ObserveRemove().Subscribe(OnEquipmentChange).AddTo(_disposables);
         }
 
-        private void OnCollectionChange(CollectionAddEvent<string> collectionAddEvent)
+        private void OnHandChange(CollectionAddEvent<string> collectionAddEvent)
         {
             PlayerHand.Add(new CardEntity( _deckPresenter.GetCardById(collectionAddEvent.Value)));
         }
 
-        private void OnCollectionChange(CollectionRemoveEvent<string> collectionRemoveEvent)
+        private void OnHandChange(CollectionRemoveEvent<string> collectionRemoveEvent)
         {
-            PlayerHand.Remove(new CardEntity( _deckPresenter.GetCardById(collectionRemoveEvent.Value)));
+            PlayerHand.Remove(PlayerHand.First(x => x.ID == collectionRemoveEvent.Value));
+        }
+        
+        private void OnEquipmentChange(CollectionAddEvent<string> collectionAddEvent)
+        {
+            PlayerEquipment.Add(new CardEntity( _deckPresenter.GetCardById(collectionAddEvent.Value)));
+        }
+
+        private void OnEquipmentChange(CollectionRemoveEvent<string> collectionRemoveEvent)
+        {
+            PlayerEquipment.Remove(new CardEntity( _deckPresenter.GetCardById(collectionRemoveEvent.Value)));
         }
 
         #region usecases

@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Game.Scripts.Gameplay.ViewsLayer
+namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
 {
     public class DropZone : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {

@@ -2,6 +2,7 @@ using Game.Scripts.Gameplay.Lobby.Deck;
 using Game.Scripts.Gameplay.Lobby.Player;
 using Game.Scripts.Gameplay.PresentersLayer;
 using Game.Scripts.Gameplay.ViewsLayer;
+using Game.Scripts.Gameplay.ViewsLayer.LobbyScreens;
 using UnityEngine;
 using Zenject;
 

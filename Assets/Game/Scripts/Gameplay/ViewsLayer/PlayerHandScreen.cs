@@ -1,4 +1,3 @@
-using Game.Scripts.Gameplay.Lobby.Deck;
 using Game.Scripts.Gameplay.PresentersLayer.Player;
 using Game.Scripts.UI;
 using UniRx;
@@ -9,34 +8,26 @@ namespace Game.Scripts.Gameplay.ViewsLayer
 {
     public class PlayerHandScreen : UIScreen
     {
+        [Inject] private IEquipCardUseCase _equipCardUseCase;
         [SerializeField] private HandCardView cardPrefab;
         [Inject] private IPlayerPresenter _playerPresenter;
-        [SerializeField] public Transform cardsContainer;
-        [SerializeField] public HandLayoutGroup group;
-        
-        private void OnEnable()
+        [SerializeField] private PlayerListContainer _container;
+
+        private void Start()
         {
-            _playerPresenter.PlayerHand.ObserveAdd().Subscribe(OnChange).AddTo(this);
-            _playerPresenter.PlayerHand.ObserveRemove().Subscribe(OnChange).AddTo(this);
+            _container.Bind(
+                _playerPresenter.PlayerHand,
+                (data, element) =>
+                {
+                    element.Setup(data.Name, data.Description, data.MainLayer, data.BackgroundLayer, data.ID,
+                        _equipCardUseCase);
+                    return Disposable.Empty;
+                },
+                element =>
+                {
+                    // Дополнительная настройка при создании
+                }
+            );
         }
-        
-        private void OnChange(CollectionAddEvent<CardEntity> collectionAddEvent)
-        {
-            var view = Instantiate(cardPrefab, cardsContainer);
-            var card = collectionAddEvent.Value;
-            view.Setup(card.Name, card.Description, card.MainLayer, card.BackgroundLayer);
-            view.transform.SetParent(cardsContainer);
-            group.SetLayoutHorizontal();
-        }
-        
-        private void OnChange(CollectionRemoveEvent<CardEntity> collectionAddEvent)
-        {
-        }
-        
-        //
-        // private void OnDisable()
-        // {
-        //     // _receiver.OnCardGenerated -= HandleIncrease;
-        // }
     }
 }

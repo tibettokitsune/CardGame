@@ -88,6 +88,7 @@ GameObject:
   - component: {fileID: 9203868611061694076}
   - component: {fileID: 7511306580829996321}
   - component: {fileID: 5751197213633596477}
+  - component: {fileID: 7511660287971870849}
   m_Layer: 5
   m_Name: CardsContainer
   m_TagString: Untagged
@@ -154,6 +155,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7511660287971870849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1208440611298519295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1481991bfd4e4e31b53d64e4827bd172, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightOnHover: 1
+  highlightColor: {r: 0.80649024, g: 1, b: 0.8, a: 0.5}
 --- !u!1 &1788180036234886683
 GameObject:
   m_ObjectHideFlags: 0
@@ -796,6 +811,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19e188e93578453db9af558eb72723f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _canvasGroup: {fileID: 0}
+  _fadeDuration: 0.3
 --- !u!224 &2546547643727638918 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3258761396422688598, guid: 0d389954b30e54197bd65e0cb92b0ceb,

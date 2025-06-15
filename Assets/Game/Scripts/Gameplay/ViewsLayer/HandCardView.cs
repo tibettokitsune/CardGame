@@ -1,4 +1,5 @@
 using Game.Scripts.Gameplay.Lobby.Deck;
+using Game.Scripts.Gameplay.PresentersLayer.Player;
 using Game.Scripts.Infrastructure.Configs.Configs;
 using TMPro;
 using UnityEngine;
@@ -8,6 +9,7 @@ namespace Game.Scripts.Gameplay.ViewsLayer
 {
     public class HandCardView : MonoBehaviour
     {
+        [SerializeField] private DragAndDropWidget dragAndDropWidget;
         [SerializeField] private TextMeshProUGUI attackLbl;
         [SerializeField] private TextMeshProUGUI hpLbl;
         [SerializeField] private TextMeshProUGUI descriptionLbl;
@@ -16,11 +18,32 @@ namespace Game.Scripts.Gameplay.ViewsLayer
         [SerializeField] private MultipleLayerImageWidget mainIcon;
         [SerializeField] private MultipleLayerImageWidget bgIcon;
         [SerializeField] private LayoutElement layoutElement;
+
+        private string _cardId;
+        private IEquipCardUseCase _equipCardUseCase;
         
-        public void Setup(string cardName, string cardDescription, CardLayerDataConfig mainLayer, CardLayerDataConfig backgroundLayer)
+        private void Start()
         {
+            dragAndDropWidget.OnDrop += OnAttemptToEquip;
+        }
+
+        private void OnAttemptToEquip()
+        {
+            _equipCardUseCase.Execute(_cardId);
+        }
+
+        private void OnValidate()
+        {
+            if (dragAndDropWidget == null) 
+                dragAndDropWidget = GetComponent<DragAndDropWidget>();
+        }
+
+        public void Setup(string cardName, string cardDescription, CardLayerDataConfig mainLayer,
+            CardLayerDataConfig backgroundLayer, string cardId, IEquipCardUseCase equipCardUseCase)
+        {
+            _cardId = cardId;
+            _equipCardUseCase = equipCardUseCase;
             descriptionLbl.text = $"{cardName}\n{cardDescription}";
-            
             mainIcon.Setup(mainLayer);
             bgIcon.Setup(backgroundLayer);
         }
@@ -33,6 +56,11 @@ namespace Game.Scripts.Gameplay.ViewsLayer
         private async void OnEnable()
         {
             await animation.PlayEnterAnimation();
+        }
+
+        private void OnDestroy()
+        {
+            dragAndDropWidget.OnDrop -= OnAttemptToEquip;
         }
     }
 }

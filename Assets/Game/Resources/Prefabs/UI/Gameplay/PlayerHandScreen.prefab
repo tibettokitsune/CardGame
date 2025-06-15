@@ -135,6 +135,7 @@ MonoBehaviour:
     type: 3}
   cardsContainer: {fileID: 5002482128566214566}
   group: {fileID: 1532917624623879113}
+  _container: {fileID: 3043847054495505238}
 --- !u!1 &3616387536290368293
 GameObject:
   m_ObjectHideFlags: 0
@@ -220,6 +221,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5002482128566214566}
   - component: {fileID: 1532917624623879113}
+  - component: {fileID: 3043847054495505238}
   m_Layer: 5
   m_Name: CardsContainer
   m_TagString: Untagged
@@ -268,3 +270,17 @@ MonoBehaviour:
   angle2: -10
   spacing: 200
   height1: 80
+--- !u!114 &3043847054495505238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5184138487481143171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18beff46d1f74b4f97cef86a4a79124c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _prefab: {fileID: 1188105076795616026, guid: 3d9d85c7fc417461a9d1df961dc15023, type: 3}
+  _container: {fileID: 5002482128566214566}

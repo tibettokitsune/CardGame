@@ -4,6 +4,7 @@ using Game.Scripts.Gameplay.DataLayer.Models;
 using Game.Scripts.Gameplay.Lobby.Deck;
 using Game.Scripts.Gameplay.Lobby.Player;
 using UniRx;
+using UnityEngine;
 
 namespace Game.Scripts.Gameplay.PresentersLayer.Player
 {
@@ -12,13 +13,28 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
         Task Execute();
     }
 
+    public enum EquipCardResult
+    {
+        Equipped, 
+        Failed
+    }
+    
+    public interface IEquipCardUseCase
+    {
+        Task<EquipCardResult> Execute(string cardId);
+    }
+
     public interface IPlayerPresenter
     {
         ReactiveCollection<CardEntity> PlayerHand { get; }
+        ReactiveCollection<CardEntity> PlayerEquipment { get; }
     }
 
 
-    public class PlayerPresenter : IPlayerPresenter, IFillStartHandUseCase, IDisposable
+    public class PlayerPresenter : IPlayerPresenter, 
+        IFillStartHandUseCase, 
+        IEquipCardUseCase,
+        IDisposable
     {
         private readonly IDeckPresenter _deckPresenter;
         private readonly IPlayerDataProvider _playerDataProvider;
@@ -27,6 +43,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
 
         private readonly CompositeDisposable _disposables = new();
         public ReactiveCollection<CardEntity> PlayerHand { get; } = new();
+        public ReactiveCollection<CardEntity> PlayerEquipment { get; } = new();
 
         public PlayerPresenter(IDeckPresenter deckPresenter,
             IPlayerDataProvider playerDataProvider)
@@ -48,6 +65,16 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
         }
 
         #region usecases
+        
+        async Task<EquipCardResult> IEquipCardUseCase.Execute(string cardId)
+        {
+            if (_playerDataProvider.IsPlayerCanEquipCard(cardId))
+            {
+                await _playerDataProvider.EquipCard(cardId);
+                return EquipCardResult.Equipped;
+            }
+            return EquipCardResult.Failed;
+        }
 
         async Task IFillStartHandUseCase.Execute()
         {

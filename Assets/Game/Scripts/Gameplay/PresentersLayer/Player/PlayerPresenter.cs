@@ -48,7 +48,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
 
         private void OnEquipmentChange(CollectionRemoveEvent<string> collectionRemoveEvent)
         {
-            PlayerEquipment.Remove(new CardEntity( _deckPresenter.GetCardById(collectionRemoveEvent.Value)));
+            PlayerEquipment.Remove(PlayerEquipment.First(x => x.ID == collectionRemoveEvent.Value));
         }
 
         #region usecases

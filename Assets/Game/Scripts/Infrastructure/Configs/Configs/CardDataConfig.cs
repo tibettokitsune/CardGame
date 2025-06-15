@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using Newtonsoft.Json;
 
 namespace Game.Scripts.Infrastructure.Configs.Configs
 {
@@ -12,7 +13,7 @@ namespace Game.Scripts.Infrastructure.Configs.Configs
         public Vector3 Scale { get; set; }
         public Vector3 Rotation { get; set; }
     }
-    
+
     [Serializable]
     public class CardLayerDataConfig : BaseConfig
     {
@@ -24,7 +25,12 @@ namespace Game.Scripts.Infrastructure.Configs.Configs
     {
         public string MainLayerId { get; set; }
         public string BackgroundLayerId { get; set; }
-        
+
         public string MetaData { get; set; }
+
+        public Dictionary<string, string> MetaDataDictionary => _metaDataDictionary ??=
+            JsonConvert.DeserializeObject<Dictionary<string, string>>(MetaData);
+
+        private Dictionary<string, string> _metaDataDictionary;
     }
 }

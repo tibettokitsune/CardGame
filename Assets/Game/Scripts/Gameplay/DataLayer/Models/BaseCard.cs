@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Game.Scripts.Gameplay.DataLayer.Models
 {
-    public static class MetaDataValues
+    public static class MetaDataKeys
     {
         public const string Equipment = "Equipment";
         public const string Name = "Name";
@@ -17,8 +17,8 @@ namespace Game.Scripts.Gameplay.DataLayer.Models
         private readonly CardDataConfig _config;
 
         public string ID => _config.Id;
-        public string Name => MetaData[MetaDataValues.Name];
-        public string Description => MetaData[MetaDataValues.Description];
+        public string Name => MetaData[MetaDataKeys.Name];
+        public string Description => MetaData[MetaDataKeys.Description];
         public CardLayerDataConfig MainLayer { get; }
         public CardLayerDataConfig BackgroundLayer { get; }
 

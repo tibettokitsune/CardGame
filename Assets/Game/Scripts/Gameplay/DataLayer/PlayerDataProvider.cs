@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Game.Scripts.Gameplay.DataLayer.Models;
 using Game.Scripts.Infrastructure.Configs;
 using Game.Scripts.Infrastructure.Configs.Configs;
 using UniRx;
@@ -42,13 +44,26 @@ namespace Game.Scripts.Gameplay.Lobby.Player
         {
             ProcessEquipment(cardId);
             PlayersEquipment.Add(cardId);
-            PlayersHand.RemoveAt(PlayersHand.IndexOf(cardId));
+            var index = PlayersHand.IndexOf(PlayersHand.First(x => x.Equals(cardId)));
+            PlayersHand.RemoveAt(index);
             return Task.CompletedTask;
         }
 
         private void ProcessEquipment(string cardId)
         {
-            throw new System.NotImplementedException();
+            var card = _configService.Get<CardDataConfig>(cardId);
+            if (!card.MetaDataDictionary.TryGetValue(MetaDataKeys.Equipment, out var equipmentSlot)) return;
+            foreach (var eq in PlayersEquipment)
+            {
+                var eqCard =  _configService.Get<CardDataConfig>(eq);
+                var equippedSlot = eqCard.MetaDataDictionary[MetaDataKeys.Equipment];
+                if (equippedSlot.Equals(equipmentSlot))
+                {
+                    PlayersEquipment.Remove(eqCard.Id);
+                    PlayersHand.Add(eqCard.Id);
+                    return;
+                }
+            }
         }
     }
 }

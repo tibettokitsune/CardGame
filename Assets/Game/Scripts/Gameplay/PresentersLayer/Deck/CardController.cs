@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Game.Scripts.Infrastructure.UI;
 using Game.Scripts.UI;
 using JetBrains.Annotations;
 using UnityEngine;

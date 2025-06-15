@@ -8,6 +8,7 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
     [RequireComponent(typeof(RectTransform), typeof(CanvasGroup))]
     public class DragAndDropWidget : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
+        private static DragAndDropWidget _currentTarget;
         public event Action OnDrop;
 
         [Header("Drag Settings")] [SerializeField]
@@ -41,6 +42,8 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
 
         public void OnBeginDrag(PointerEventData eventData)
         {
+            if (_currentTarget != null && _currentTarget != this) return;
+            _currentTarget = this;
             // Запоминаем оригинальный порядок в hierarchy
             originalSiblingIndex = transform.GetSiblingIndex();
 
@@ -66,6 +69,7 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
 
         public void OnDrag(PointerEventData eventData)
         {
+            if (_currentTarget != null && _currentTarget != this) return;
             // Перемещаем элемент вместе с курсором
             if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
                     parentCanvas.transform as RectTransform,
@@ -79,6 +83,8 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
 
         public void OnEndDrag(PointerEventData eventData)
         {
+            if (_currentTarget != null && _currentTarget != this) return;
+            _currentTarget = null;
             // Возвращаем прозрачность
             canvasGroup.alpha = 1f;
 

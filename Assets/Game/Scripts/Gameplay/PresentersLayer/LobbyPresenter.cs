@@ -3,12 +3,8 @@ using UnityEngine;
 using UnityHFSM;
 using Zenject;
 
-namespace Game.Scripts.Gameplay.Lobby
+namespace Game.Scripts.Gameplay.PresentersLayer
 {
-    public interface ILobbyPresenter
-    {
-    }
-    
     public class LobbyPresenter : ILobbyPresenter, IInitializable, ITickable
     {
         private readonly PreparePlayerState _preparePlayerState;

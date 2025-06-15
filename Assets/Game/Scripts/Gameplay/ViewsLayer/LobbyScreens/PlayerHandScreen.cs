@@ -8,7 +8,6 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
 {
     public class PlayerHandScreen : UIScreen
     {
-        [Inject] private IEquipCardUseCase _equipCardUseCase;
         [SerializeField] private HandCardView cardPrefab;
         [Inject] private IPlayerPresenter _playerPresenter;
         [SerializeField] private HandCardsContainer _container;
@@ -19,7 +18,7 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
                 _playerPresenter.PlayerHand,
                 (data, element) =>
                 {
-                    element.Setup(data, _equipCardUseCase);
+                    element.Setup(data);
                     return Disposable.Empty;
                 },
                 element =>

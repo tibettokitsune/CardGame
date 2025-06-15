@@ -2,9 +2,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
+namespace Game.Scripts.Gameplay.ViewsLayer
 {
-    public class DropZone : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public abstract class DropZone : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         [Header("Drop Zone Settings")]
         [SerializeField] private bool highlightOnHover = true;
@@ -41,26 +41,8 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
             }
         }
     
-        public void HandleDrop(RectTransform droppedItem)
+        public virtual void HandleDrop(string cardId)
         {
-            // Здесь можно добавить проверки, можно ли сюда бросать этот объект
-        
-            // Устанавливаем новый parent
-            droppedItem.SetParent(transform, false);
-        
-            // Если есть Layout Group - включаем правила layout
-            var layoutElement = droppedItem.GetComponent<LayoutElement>();
-            if (layoutElement != null)
-            {
-                layoutElement.ignoreLayout = false;
-            }
-        
-            // Принудительно обновляем layout
-            LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
-        
-            Debug.Log($"Объект {droppedItem.name} сброшен в зону {name}");
-        
-            // Возвращаем оригинальный цвет, если был подсвечен
             if (isHighlighted && image != null)
             {
                 image.color = originalColor;

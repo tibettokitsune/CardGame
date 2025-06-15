@@ -8,23 +8,24 @@ using UnityEngine;
 
 namespace Game.Scripts.Infrastructure.Configs
 {
-    public class ConfigService : IConfigService<BaseConfig>, IAsyncInitializable
+    
+    public class ConfigService : IConfigService, IAsyncInitializable
     {
-        private readonly Dictionary<string, BaseConfig> _dictionary = new();
+        private readonly Dictionary<string, BaseConfig> _configs = new();
 
         public async Task InitializeAsync(CancellationToken cancellationToken = default)
         {
             Debug.Log("Config service start initialization");
-            await DataSaveHelper.LoadJsonData(_dictionary);
+            await DataSaveHelper.LoadJsonData(_configs);
             Debug.Log("Config service initialized");
             await Task.CompletedTask;
         }
-
         public T Get<T>(string id) where T : BaseConfig
         {
-            if (_dictionary.TryGetValue(id, out var value) && value is T t)
-                return t;
-            Debug.LogWarning($"'Couldn't find {typeof(T).Name} id={id}");
+            if (_configs.TryGetValue(id, out var config) && config is T typedConfig)
+                return typedConfig;
+
+            Debug.LogWarning($"Config not found: Type={typeof(T).Name}, ID={id}");
             return default;
         }
     }

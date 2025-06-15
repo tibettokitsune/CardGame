@@ -20,17 +20,7 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
         [SerializeField] private LayoutElement layoutElement;
 
         private string _cardId;
-        private IEquipCardUseCase _equipCardUseCase;
         
-        private void Start()
-        {
-            dragAndDropWidget.OnDrop += OnAttemptToEquip;
-        }
-
-        private void OnAttemptToEquip()
-        {
-            _equipCardUseCase.Execute(_cardId);
-        }
 
         private void OnValidate()
         {
@@ -38,10 +28,10 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
                 dragAndDropWidget = GetComponent<DragAndDropWidget>();
         }
 
-        public void Setup(CardEntity cardEntity, IEquipCardUseCase equipCardUseCase)
+        public void Setup(CardEntity cardEntity)
         {
             _cardId = cardEntity.ID;
-            _equipCardUseCase = equipCardUseCase;
+            dragAndDropWidget.Setup(_cardId);
             descriptionLbl.text = $"{cardEntity.Name}\n{cardEntity.Description}";
             mainIcon.Setup(cardEntity.MainLayer);
             bgIcon.Setup(cardEntity.BackgroundLayer);
@@ -55,11 +45,6 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
         private async void OnEnable()
         {
             await animation.PlayEnterAnimation();
-        }
-
-        private void OnDestroy()
-        {
-            dragAndDropWidget.OnDrop -= OnAttemptToEquip;
         }
     }
 }

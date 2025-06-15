@@ -14,7 +14,7 @@ namespace Game.Scripts.Infrastructure.UI
 {
     public class UIService : IUIService, IAsyncInitializable
     {
-        [Inject] private IConfigService<BaseConfig> _configService;
+        [Inject] private IConfigService _configService;
         [Inject] private UIScreenFactory _screensFactory;
         
         private readonly Dictionary<string, UIScreen> _loadedScreens = new();

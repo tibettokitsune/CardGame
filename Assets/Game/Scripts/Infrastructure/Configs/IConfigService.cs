@@ -1,7 +1,9 @@
+using Game.Scripts.Infrastructure.Configs.Configs;
+
 namespace Game.Scripts.Infrastructure.Configs
 {
-    public interface IConfigService<T>
+    public interface IConfigService
     {
-        TC Get<TC>(string id) where TC : T;
+        T Get<T>(string id) where T : BaseConfig;
     }
 }

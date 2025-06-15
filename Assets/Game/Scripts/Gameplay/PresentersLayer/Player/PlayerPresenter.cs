@@ -1,38 +1,12 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Game.Scripts.Gameplay.DataLayer.Models;
-using Game.Scripts.Gameplay.Lobby.Deck;
 using Game.Scripts.Gameplay.Lobby.Player;
-using ModestTree;
+using Game.Scripts.Gameplay.PresentersLayer.Deck;
 using UniRx;
-using UnityEngine;
 
 namespace Game.Scripts.Gameplay.PresentersLayer.Player
 {
-    public interface IFillStartHandUseCase
-    {
-        Task Execute();
-    }
-
-    public enum EquipCardResult
-    {
-        Equipped, 
-        Failed
-    }
-    
-    public interface IEquipCardUseCase
-    {
-        Task<EquipCardResult> Execute(string cardId);
-    }
-
-    public interface IPlayerPresenter
-    {
-        ReactiveCollection<CardEntity> PlayerHand { get; }
-        ReactiveCollection<CardEntity> PlayerEquipment { get; }
-    }
-
-
     public class PlayerPresenter : IPlayerPresenter, 
         IFillStartHandUseCase, 
         IEquipCardUseCase,
@@ -40,8 +14,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
     {
         private readonly IDeckPresenter _deckPresenter;
         private readonly IPlayerDataProvider _playerDataProvider;
-        private const int StartDoorsLimit = 4;
-        private const int StartTreasuresLimit = 4;
+        private const int StartCardsLimit = 8;
 
         private readonly CompositeDisposable _disposables = new();
         public ReactiveCollection<CardEntity> PlayerHand { get; } = new();
@@ -92,33 +65,16 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
 
         async Task IFillStartHandUseCase.Execute()
         {
-            await Task.Delay(100);
-            await FillStartDoors();
-            await FillStartTreasures();
+            for (var i = 0; i < StartCardsLimit; i++)
+            {
+                await AddRandomCardByType();
+            }
         }
 
-        private async Task AddRandomCardByType(CardType cardType)
+        private async Task AddRandomCardByType()
         {
-            var cardId = await _deckPresenter.ClaimRandomCardFromDeck(cardType);
+            var cardId = await _deckPresenter.ClaimRandomCardFromDeck();
             await _playerDataProvider.ClaimCard(cardId);
-        }
-
-        private async Task FillStartDoors()
-        {
-            for (var i = 0; i < StartDoorsLimit; i++)
-            {
-                await AddRandomCardByType(CardType.Door);
-                await Task.Delay(100);
-            }
-        }
-
-        private async Task FillStartTreasures()
-        {
-            for (var i = 0; i < StartTreasuresLimit; i++)
-            {
-                await AddRandomCardByType(CardType.Treasure);
-                await Task.Delay(100);
-            }
         }
 
         #endregion
@@ -126,6 +82,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
         public void Dispose()
         {
             PlayerHand?.Dispose();
+            PlayerEquipment?.Dispose();
         }
     }
 }

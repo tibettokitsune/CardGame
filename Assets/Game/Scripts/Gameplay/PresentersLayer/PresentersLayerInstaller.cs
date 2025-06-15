@@ -1,6 +1,6 @@
 using Game.Scripts.Gameplay.Lobby;
-using Game.Scripts.Gameplay.Lobby.Deck;
 using Game.Scripts.Gameplay.Lobby.Player;
+using Game.Scripts.Gameplay.PresentersLayer.Deck;
 using Game.Scripts.Gameplay.PresentersLayer.GameStates;
 using Game.Scripts.Gameplay.PresentersLayer.Player;
 using Game.Scripts.Infrastructure.UI;

@@ -9,7 +9,6 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
     public class DragAndDropWidget : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         private static DragAndDropWidget _currentTarget;
-        public event Action OnDrop;
 
         [Header("Drag Settings")] [SerializeField]
         private float dragAlpha = 0.6f;
@@ -26,6 +25,7 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
         // Для работы с Layout Group
         private LayoutGroup originalLayoutGroup;
         private bool wasInLayoutGroup;
+        private string _cardId;
 
         private void Awake()
         {
@@ -98,13 +98,12 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
                 if (hovered.TryGetComponent<DropZone>(out var dropZone))
                 {
                     wasDropped = true;
-                    dropZone.HandleDrop(rectTransform);
+                    dropZone.HandleDrop(_cardId);
                     break;
                 }
             }
 
             ReturnToOriginalParent();
-            if (wasDropped) OnDrop?.Invoke();
         }
 
         private void ReturnToOriginalParent()
@@ -129,6 +128,11 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
         public void ResetPosition()
         {
             ReturnToOriginalParent();
+        }
+
+        public void Setup(string cardId)
+        {
+            _cardId = cardId;
         }
     }
 }

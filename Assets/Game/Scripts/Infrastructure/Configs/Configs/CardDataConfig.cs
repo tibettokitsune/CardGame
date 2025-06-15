@@ -22,9 +22,9 @@ namespace Game.Scripts.Infrastructure.Configs.Configs
     [Serializable]
     public class CardDataConfig : BaseConfig
     {
-        public string Name { get; set; }
-        public string Description { get; set; }
         public string MainLayerId { get; set; }
         public string BackgroundLayerId { get; set; }
+        
+        public string MetaData { get; set; }
     }
 }

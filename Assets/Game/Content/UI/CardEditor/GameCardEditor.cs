@@ -66,7 +66,7 @@ public class GameCardEditor : EditorWindow
             DataSaveHelper.PatchSourceData(_dictionary);
         });
         
-        var descField = new TextField("Description") { value = selected.Description };
+        var descField = new TextField("Description") { value = "description" };
         idField.RegisterValueChangedCallback(evt =>
         {
             selected.Id = evt.newValue;

@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 9203868611061694076}
   - component: {fileID: 7511306580829996321}
   - component: {fileID: 5751197213633596477}
-  - component: {fileID: 7511660287971870849}
+  - component: {fileID: 264622987718701023}
   m_Layer: 5
   m_Name: CardsContainer
   m_TagString: Untagged
@@ -190,7 +190,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &7511660287971870849
+--- !u!114 &264622987718701023
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -199,11 +199,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1208440611298519295}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1481991bfd4e4e31b53d64e4827bd172, type: 3}
+  m_Script: {fileID: 11500000, guid: f2bb1deb5af04ae6bb589abe81b232e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlightOnHover: 1
-  highlightColor: {r: 0.80649024, g: 1, b: 0.8, a: 0.5}
+  highlightOnHover: 0
+  highlightColor: {r: 0.8, g: 0.9, b: 1, a: 0.5}
 --- !u!1 &1788180036234886683
 GameObject:
   m_ObjectHideFlags: 0

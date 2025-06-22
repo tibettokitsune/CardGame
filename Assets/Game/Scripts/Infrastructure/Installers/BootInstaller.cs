@@ -1,4 +1,5 @@
 using System;
+using Game.Scripts.Infrastructure.AsyncAssets;
 using Game.Scripts.Infrastructure.Configs;
 using Game.Scripts.Infrastructure.Loading;
 using Game.Scripts.Infrastructure.Menu;
@@ -26,6 +27,7 @@ namespace Game.Scripts.Infrastructure.Installers
             Container.BindInterfacesAndSelfTo<ConfigService>().AsSingle();
             Container.BindInterfacesAndSelfTo<ServiceInitializer>().AsSingle();
             Container.BindInterfacesAndSelfTo<UIService>().AsSingle().WithArguments(uiRoot);
+            Container.BindInterfacesAndSelfTo<ResourceSpriteService>().AsSingle();
         }
 
         private void InstallUI()

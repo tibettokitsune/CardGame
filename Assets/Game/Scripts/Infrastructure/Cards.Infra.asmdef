@@ -2,8 +2,9 @@
     "name": "Cards.Infra",
     "rootNamespace": "",
     "references": [
-        "GUID:f51ebe6a0ceec4240a699833d6309b23",
-        "GUID:0d8beb7f090555447a6cf5ce9e54dbb4"
+        "UniTask",
+        "Zenject",
+        "UniRx"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

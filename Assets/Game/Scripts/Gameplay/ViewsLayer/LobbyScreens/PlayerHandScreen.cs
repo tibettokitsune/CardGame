@@ -1,4 +1,5 @@
 using Game.Scripts.Gameplay.PresentersLayer.Player;
+using Game.Scripts.Infrastructure.AsyncAssets;
 using Game.Scripts.UI;
 using UniRx;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
     {
         [SerializeField] private HandCardView cardPrefab;
         [Inject] private IPlayerPresenter _playerPresenter;
+        [Inject] private ISpriteService _spriteService;
         [SerializeField] private HandCardsContainer _container;
 
         private void Start()
@@ -18,7 +20,7 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
                 _playerPresenter.PlayerHand,
                 (data, element) =>
                 {
-                    element.Setup(data);
+                    element.Setup(data, _spriteService);
                     return Disposable.Empty;
                 },
                 element =>

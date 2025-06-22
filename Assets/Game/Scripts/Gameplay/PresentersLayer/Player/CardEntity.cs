@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Game.Scripts.Gameplay.DataLayer.Models;
 using Game.Scripts.Infrastructure.Configs.Configs;
 
@@ -5,17 +6,25 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
 {
     public class CardEntity
     {
-        private readonly IBaseCard _card;
+        protected readonly IBaseCard Card;
 
-        public string ID => _card.ID;
-        public string Name => _card.Name;
-        public string Description => _card.Description;
-        public CardLayerDataConfig MainLayer => _card.MainLayer;
-        public CardLayerDataConfig BackgroundLayer => _card.BackgroundLayer;
+        public string ID => Card.ID;
+        public string Name => Card.Name;
+        public string Description => Card.Description;
+        public string MainLayer => Card.MainLayer;
+        public string BackgroundLayer => Card.BackgroundLayer;
 
         public CardEntity(IBaseCard card)
         {
-            _card = card;
+            Card = card;
+        }
+    }
+    
+    public class EquipmentCardEntity : CardEntity
+    {
+        public string EquipmentDescription => Card.MetaData[MetaDataKeys.EquipmentDescription];
+        public EquipmentCardEntity(IBaseCard card) : base(card)
+        {
         }
     }
 }

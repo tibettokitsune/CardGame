@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Game.Scripts.Infrastructure.Configs.Configs;
 
 namespace Game.Scripts.Gameplay.DataLayer.Models
@@ -12,7 +13,8 @@ namespace Game.Scripts.Gameplay.DataLayer.Models
         string ID { get; }
         string Name { get; }
         string Description { get; }
-        public CardLayerDataConfig MainLayer { get; }
-        public CardLayerDataConfig BackgroundLayer { get; }
+        public string MainLayer { get; }
+        public string BackgroundLayer { get; }
+        public Dictionary<string, string> MetaData { get; }
     }
 }

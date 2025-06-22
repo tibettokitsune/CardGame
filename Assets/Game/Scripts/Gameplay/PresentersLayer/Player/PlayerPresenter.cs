@@ -7,18 +7,17 @@ using UniRx;
 
 namespace Game.Scripts.Gameplay.PresentersLayer.Player
 {
-    public class PlayerPresenter : IPlayerPresenter, 
-        IFillStartHandUseCase, 
+    public class PlayerPresenter : IPlayerPresenter,
+        IFillStartHandUseCase,
         IEquipCardUseCase,
         IDisposable
     {
+        public ReactiveCollection<CardEntity> PlayerHand { get; } = new();
+        public ReactiveCollection<EquipmentCardEntity> PlayerEquipment { get; } = new();
         private readonly IDeckPresenter _deckPresenter;
         private readonly IPlayerDataProvider _playerDataProvider;
-        private const int StartCardsLimit = 8;
-
         private readonly CompositeDisposable _disposables = new();
-        public ReactiveCollection<CardEntity> PlayerHand { get; } = new();
-        public ReactiveCollection<CardEntity> PlayerEquipment { get; } = new();
+        private const int StartCardsLimit = 8;
 
         public PlayerPresenter(IDeckPresenter deckPresenter,
             IPlayerDataProvider playerDataProvider)
@@ -33,17 +32,17 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
 
         private void OnHandChange(CollectionAddEvent<string> collectionAddEvent)
         {
-            PlayerHand.Add(new CardEntity( _deckPresenter.GetCardById(collectionAddEvent.Value)));
+            PlayerHand.Add(new CardEntity(_deckPresenter.GetCardById(collectionAddEvent.Value)));
         }
 
         private void OnHandChange(CollectionRemoveEvent<string> collectionRemoveEvent)
         {
             PlayerHand.Remove(PlayerHand.First(x => x.ID == collectionRemoveEvent.Value));
         }
-        
+
         private void OnEquipmentChange(CollectionAddEvent<string> collectionAddEvent)
         {
-            PlayerEquipment.Add(new CardEntity( _deckPresenter.GetCardById(collectionAddEvent.Value)));
+            PlayerEquipment.Add(new EquipmentCardEntity(_deckPresenter.GetCardById(collectionAddEvent.Value)));
         }
 
         private void OnEquipmentChange(CollectionRemoveEvent<string> collectionRemoveEvent)
@@ -52,7 +51,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
         }
 
         #region usecases
-        
+
         async Task<EquipCardResult> IEquipCardUseCase.Execute(string cardId)
         {
             if (_playerDataProvider.IsPlayerCanEquipCard(cardId))
@@ -60,6 +59,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
                 await _playerDataProvider.EquipCard(cardId);
                 return EquipCardResult.Equipped;
             }
+
             return EquipCardResult.Failed;
         }
 

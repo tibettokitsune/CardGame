@@ -1,5 +1,6 @@
 using Game.Scripts.Gameplay.Lobby.Deck;
 using Game.Scripts.Gameplay.PresentersLayer.Player;
+using Game.Scripts.Infrastructure.AsyncAssets;
 using Game.Scripts.Infrastructure.Configs.Configs;
 using TMPro;
 using UnityEngine;
@@ -15,26 +16,30 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
         [SerializeField] private TextMeshProUGUI descriptionLbl;
         [SerializeField] private HandCardAnimation animation;
 
-        [SerializeField] private MultipleLayerImageWidget mainIcon;
-        [SerializeField] private MultipleLayerImageWidget bgIcon;
+        [SerializeField] private Image mainIcon;
+        [SerializeField] private Image bgIcon;
         [SerializeField] private LayoutElement layoutElement;
 
         private string _cardId;
-        
+
 
         private void OnValidate()
         {
-            if (dragAndDropWidget == null) 
+            if (dragAndDropWidget == null)
                 dragAndDropWidget = GetComponent<DragAndDropWidget>();
         }
 
-        public void Setup(CardEntity cardEntity)
+        public async void Setup(CardEntity cardEntity, ISpriteService spriteService)
         {
             _cardId = cardEntity.ID;
             dragAndDropWidget.Setup(_cardId);
             descriptionLbl.text = $"{cardEntity.Name}\n{cardEntity.Description}";
-            mainIcon.Setup(cardEntity.MainLayer);
-            bgIcon.Setup(cardEntity.BackgroundLayer);
+            var mainLayerIcon = 
+                await spriteService.LoadSpriteForObject(cardEntity.MainLayer, mainIcon.gameObject);
+            mainIcon.sprite = mainLayerIcon;
+            var bgLayerIcon = 
+                await spriteService.LoadSpriteForObject(cardEntity.BackgroundLayer, bgIcon.gameObject);
+            bgIcon.sprite = bgLayerIcon;
         }
 
         public void EnableGrouping()

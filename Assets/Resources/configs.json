@@ -32,27 +32,27 @@
   "CardConfigs": [
     {
       "Id": "card_1",
-      "MainLayerId": "card_main_layer_1",
-      "BackgroundLayerId": "card_background_1",
-      "MetaData": "{\"Equipment\": \"Head\", \"Name\": \"Old soldier's helmet\", \"Description\": \"This battered helmet has seen many battles. Grants +1 to combat strength.\" }"
+      "MainLayerId": "helmet",
+      "BackgroundLayerId": "backgroud",
+      "MetaData": "{\"Equipment\": \"Head\",\"EquipmentDescription\": \"+1 battle power\", \"Name\": \"Old soldier's helmet\", \"Description\": \"This battered helmet has seen many battles. Grants +1 to combat strength.\" }"
     },
     {
       "Id": "card_2",
-      "MainLayerId": "card_main_layer_1",
-      "BackgroundLayerId": "card_background_1",
-      "MetaData": "{\"Equipment\": \"Head\", \"Name\": \"Old pirate's helmet\", \"Description\": \"This battered helmet has seen many battles. Grants +1 to combat strength.\" }"
+      "MainLayerId": "pirathat",
+      "BackgroundLayerId": "backgroud",
+      "MetaData": "{\"Equipment\": \"Head\",\"EquipmentDescription\": \"+2 battle power\", \"Name\": \"Old pirate's helmet\", \"Description\": \"This battered helmet has seen many battles. Grants +1 to combat strength.\" }"
     },
     {
       "Id": "card_3",
-      "MainLayerId": "card_main_layer_1",
-      "BackgroundLayerId": "card_background_1",
-      "MetaData": "{\"Equipment\": \"Head\", \"Name\": \"Great hood \", \"Description\": \"This battered helmet has seen many battles. Grants +1 to combat strength.\" }"
+      "MainLayerId": "hood",
+      "BackgroundLayerId": "backgroud",
+      "MetaData": "{\"Equipment\": \"Head\",\"EquipmentDescription\": \"+3 battle power\", \"Name\": \"Great hood \", \"Description\": \"This battered helmet has seen many battles. Grants +1 to combat strength.\" }"
     },
     {
       "Id": "card_4",
-      "MainLayerId": "card_main_layer_1",
-      "BackgroundLayerId": "card_background_1",
-      "MetaData": "{\"Equipment\": \"Head\", \"Name\": \"Plug-hat\", \"Description\": \"This battered helmet has seen many battles. Grants +1 to combat strength.\" }"
+      "MainLayerId": "hood",
+      "BackgroundLayerId": "backgroud",
+      "MetaData": "{\"Equipment\": \"Head\",\"EquipmentDescription\": \"+4 battle power\", \"Name\": \"Plug-hat\", \"Description\": \"This battered helmet has seen many battles. Grants +1 to combat strength.\" }"
     }
   ],
   "CardLayersConfigs": [

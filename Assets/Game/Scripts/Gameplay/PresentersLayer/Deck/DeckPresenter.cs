@@ -21,15 +21,11 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Deck
         
         private void FillCards()
         {
-            for(var i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 var cardConfig = _configService.Get<CardDataConfig>($"card_{(i % 4) + 1}");
-                var mainLayerConfig = _configService.Get<CardLayerDataConfig>(cardConfig.MainLayerId);
-                var backgroundLayerConfig = _configService.Get<CardLayerDataConfig>(cardConfig.BackgroundLayerId);
-
-                FilterAndAddCard(new BaseCard(cardConfig, 
-                    mainLayerConfig,
-                    backgroundLayerConfig));}
+                FilterAndAddCard(new BaseCard(cardConfig));
+            }
         }
 
         private void FilterAndAddCard(BaseCard card)

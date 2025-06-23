@@ -23,7 +23,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Deck
         {
             for (var i = 0; i < 10; i++)
             {
-                var cardConfig = _configService.Get<CardDataConfig>($"card_{(i % 4) + 1}");
+                var cardConfig = _configService.Get<CardDataConfig>($"card_{(i % 6) + 1}");
                 FilterAndAddCard(new BaseCard(cardConfig));
             }
         }

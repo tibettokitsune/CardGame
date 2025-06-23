@@ -52,7 +52,19 @@
       "Id": "card_4",
       "MainLayerId": "hood",
       "BackgroundLayerId": "backgroud",
-      "MetaData": "{\"Equipment\": \"Head\",\"EquipmentDescription\": \"+4 battle power\", \"Name\": \"Plug-hat\", \"Description\": \"This battered helmet has seen many battles. Grants +1 to combat strength.\" }"
+      "MetaData": "{\"Equipment\": \"Head\",\"EquipmentDescription\": \"+1 to combat strength\", \"Name\": \"Plug-hat\", \"Description\": \"This battered helmet has seen many battles. Grants +1 to combat strength.\" }"
+    },
+    {
+      "Id": "card_5",
+      "MainLayerId": "chest1",
+      "BackgroundLayerId": "backgroud",
+      "MetaData": "{\"Equipment\": \"Chest\",\"EquipmentDescription\": \"+1 battle power\", \"Name\": \"Soldier's cuirass\", \"Description\": \"The cuirass of an experienced fighter, which has seen many battles. Grants +1 to combat strength.\" }"
+    },
+    {
+      "Id": "card_6",
+      "MainLayerId": "chest2",
+      "BackgroundLayerId": "backgroud",
+      "MetaData": "{\"Equipment\": \"Chest\",\"EquipmentDescription\": \"+3 battle power\", \"Name\": \"Helmet of the warrior of the East\", \"Description\": \"Equipment of a warrior of the land of dawn, who has never known defeat. Gives the owner +4 attack points\" }"
     }
   ],
   "CardLayersConfigs": [

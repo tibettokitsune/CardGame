@@ -42,28 +42,32 @@ namespace Game.Scripts.Gameplay.Lobby.Player
 
         public Task EquipCard(string cardId)
         {
-            ProcessEquipment(cardId);
-            PlayersEquipment.Add(cardId);
-            var index = PlayersHand.IndexOf(PlayersHand.First(x => x.Equals(cardId)));
-            PlayersHand.RemoveAt(index);
+            var card = _configService.Get<CardDataConfig>(cardId);
+            RemoveOccupiedSlot(card);
+            EquipSlot(cardId);
             return Task.CompletedTask;
         }
 
-        private void ProcessEquipment(string cardId)
+        private void RemoveOccupiedSlot(CardDataConfig card)
         {
-            var card = _configService.Get<CardDataConfig>(cardId);
-            if (!card.MetaDataDictionary.TryGetValue(MetaDataKeys.Equipment, out var equipmentSlot)) return;
+            if (!card.MetaDataDictionary.TryGetValue(MetaDataKeys.Equipment, out var equipmentSlot)) 
+                return;
             foreach (var eq in PlayersEquipment)
             {
-                var eqCard =  _configService.Get<CardDataConfig>(eq);
+                var eqCard = _configService.Get<CardDataConfig>(eq);
                 var equippedSlot = eqCard.MetaDataDictionary[MetaDataKeys.Equipment];
-                if (equippedSlot.Equals(equipmentSlot))
-                {
-                    PlayersEquipment.Remove(eqCard.Id);
-                    PlayersHand.Add(eqCard.Id);
-                    return;
-                }
+                if (!equippedSlot.Equals(equipmentSlot)) continue;
+                PlayersEquipment.Remove(eqCard.Id);
+                PlayersHand.Add(eqCard.Id);
+                return;
             }
+        }
+
+        private void EquipSlot(string cardId)
+        {
+            PlayersEquipment.Add(cardId);
+            var index = PlayersHand.IndexOf(PlayersHand.First(x => x.Equals(cardId)));
+            PlayersHand.RemoveAt(index);
         }
     }
 }

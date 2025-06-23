@@ -1,4 +1,3 @@
-using System;
 using Game.Scripts.Gameplay.PresentersLayer.Player;
 using UniRx;
 using UnityEngine;
@@ -8,6 +7,7 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyCharacterView
 {
     public class LobbyCharacterView : MonoBehaviour
     {
+        private static readonly int Equipment = Animator.StringToHash("Equipment");
         [Inject] private IPlayerPresenter _playerPresenter;
         [SerializeField] private Animator animator;
 
@@ -19,7 +19,7 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyCharacterView
 
         private void OnItemAdded(object value, object index)
         {
-            animator.SetTrigger("Equipment");
+            animator.SetTrigger(Equipment);
         }
     }
 }

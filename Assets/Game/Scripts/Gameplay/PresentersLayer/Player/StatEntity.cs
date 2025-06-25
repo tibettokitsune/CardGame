@@ -7,9 +7,9 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
     {
         public PlayerStat Stat { get; set; }
         public string Name => Stat.ToString();
-        public string Format { get; set; }
+        public string Format => "F0";
 
-        public string Icon;
+        public string Icon => $"Icons/{Stat.ToString()}";
         public float Value;
     }
 }

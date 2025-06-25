@@ -16,7 +16,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
         public ReactiveCollection<CardEntity> PlayerHand { get; } = new();
         public ReactiveCollection<EquipmentCardEntity> PlayerEquipment { get; } = new();
         public ReactiveCollection<StatEntity> PlayerStats { get; } = new();
-        
+
         private readonly IDeckPresenter _deckPresenter;
         private readonly IPlayerDataProvider _playerDataProvider;
         private readonly CompositeDisposable _disposables = new();
@@ -32,60 +32,54 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
             _playerDataProvider.PlayersEquipment.ObserveAdd().Subscribe(OnEquipmentChange).AddTo(_disposables);
             _playerDataProvider.PlayersEquipment.ObserveRemove().Subscribe(OnEquipmentChange).AddTo(_disposables);
             _playerDataProvider.PlayersStats.ObserveReplace().Subscribe(OnStatReplace).AddTo(_disposables);
-            FillStats();
+            _playerDataProvider.PlayersStats.ObserveAdd().Subscribe(OnStatChanged);
+            _playerDataProvider.PlayersStats.ObserveReplace().Subscribe(OnStatChanged);
+            _playerDataProvider.PlayersStats.ObserveRemove().Subscribe(OnStatRemoved);
+            SyncStatEntities();
         }
 
-        private void FillStats()
+        private void OnStatChanged(DictionaryAddEvent<PlayerStat, float> evt)
         {
-            PlayerStats.Add(new StatEntity()
+            var existing = PlayerStats.FirstOrDefault(x => x.Stat == evt.Key);
+            if (existing != null)
             {
-                Stat = PlayerStat.Health,
-                Value = _playerDataProvider.PlayersStats[PlayerStat.Health],
-                Format = "F0",
-                Icon = "Icons/iconhealth"
-            });
-            PlayerStats.Add(new StatEntity()
+                existing.Value = evt.Value;
+            }
+            else
             {
-                Stat = PlayerStat.Attack,
-                Value = _playerDataProvider.PlayersStats[PlayerStat.Attack],
-                Format = "F0",
-                Icon = "Icons/iconattack"
-            });
-            PlayerStats.Add(new StatEntity()
+                PlayerStats.Add(new StatEntity {Stat = evt.Key, Value = evt.Value});
+            }
+        }
+
+        private void OnStatChanged(DictionaryReplaceEvent<PlayerStat, float> evt)
+        {
+            var existing = PlayerStats.FirstOrDefault(x => x.Stat == evt.Key);
+            if (existing != null)
             {
-                Stat = PlayerStat.Defend,
-                Value = _playerDataProvider.PlayersStats[PlayerStat.Defend],
-                Format = "F0",
-                Icon = "Icons/icondef"
-            });
-            PlayerStats.Add(new StatEntity()
+                existing.Value = evt.NewValue;
+            }
+        }
+
+        private void OnStatRemoved(DictionaryRemoveEvent<PlayerStat, float> evt)
+        {
+            var stat = PlayerStats.FirstOrDefault(x => x.Stat == evt.Key);
+            if (stat != null)
             {
-                Stat = PlayerStat.Luck,
-                Value = _playerDataProvider.PlayersStats[PlayerStat.Luck],
-                Format = "F0",
-                Icon = "Icons/icondef"
-            });
-            PlayerStats.Add(new StatEntity()
+                PlayerStats.Remove(stat);
+            }
+        }
+
+        private void SyncStatEntities()
+        {
+            PlayerStats.Clear();
+            foreach (var kvp in _playerDataProvider.PlayersStats)
             {
-                Stat = PlayerStat.Agility,
-                Value = _playerDataProvider.PlayersStats[PlayerStat.Agility],
-                Format = "F0",
-                Icon = "Icons/icondef"
-            });
-            PlayerStats.Add(new StatEntity()
-            {
-                Stat = PlayerStat.Strength,
-                Value = _playerDataProvider.PlayersStats[PlayerStat.Strength],
-                Format = "F0",
-                Icon = "Icons/icondef"
-            });
-            PlayerStats.Add(new StatEntity()
-            {
-                Stat = PlayerStat.Intelligence,
-                Value = _playerDataProvider.PlayersStats[PlayerStat.Intelligence],
-                Format = "F0",
-                Icon = "Icons/icondef"
-            });
+                PlayerStats.Add(new StatEntity
+                {
+                    Stat = kvp.Key,
+                    Value = kvp.Value
+                });
+            }
         }
 
         private void OnStatReplace(DictionaryReplaceEvent<PlayerStat, float> replaceEvent)
@@ -99,6 +93,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
                     break;
                 }
             }
+
             var target = PlayerStats[index];
             target.Value = replaceEvent.NewValue;
             PlayerStats.RemoveAt(index);
@@ -124,7 +119,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
         {
             PlayerEquipment.Remove(PlayerEquipment.First(x => x.ID == collectionRemoveEvent.Value));
         }
-        
+
 
         #region usecases
 

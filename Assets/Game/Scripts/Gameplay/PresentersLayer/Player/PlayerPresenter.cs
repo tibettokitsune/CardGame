@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Game.Scripts.Gameplay.Lobby.Player;
 using Game.Scripts.Gameplay.PresentersLayer.Deck;
+using ModestTree;
 using UniRx;
 
 namespace Game.Scripts.Gameplay.PresentersLayer.Player
@@ -14,6 +15,8 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
     {
         public ReactiveCollection<CardEntity> PlayerHand { get; } = new();
         public ReactiveCollection<EquipmentCardEntity> PlayerEquipment { get; } = new();
+        public ReactiveCollection<StatEntity> PlayerStats { get; } = new();
+        
         private readonly IDeckPresenter _deckPresenter;
         private readonly IPlayerDataProvider _playerDataProvider;
         private readonly CompositeDisposable _disposables = new();
@@ -28,6 +31,78 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
             _playerDataProvider.PlayersHand.ObserveRemove().Subscribe(OnHandChange).AddTo(_disposables);
             _playerDataProvider.PlayersEquipment.ObserveAdd().Subscribe(OnEquipmentChange).AddTo(_disposables);
             _playerDataProvider.PlayersEquipment.ObserveRemove().Subscribe(OnEquipmentChange).AddTo(_disposables);
+            _playerDataProvider.PlayersStats.ObserveReplace().Subscribe(OnStatReplace).AddTo(_disposables);
+            FillStats();
+        }
+
+        private void FillStats()
+        {
+            PlayerStats.Add(new StatEntity()
+            {
+                Stat = PlayerStat.Health,
+                Value = _playerDataProvider.PlayersStats[PlayerStat.Health],
+                Format = "F0",
+                Icon = "Icons/iconhealth"
+            });
+            PlayerStats.Add(new StatEntity()
+            {
+                Stat = PlayerStat.Attack,
+                Value = _playerDataProvider.PlayersStats[PlayerStat.Attack],
+                Format = "F0",
+                Icon = "Icons/iconattack"
+            });
+            PlayerStats.Add(new StatEntity()
+            {
+                Stat = PlayerStat.Defend,
+                Value = _playerDataProvider.PlayersStats[PlayerStat.Defend],
+                Format = "F0",
+                Icon = "Icons/icondef"
+            });
+            PlayerStats.Add(new StatEntity()
+            {
+                Stat = PlayerStat.Luck,
+                Value = _playerDataProvider.PlayersStats[PlayerStat.Luck],
+                Format = "F0",
+                Icon = "Icons/icondef"
+            });
+            PlayerStats.Add(new StatEntity()
+            {
+                Stat = PlayerStat.Agility,
+                Value = _playerDataProvider.PlayersStats[PlayerStat.Agility],
+                Format = "F0",
+                Icon = "Icons/icondef"
+            });
+            PlayerStats.Add(new StatEntity()
+            {
+                Stat = PlayerStat.Strength,
+                Value = _playerDataProvider.PlayersStats[PlayerStat.Strength],
+                Format = "F0",
+                Icon = "Icons/icondef"
+            });
+            PlayerStats.Add(new StatEntity()
+            {
+                Stat = PlayerStat.Intelligence,
+                Value = _playerDataProvider.PlayersStats[PlayerStat.Intelligence],
+                Format = "F0",
+                Icon = "Icons/icondef"
+            });
+        }
+
+        private void OnStatReplace(DictionaryReplaceEvent<PlayerStat, float> replaceEvent)
+        {
+            var index = 0;
+            for (var i = 0; i < PlayerStats.Count; i++)
+            {
+                if (PlayerStats[i].Stat == replaceEvent.Key)
+                {
+                    index = i;
+                    break;
+                }
+            }
+            var target = PlayerStats[index];
+            target.Value = replaceEvent.NewValue;
+            PlayerStats.RemoveAt(index);
+            PlayerStats.Insert(index, target);
         }
 
         private void OnHandChange(CollectionAddEvent<string> collectionAddEvent)
@@ -49,6 +124,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
         {
             PlayerEquipment.Remove(PlayerEquipment.First(x => x.ID == collectionRemoveEvent.Value));
         }
+        
 
         #region usecases
 

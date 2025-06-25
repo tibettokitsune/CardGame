@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Game.Scripts.Gameplay.DataLayer.Models;
@@ -17,13 +18,49 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Deck
         {
             _configService = configService;
             FillCards();
+            Shuffle();
         }
-        
+
+        private void Shuffle()
+        {
+            Random rng = new Random();
+            var list = new List<BaseCard>(_cards);
+            _cards.Clear();
+
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                (list[k], list[n]) = (list[n], list[k]);
+            }
+
+            foreach (var item in list)
+            {
+                _cards.Enqueue(item);
+            }
+        }
+
         private void FillCards()
         {
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < 3; i++)
             {
-                var cardConfig = _configService.Get<CardDataConfig>($"card_{(i % 6) + 1}");
+                var cardConfig = _configService.Get<CardDataConfig>($"hand{i + 1}");
+                FilterAndAddCard(new BaseCard(cardConfig));
+            }
+            for (var i = 0; i < 5; i++)
+            {
+                var cardConfig = _configService.Get<CardDataConfig>($"head{i + 1}");
+                FilterAndAddCard(new BaseCard(cardConfig));
+            }
+            for (var i = 0; i < 4; i++)
+            {
+                var cardConfig = _configService.Get<CardDataConfig>($"chest{i + 1}");
+                FilterAndAddCard(new BaseCard(cardConfig));
+            }
+            for (var i = 0; i < 5; i++)
+            {
+                var cardConfig = _configService.Get<CardDataConfig>($"boot{i + 1}");
                 FilterAndAddCard(new BaseCard(cardConfig));
             }
         }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,10 +9,23 @@ using UniRx;
 
 namespace Game.Scripts.Gameplay.Lobby.Player
 {
+    [Serializable]
+    public enum PlayerStat
+    {
+        Health,
+        Attack,
+        Defend,
+        Agility,
+        Strength,
+        Intelligence,
+        Luck
+    }
+
     public interface IPlayerDataProvider
     {
         public ReactiveCollection<string> PlayersHand { get; }
         public ReactiveCollection<string> PlayersEquipment { get; }
+        public ReactiveDictionary<PlayerStat, float> PlayersStats { get; }
         Task ClaimCard(string cardId);
         bool IsPlayerCanEquipCard(string cardId);
         Task EquipCard(string cardId);
@@ -19,15 +33,27 @@ namespace Game.Scripts.Gameplay.Lobby.Player
 
     public class PlayerDataProvider : IPlayerDataProvider
     {
+        public ReactiveCollection<string> PlayersHand { get; } = new();
+        public ReactiveCollection<string> PlayersEquipment { get; } = new();
+        public ReactiveDictionary<PlayerStat, float> PlayersStats { get; }
+
         private readonly IConfigService _configService;
 
         public PlayerDataProvider(IConfigService configService)
         {
             _configService = configService;
+            
+            PlayersStats = new ReactiveDictionary<PlayerStat, float>()
+            {
+                {PlayerStat.Health, 100f},
+                {PlayerStat.Attack, 1f},
+                {PlayerStat.Defend, 0f},
+                {PlayerStat.Luck, 10f},
+                {PlayerStat.Agility, 5f},
+                {PlayerStat.Intelligence, 5f},
+                {PlayerStat.Strength, 5f}
+            };
         }
-
-        public ReactiveCollection<string> PlayersHand { get; } = new();
-        public ReactiveCollection<string> PlayersEquipment { get; } = new();
 
         public Task ClaimCard(string cardId)
         {
@@ -50,7 +76,7 @@ namespace Game.Scripts.Gameplay.Lobby.Player
 
         private void RemoveOccupiedSlot(CardDataConfig card)
         {
-            if (!card.MetaDataDictionary.TryGetValue(MetaDataKeys.Equipment, out var equipmentSlot)) 
+            if (!card.MetaDataDictionary.TryGetValue(MetaDataKeys.Equipment, out var equipmentSlot))
                 return;
             foreach (var eq in PlayersEquipment)
             {

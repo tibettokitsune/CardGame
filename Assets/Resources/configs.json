@@ -31,40 +31,106 @@
   ],
   "CardConfigs": [
     {
-      "Id": "card_1",
-      "MainLayerId": "helmet",
+      "Id": "head1",
+      "MainLayerId": "icons/head1",
       "BackgroundLayerId": "backgroud",
-      "MetaData": "{\"Equipment\": \"Head\",\"EquipmentDescription\": \"+1 battle power\", \"Name\": \"Old soldier's helmet\", \"Description\": \"This battered helmet has seen many battles. Grants +1 to combat strength.\" }"
+      "MetaData": "{\"Equipment\": \"Head\",\"EquipmentDescription\": \"+1 battle power\", \"Name\": \"Mask of the Eastern Beast\", \"Description\": \"A frightening appearance will help you avoid a dangerous battle\" }"
     },
     {
-      "Id": "card_2",
-      "MainLayerId": "pirathat",
+      "Id": "head2",
+      "MainLayerId": "icons/head2",
       "BackgroundLayerId": "backgroud",
-      "MetaData": "{\"Equipment\": \"Head\",\"EquipmentDescription\": \"+2 battle power\", \"Name\": \"Old pirate's helmet\", \"Description\": \"This battered helmet has seen many battles. Grants +1 to combat strength.\" }"
+      "MetaData": "{\"Equipment\": \"Head\",\"EquipmentDescription\": \"+2 battle power\", \"Name\": \"Adventurer's Hat\", \"Description\": \"Adventures are calling\" }"
     },
     {
-      "Id": "card_3",
-      "MainLayerId": "hood",
+      "Id": "head3",
+      "MainLayerId": "icons/head3",
       "BackgroundLayerId": "backgroud",
-      "MetaData": "{\"Equipment\": \"Head\",\"EquipmentDescription\": \"+3 battle power\", \"Name\": \"Great hood \", \"Description\": \"This battered helmet has seen many battles. Grants +1 to combat strength.\" }"
+      "MetaData": "{\"Equipment\": \"Head\",\"EquipmentDescription\": \"+3 battle power\", \"Name\": \"Knight's helmet \", \"Description\": \"My head is safe, but where am I going?\" }"
     },
     {
-      "Id": "card_4",
-      "MainLayerId": "hood",
+      "Id": "head4",
+      "MainLayerId": "icons/head4",
       "BackgroundLayerId": "backgroud",
-      "MetaData": "{\"Equipment\": \"Head\",\"EquipmentDescription\": \"+1 to combat strength\", \"Name\": \"Plug-hat\", \"Description\": \"This battered helmet has seen many battles. Grants +1 to combat strength.\" }"
+      "MetaData": "{\"Equipment\": \"Head\",\"EquipmentDescription\": \"+1 to combat strength\", \"Name\": \"Plug-hat\", \"Description\": \"Left over from a visit from a strange guy who suddenly disappeared into thin air\" }"
     },
     {
-      "Id": "card_5",
-      "MainLayerId": "chest1",
+      "Id": "head5",
+      "MainLayerId": "icons/head5",
       "BackgroundLayerId": "backgroud",
-      "MetaData": "{\"Equipment\": \"Chest\",\"EquipmentDescription\": \"+1 battle power\", \"Name\": \"Soldier's cuirass\", \"Description\": \"The cuirass of an experienced fighter, which has seen many battles. Grants +1 to combat strength.\" }"
+      "MetaData": "{\"Equipment\": \"Head\",\"EquipmentDescription\": \"+1 to combat strength\", \"Name\": \"Fashionable wig\", \"Description\": \"And let the poor envy your appearance\" }"
     },
     {
-      "Id": "card_6",
-      "MainLayerId": "chest2",
+      "Id": "chest1",
+      "MainLayerId": "icons/chest1",
       "BackgroundLayerId": "backgroud",
-      "MetaData": "{\"Equipment\": \"Chest\",\"EquipmentDescription\": \"+3 battle power\", \"Name\": \"Helmet of the warrior of the East\", \"Description\": \"Equipment of a warrior of the land of dawn, who has never known defeat. Gives the owner +4 attack points\" }"
+      "MetaData": "{\"Equipment\": \"Chest\",\"EquipmentDescription\": \"+1 battle power\", \"Name\": \"Barbarian Hero's Cuirass\", \"Description\": \"The former owner was insane and loved to drink blood from skulls\" }"
+    },
+    {
+      "Id": "chest2",
+      "MainLayerId": "icons/chest2",
+      "BackgroundLayerId": "backgroud",
+      "MetaData": "{\"Equipment\": \"Chest\",\"EquipmentDescription\": \"+3 battle power\", \"Name\": \"Armor from the East\", \"Description\": \"Strange armor but looks light and strong\" }"
+    },
+    {
+      "Id": "chest3",
+      "MainLayerId": "icons/chest3",
+      "BackgroundLayerId": "backgroud",
+      "MetaData": "{\"Equipment\": \"Chest\",\"EquipmentDescription\": \"+3 battle power\", \"Name\": \"Knight's cuirass\", \"Description\": \"There's a hole in the back from a crossbow bolt, but it looks brand new.\" }"
+    },
+    {
+      "Id": "chest4",
+      "MainLayerId": "icons/chest4",
+      "BackgroundLayerId": "backgroud",
+      "MetaData": "{\"Equipment\": \"Chest\",\"EquipmentDescription\": \"+3 battle power\", \"Name\": \"Mercenary armor\", \"Description\": \"To escape with the loot you need to run fast. A pile of metal on your chest will only get in the way\" }"
+    },
+    {
+      "Id": "boot1",
+      "MainLayerId": "icons/boot1",
+      "BackgroundLayerId": "backgroud",
+      "MetaData": "{\"Equipment\": \"Legs\",\"EquipmentDescription\": \"+3 battle power\", \"Name\": \"Rider's boots\", \"Description\": \"Good comfortable shoes for all conditions\" }"
+    },
+    {
+      "Id": "boot2",
+      "MainLayerId": "icons/boot2",
+      "BackgroundLayerId": "backgroud",
+      "MetaData": "{\"Equipment\": \"Legs\",\"EquipmentDescription\": \"+3 battle power\", \"Name\": \"Knight's boots\", \"Description\": \"Shoes of an experienced warrior. Will protect from a shot to the knee\" }"
+    },
+    {
+      "Id": "boot3",
+      "MainLayerId": "icons/boot3",
+      "BackgroundLayerId": "backgroud",
+      "MetaData": "{\"Equipment\": \"Legs\",\"EquipmentDescription\": \"+3 battle power\", \"Name\": \"Monk's Sandals\", \"Description\": \"The wearer of this shoe is wiser than the shoe. Or at least tries to appear so.\" }"
+    },
+    {
+      "Id": "boot4",
+      "MainLayerId": "icons/boot4",
+      "BackgroundLayerId": "backgroud",
+      "MetaData": "{\"Equipment\": \"Legs\",\"EquipmentDescription\": \"+3 battle power\", \"Name\": \"Aristocrat's shoes\", \"Description\": \"Shoes expensive enough to pass for rich\" }"
+    },
+    {
+      "Id": "boot5",
+      "MainLayerId": "icons/boot5",
+      "BackgroundLayerId": "backgroud",
+      "MetaData": "{\"Equipment\": \"Legs\",\"EquipmentDescription\": \"+3 battle power\", \"Name\": \"Bandit Boots\", \"Description\": \"I hope this is dried tomato sauce stain\" }"
+    },
+    {
+      "Id": "hand1",
+      "MainLayerId": "icons/hand1",
+      "BackgroundLayerId": "backgroud",
+      "MetaData": "{\"Equipment\": \"Hands\",\"EquipmentDescription\": \"+3 battle power\", \"Name\": \"Knight's gloves\", \"Description\": \"A heavy hand that can drive nails with a blow\" }"
+    },
+    {
+      "Id": "hand2",
+      "MainLayerId": "icons/hand2",
+      "BackgroundLayerId": "backgroud",
+      "MetaData": "{\"Equipment\": \"Hands\",\"EquipmentDescription\": \"+3 battle power\", \"Name\": \"Thief gloves\", \"Description\": \"Meant to leave no trace\" }"
+    },
+    {
+      "Id": "hand3",
+      "MainLayerId": "icons/hand3",
+      "BackgroundLayerId": "backgroud",
+      "MetaData": "{\"Equipment\": \"Hands\",\"EquipmentDescription\": \"+3 battle power\", \"Name\": \"Blacksmith's gloves\", \"Description\": \"The heavy-handed tool of the creator\" }"
     }
   ],
   "CardLayersConfigs": [

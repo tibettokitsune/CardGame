@@ -11,8 +11,6 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
     public class HandCardView : MonoBehaviour
     {
         [SerializeField] private DragAndDropWidget dragAndDropWidget;
-        [SerializeField] private TextMeshProUGUI attackLbl;
-        [SerializeField] private TextMeshProUGUI hpLbl;
         [SerializeField] private TextMeshProUGUI descriptionLbl;
         [SerializeField] private HandCardAnimation animation;
 

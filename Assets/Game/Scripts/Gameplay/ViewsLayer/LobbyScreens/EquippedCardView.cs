@@ -10,8 +10,8 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
     {
         [SerializeField] private TextMeshProUGUI cardName;
         [SerializeField] private TextMeshProUGUI cardBonus;
-        [SerializeField] private Image bgIcon;
         [SerializeField] private Image mainIcon;
+        [SerializeField] private Image bgIcon;
         
         public async void Setup(EquipmentCardEntity cardEntity, ISpriteService spriteService)
         {

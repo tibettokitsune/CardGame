@@ -7,6 +7,6 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
     {
         ReactiveCollection<CardEntity> PlayerHand { get; }
         ReactiveCollection<EquipmentCardEntity> PlayerEquipment { get; }
-        ReactiveCollection<StatEntity> PlayerStats { get; }
+        ReactiveDictionary<string ,StatEntity> PlayerStats { get; }
     }
 }

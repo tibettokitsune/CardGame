@@ -96,8 +96,6 @@ namespace Game.Scripts.Gameplay.Lobby.Player
                 {PlayerStat.Strength, 5f}
             };
             PlayersStats = new ReactiveDictionary<PlayerStat, float>(_defaultStats);
-
-            RecalculateStat();
         }
 
         public Task ClaimCard(string cardId)
@@ -115,30 +113,38 @@ namespace Game.Scripts.Gameplay.Lobby.Player
         {
             var card = _configService.Get<CardDataConfig>(cardId);
             RemoveOccupiedSlot(card);
-            EquipSlot(cardId);
-            RecalculateStat();
+            EquipSlot(card);
             return Task.CompletedTask;
         }
 
-        private void RecalculateStat()
-        {
-            foreach (var key in _defaultStats.Keys.ToList())
-            {
-                PlayersStats[key] = _defaultStats[key];
-            }
+        // private void RecalculateStat()
+        // {
+        //     var statKeys = PlayersStats.Keys.ToArray();
+        //     foreach (var key in statKeys)
+        //     {
+        //         PlayersStats[key] = _defaultStats[key];
+        //     }
+        //
+        //     // Добавляем бонусы только от экипированных предметов
+        //     foreach (var equipmentId in PlayersEquipment)
+        //     {
+        //         var eqCard = _configService.Get<CardDataConfig>(equipmentId);
+        //
+        //         if (!eqCard.MetaDataDictionary.TryGetValue(MetaDataKeys.Stats, out var statsData))
+        //             continue;
+        //
+        //         var stats = DataParser.ParseStats(statsData);
+        //
+        //         foreach (var (stat, value) in stats)
+        //         {
+        //             if (PlayersStats.ContainsKey(stat))
+        //                 PlayersStats[stat] += value;
+        //             else
+        //                 PlayersStats[stat] = value; // если почему-то не было — добавить
+        //         }
+        //     }
+        // }
 
-
-            foreach (var equipment in PlayersEquipment)
-            {
-                var eqCard = _configService.Get<CardDataConfig>(equipment);
-                var data = eqCard.MetaDataDictionary[MetaDataKeys.Stats];
-                var stats = DataParser.ParseStats(data);
-                foreach (var (stat, value) in stats)
-                {
-                    PlayersStats[stat] += value;
-                }
-            }
-        }
 
         private void RemoveOccupiedSlot(CardDataConfig card)
         {
@@ -158,13 +164,34 @@ namespace Game.Scripts.Gameplay.Lobby.Player
         {
             PlayersEquipment.Remove(eqCard.Id);
             PlayersHand.Add(eqCard.Id);
+            
+            
+            if (!eqCard.MetaDataDictionary.TryGetValue(MetaDataKeys.Stats, out var statsData))
+                return;
+            
+            var stats = DataParser.ParseStats(statsData);
+            
+            foreach (var (stat, value) in stats)
+            {
+                PlayersStats[stat] -= value;
+            }
         }
 
-        private void EquipSlot(string cardId)
+        private void EquipSlot(CardDataConfig card)
         {
-            PlayersEquipment.Add(cardId);
-            var index = PlayersHand.IndexOf(PlayersHand.First(x => x.Equals(cardId)));
+            PlayersEquipment.Add(card.Id);
+            var index = PlayersHand.IndexOf(PlayersHand.First(x => x.Equals(card.Id)));
             PlayersHand.RemoveAt(index);
+            
+            if (!card.MetaDataDictionary.TryGetValue(MetaDataKeys.Stats, out var statsData))
+                return;
+            
+            var stats = DataParser.ParseStats(statsData);
+            
+            foreach (var (stat, value) in stats)
+            {
+                PlayersStats[stat] += value;
+            }
         }
     }
 }

@@ -14,9 +14,11 @@ namespace Game.Scripts.Gameplay.ViewsLayer.Base
         [SerializeField] private Transform _container;
 
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
-        private readonly Dictionary<int, TElement> _spawnedElements = new Dictionary<int, TElement>();
+        private readonly Dictionary<object, TElement> _spawnedElements = new Dictionary<object, TElement>();
 
         private ReactiveCollection<TData> _boundCollection;
+        private ReactiveDictionary<object, TData> _boundDictionary;
+
         private Func<TData, TElement, IDisposable> _elementInitializer;
         private Action<TElement> _onElementCreated;
 
@@ -26,25 +28,43 @@ namespace Game.Scripts.Gameplay.ViewsLayer.Base
             Action<TElement> onElementCreated = null)
         {
             Unbind();
-
             _boundCollection = collection;
             _elementInitializer = elementInitializer;
             _onElementCreated = onElementCreated;
 
-            Initialize();
+            InitializeCollection();
+        }
+
+        public void Bind<TKey>(
+            ReactiveDictionary<TKey, TData> dictionary,
+            Func<TData, TElement, IDisposable> elementInitializer,
+            Action<TElement> onElementCreated = null)
+        {
+            Unbind();
+            _boundDictionary = new ReactiveDictionary<object, TData>();
+            foreach (var kvp in dictionary)
+            {
+                _boundDictionary.Add(kvp.Key, kvp.Value);
+            }
+
+            _elementInitializer = elementInitializer;
+            _onElementCreated = onElementCreated;
+
+            InitializeDictionary(dictionary);
         }
 
         public override void Initialize()
         {
-            if (_boundCollection == null) return;
+            // Не используется напрямую, вызывается через InitializeCollection / InitializeDictionary
+        }
 
-            // Обработка существующих элементов
+        private void InitializeCollection()
+        {
             for (var i = 0; i < _boundCollection.Count; i++)
             {
                 OnItemAdded(_boundCollection[i], i);
             }
 
-            // Подписка на изменения коллекции
             _boundCollection.ObserveAdd()
                 .Subscribe(e => OnItemAdded(e.Value, e.Index))
                 .AddTo(_disposables);
@@ -62,6 +82,30 @@ namespace Game.Scripts.Gameplay.ViewsLayer.Base
                 .AddTo(_disposables);
         }
 
+        private void InitializeDictionary<TKey>(ReactiveDictionary<TKey, TData> dict)
+        {
+            foreach (var kvp in dict)
+            {
+                OnItemAddedToDictionary(kvp.Key, kvp.Value);
+            }
+
+            dict.ObserveAdd()
+                .Subscribe(e => OnItemAddedToDictionary(e.Key, e.Value))
+                .AddTo(_disposables);
+
+            dict.ObserveRemove()
+                .Subscribe(e => OnItemRemovedFromDictionary(e.Key, e.Value))
+                .AddTo(_disposables);
+
+            dict.ObserveReplace()
+                .Subscribe(e => OnItemReplacedInDictionary(e.Key, e.OldValue, e.NewValue))
+                .AddTo(_disposables);
+
+            dict.ObserveReset()
+                .Subscribe(_ => OnCollectionReset())
+                .AddTo(_disposables);
+        }
+
         public override void Clear()
         {
             Unbind();
@@ -72,6 +116,7 @@ namespace Game.Scripts.Gameplay.ViewsLayer.Base
             _disposables.Clear();
             ClearAllElements();
             _boundCollection = null;
+            _boundDictionary = null;
         }
 
         private async void OnItemAdded(TData item, int index)
@@ -79,21 +124,15 @@ namespace Game.Scripts.Gameplay.ViewsLayer.Base
             var element = Instantiate(_prefab, _container);
             element.transform.SetSiblingIndex(index);
 
-            var disposables = new CompositeDisposable();
             if (_elementInitializer != null)
             {
-                var initDisposable = _elementInitializer(item, element);
-                if (initDisposable != null)
-                {
-                    disposables.Add(initDisposable);
-                }
+                var disposable = _elementInitializer(item, element);
+                if (disposable != null) disposable.AddTo(_disposables);
             }
 
             _onElementCreated?.Invoke(element);
-
             _spawnedElements.Add(index, element);
 
-            // Обновляем индексы для последующих элементов
             ReindexElementsFrom(index + 1);
             await UniTask.Yield();
             LayoutRebuilder.ForceRebuildLayoutImmediate(_container.transform as RectTransform);
@@ -105,8 +144,6 @@ namespace Game.Scripts.Gameplay.ViewsLayer.Base
             {
                 Destroy(element.gameObject);
                 _spawnedElements.Remove(index);
-
-                // Обновляем индексы для последующих элементов
                 ReindexElementsFrom(index);
             }
         }
@@ -115,11 +152,40 @@ namespace Game.Scripts.Gameplay.ViewsLayer.Base
         {
             if (_spawnedElements.TryGetValue(index, out var element))
             {
-                // Обновляем элемент с новыми данными
-                if (_elementInitializer != null)
-                {
-                    _elementInitializer(newItem, element);
-                }
+                _elementInitializer?.Invoke(newItem, element);
+            }
+        }
+
+        private void OnItemAddedToDictionary(object key, TData value)
+        {
+            var element = Instantiate(_prefab, _container);
+
+            if (_elementInitializer != null)
+            {
+                var disposable = _elementInitializer(value, element);
+                if (disposable != null) disposable.AddTo(_disposables);
+            }
+
+            _onElementCreated?.Invoke(element);
+            _spawnedElements.Add(key, element);
+
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_container.transform as RectTransform);
+        }
+
+        private void OnItemRemovedFromDictionary(object key, TData value)
+        {
+            if (_spawnedElements.TryGetValue(key, out var element))
+            {
+                Destroy(element.gameObject);
+                _spawnedElements.Remove(key);
+            }
+        }
+
+        private void OnItemReplacedInDictionary(object key, TData oldValue, TData newValue)
+        {
+            if (_spawnedElements.TryGetValue(key, out var element))
+            {
+                _elementInitializer?.Invoke(newValue, element);
             }
         }
 
@@ -143,27 +209,24 @@ namespace Game.Scripts.Gameplay.ViewsLayer.Base
 
         private void ReindexElementsFrom(int startIndex)
         {
-            var toReindex = new List<KeyValuePair<int, TElement>>();
+            var toReindex = new List<KeyValuePair<object, TElement>>();
 
-            // Собираем элементы для переиндексации
             foreach (var kvp in _spawnedElements)
             {
-                if (kvp.Key >= startIndex)
+                if (kvp.Key is int index && index >= startIndex)
                 {
                     toReindex.Add(kvp);
                 }
             }
 
-            // Удаляем старые индексы
             foreach (var kvp in toReindex)
             {
                 _spawnedElements.Remove(kvp.Key);
             }
 
-            // Добавляем с новыми индексами
             foreach (var kvp in toReindex)
             {
-                var newIndex = kvp.Key - 1;
+                var newIndex = (int)kvp.Key - 1;
                 _spawnedElements.Add(newIndex, kvp.Value);
                 kvp.Value.transform.SetSiblingIndex(newIndex);
             }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ namespace Game.Scripts.Infrastructure.AsyncAssets
 {
     public interface ISpriteService
     {
-        Task<Sprite> LoadSpriteForObject(string spritePath, GameObject owner);
+        Task<Sprite> LoadSpriteForObject(string spritePath, GameObject owner, CancellationToken cancellationToken);
 
         /// <summary> Принудительно выгружает все спрайты, связанные с объектом </summary>
         void UnloadSpritesForObject(GameObject owner);
@@ -26,27 +27,35 @@ namespace Game.Scripts.Infrastructure.AsyncAssets
         private readonly Dictionary<string, SpriteReference> _loadedSprites = new();
         private readonly Dictionary<GameObject, List<string>> _objectSpriteMap = new();
 
-        public async Task<Sprite> LoadSpriteForObject(string spritePath, GameObject owner)
+        public async Task<Sprite> LoadSpriteForObject(string spritePath, 
+            GameObject owner, 
+            CancellationToken cancellationToken = default)
         {
-            if (_loadedSprites.TryGetValue(spritePath, out var sprite))
+            if (_loadedSprites.TryGetValue(spritePath, out var cachedSprite))
             {
                 TrackSpriteForObject(spritePath, owner);
-                return sprite.Sprite;
+                return cachedSprite.Sprite;
             }
 
             var request = Resources.LoadAsync<Sprite>(spritePath);
+
             while (!request.isDone)
+            {
+                cancellationToken.ThrowIfCancellationRequested(); // проверка отмены
                 await Task.Yield();
+            }
+
+            cancellationToken.ThrowIfCancellationRequested(); // финальная проверка после загрузки
 
             if (request.asset is Sprite loadedSprite)
             {
                 if (_loadedSprites.TryGetValue(spritePath, out var spriteReference))
                 {
-                    _loadedSprites[spritePath].Sprite = loadedSprite;
+                    spriteReference.Sprite = loadedSprite;
                 }
                 else
                 {
-                    _loadedSprites.Add(spritePath, new SpriteReference {Sprite = loadedSprite, ReferenceCount = 1});
+                    _loadedSprites.Add(spritePath, new SpriteReference { Sprite = loadedSprite, ReferenceCount = 1 });
                 }
 
                 TrackSpriteForObject(spritePath, owner);

@@ -1,3 +1,4 @@
+using System.Threading;
 using Game.Scripts.Gameplay.Lobby.Deck;
 using Game.Scripts.Gameplay.PresentersLayer.Player;
 using Game.Scripts.Infrastructure.AsyncAssets;
@@ -20,6 +21,7 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
 
         private string _cardId;
 
+        private CancellationTokenSource _cancellationTokenSource;
 
         private void OnValidate()
         {
@@ -29,14 +31,18 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
 
         public async void Setup(CardEntity cardEntity, ISpriteService spriteService)
         {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource = new CancellationTokenSource();
+            var token = _cancellationTokenSource.Token;
+
             _cardId = cardEntity.ID;
             dragAndDropWidget.Setup(_cardId);
             descriptionLbl.text = $"{cardEntity.Name}\n{cardEntity.Description}";
-            var mainLayerIcon = 
-                await spriteService.LoadSpriteForObject(cardEntity.MainLayer, mainIcon.gameObject);
+            var mainLayerIcon =
+                await spriteService.LoadSpriteForObject(cardEntity.MainLayer, mainIcon.gameObject, token);
             mainIcon.sprite = mainLayerIcon;
-            var bgLayerIcon = 
-                await spriteService.LoadSpriteForObject(cardEntity.BackgroundLayer, bgIcon.gameObject);
+            var bgLayerIcon =
+                await spriteService.LoadSpriteForObject(cardEntity.BackgroundLayer, bgIcon.gameObject, token);
             bgIcon.sprite = bgLayerIcon;
         }
 

@@ -17,15 +17,8 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
         {
             container.Bind(
                 _playerPresenter.PlayerStats,
-                (data, element) =>
-                {
-                    element.Setup(data, _spriteService);
-                    return Disposable.Empty;
-                },
-                element =>
-                {
-                    // Дополнительная настройка при создании
-                }
+                (statValue, uiElement) => uiElement.Setup(statValue, _spriteService),
+                element => Debug.Log("Created: " + element.name)
             );
         }
     }

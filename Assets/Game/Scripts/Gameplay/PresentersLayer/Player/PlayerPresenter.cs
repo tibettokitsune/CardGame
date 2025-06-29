@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Game.Scripts.Gameplay.Lobby.Player;
 using Game.Scripts.Gameplay.PresentersLayer.Deck;
-using ModestTree;
 using UniRx;
 
 namespace Game.Scripts.Gameplay.PresentersLayer.Player
@@ -15,12 +14,13 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
     {
         public ReactiveCollection<CardEntity> PlayerHand { get; } = new();
         public ReactiveCollection<EquipmentCardEntity> PlayerEquipment { get; } = new();
-        public ReactiveCollection<StatEntity> PlayerStats { get; } = new();
+        public ReactiveDictionary<string, StatEntity> PlayerStats { get; } = new();
 
         private readonly IDeckPresenter _deckPresenter;
         private readonly IPlayerDataProvider _playerDataProvider;
         private readonly CompositeDisposable _disposables = new();
         private const int StartCardsLimit = 8;
+        private readonly CompositeDisposable _statsSyncDisposables = new();
 
         public PlayerPresenter(IDeckPresenter deckPresenter,
             IPlayerDataProvider playerDataProvider)
@@ -31,74 +31,75 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
             _playerDataProvider.PlayersHand.ObserveRemove().Subscribe(OnHandChange).AddTo(_disposables);
             _playerDataProvider.PlayersEquipment.ObserveAdd().Subscribe(OnEquipmentChange).AddTo(_disposables);
             _playerDataProvider.PlayersEquipment.ObserveRemove().Subscribe(OnEquipmentChange).AddTo(_disposables);
-            _playerDataProvider.PlayersStats.ObserveReplace().Subscribe(OnStatReplace).AddTo(_disposables);
-            _playerDataProvider.PlayersStats.ObserveAdd().Subscribe(OnStatChanged);
-            _playerDataProvider.PlayersStats.ObserveReplace().Subscribe(OnStatChanged);
-            _playerDataProvider.PlayersStats.ObserveRemove().Subscribe(OnStatRemoved);
-            SyncStatEntities();
-        }
-
-        private void OnStatChanged(DictionaryAddEvent<PlayerStat, float> evt)
-        {
-            var existing = PlayerStats.FirstOrDefault(x => x.Stat == evt.Key);
-            if (existing != null)
-            {
-                existing.Value = evt.Value;
-            }
-            else
-            {
-                PlayerStats.Add(new StatEntity {Stat = evt.Key, Value = evt.Value});
-            }
-        }
-
-        private void OnStatChanged(DictionaryReplaceEvent<PlayerStat, float> evt)
-        {
-            var existing = PlayerStats.FirstOrDefault(x => x.Stat == evt.Key);
-            if (existing != null)
-            {
-                existing.Value = evt.NewValue;
-            }
-        }
-
-        private void OnStatRemoved(DictionaryRemoveEvent<PlayerStat, float> evt)
-        {
-            var stat = PlayerStats.FirstOrDefault(x => x.Stat == evt.Key);
-            if (stat != null)
-            {
-                PlayerStats.Remove(stat);
-            }
-        }
-
-        private void SyncStatEntities()
-        {
-            PlayerStats.Clear();
-            foreach (var kvp in _playerDataProvider.PlayersStats)
-            {
-                PlayerStats.Add(new StatEntity
+            SyncPlayerStats(_playerDataProvider.PlayersStats, PlayerStats,
+                keyConverter: stat => stat.ToString(),
+                entityFactory: (stat, value) => new StatEntity
                 {
-                    Stat = kvp.Key,
-                    Value = kvp.Value
+                    Stat = stat,
+                    Value = value,
                 });
-            }
         }
 
-        private void OnStatReplace(DictionaryReplaceEvent<PlayerStat, float> replaceEvent)
+        private void SyncPlayerStats(
+            ReactiveDictionary<PlayerStat, float> playersStats,
+            ReactiveDictionary<string, StatEntity> playerStats,
+            Func<PlayerStat, string> keyConverter,
+            Func<PlayerStat, float, StatEntity> entityFactory)
         {
-            var index = 0;
-            for (var i = 0; i < PlayerStats.Count; i++)
+            _statsSyncDisposables.Clear();
+
+            // Инициализировать существующие элементы
+            foreach (var kvp in playersStats)
             {
-                if (PlayerStats[i].Stat == replaceEvent.Key)
-                {
-                    index = i;
-                    break;
-                }
+                var key = keyConverter(kvp.Key);
+                playerStats[key] = entityFactory(kvp.Key, kvp.Value);
             }
 
-            var target = PlayerStats[index];
-            target.Value = replaceEvent.NewValue;
-            PlayerStats.RemoveAt(index);
-            PlayerStats.Insert(index, target);
+            // Добавление
+            playersStats
+                .ObserveAdd()
+                .Subscribe(e =>
+                {
+                    var key = keyConverter(e.Key);
+                    playerStats[key] = entityFactory(e.Key, e.Value);
+                })
+                .AddTo(_statsSyncDisposables);
+
+            // Обновление
+            playersStats
+                .ObserveReplace()
+                .Subscribe(e =>
+                {
+                    var key = keyConverter(e.Key);
+                    playerStats[key] = entityFactory(e.Key, e.NewValue);
+                })
+                .AddTo(_statsSyncDisposables);
+
+            // Удаление
+            playersStats
+                .ObserveRemove()
+                .Subscribe(e =>
+                {
+                    var key = keyConverter(e.Key);
+                    playerStats.Remove(key);
+                })
+                .AddTo(_statsSyncDisposables);
+
+            // Полный ресет
+            playersStats
+                .ObserveReset()
+                .Subscribe(_ =>
+                {
+                    playerStats.Clear();
+                    foreach (var kvp in playersStats)
+                    {
+                        var key = keyConverter(kvp.Key);
+                        playerStats[key] = entityFactory(kvp.Key, kvp.Value);
+                    }
+                })
+                .AddTo(_statsSyncDisposables);
         }
+
 
         private void OnHandChange(CollectionAddEvent<string> collectionAddEvent)
         {
@@ -154,6 +155,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
         {
             PlayerHand?.Dispose();
             PlayerEquipment?.Dispose();
+            _statsSyncDisposables?.Dispose();
         }
     }
 }

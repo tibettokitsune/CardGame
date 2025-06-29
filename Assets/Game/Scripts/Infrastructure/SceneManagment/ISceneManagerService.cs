@@ -4,11 +4,13 @@ namespace Game.Scripts.Infrastructure.SceneManagment
 {
     public enum SceneLayer
     {
-        GameStage
+        GameStage,
+        GameplayElement
     }
 
     public interface ISceneManagerService
     {
         Task LoadScene(string sceneName, SceneLayer layer, bool isActivateAfterLoad = false);
+        Task UnloadScene(string sceneName,  SceneLayer layer);
     }
 }

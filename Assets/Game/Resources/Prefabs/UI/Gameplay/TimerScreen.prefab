@@ -359,6 +359,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _canvasGroup: {fileID: 5730368312634485422}
   _fadeDuration: 0.3
+  timerLbl: {fileID: 21505107461694730}
 --- !u!224 &4161142795038369385 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3258761396422688598, guid: 0d389954b30e54197bd65e0cb92b0ceb,

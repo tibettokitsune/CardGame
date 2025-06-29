@@ -19,6 +19,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer
             Container.BindInterfacesAndSelfTo<DeckPresenter>().AsSingle();
             Container.BindInterfacesAndSelfTo<FirstEnterInGameState>().AsSingle();
             Container.BindInterfacesAndSelfTo<PreparePlayerState>().AsSingle();
+            Container.BindInterfacesAndSelfTo<TakeEventCardState>().AsSingle();
             Container.BindInterfacesAndSelfTo<PlayerPresenter>().AsSingle();
         }
     }

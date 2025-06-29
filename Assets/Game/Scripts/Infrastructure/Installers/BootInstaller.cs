@@ -26,6 +26,7 @@ namespace Game.Scripts.Infrastructure.Installers
         {
             Container.BindInterfacesAndSelfTo<SceneManagerService>().AsSingle();
             Container.BindInterfacesAndSelfTo<TimerService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<TimerHandlerService>().AsSingle();
             Container.BindInterfacesAndSelfTo<ConfigService>().AsSingle();
             Container.BindInterfacesAndSelfTo<ServiceInitializer>().AsSingle();
             Container.BindInterfacesAndSelfTo<UIService>().AsSingle().WithArguments(uiRoot);

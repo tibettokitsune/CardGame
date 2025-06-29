@@ -11,7 +11,7 @@ namespace Game.Scripts.Infrastructure.SceneManagment
 {
     public class SceneManagerService : IAsyncInitializable, ISceneManagerService
     {
-        private Dictionary<SceneLayer, string> _scenes = new();
+        private Dictionary<SceneLayer, HashSet<string>> _scenes = new();
         [Inject] private LoadingScreen _loadingScreen;
 
         public async Task InitializeAsync(CancellationToken cancellationToken = default)
@@ -22,18 +22,32 @@ namespace Game.Scripts.Infrastructure.SceneManagment
 
         public async Task LoadScene(string sceneName, SceneLayer layer, bool isActivateAfterLoad = false)
         {
-            _scenes.TryGetValue(layer, out var sceneToUnload);
-            using var loadingScreen = _loadingScreen.Show();
-            if (!string.IsNullOrEmpty(sceneToUnload))
+            if (!_scenes.ContainsKey(layer))
             {
-                await SceneManager.UnloadSceneAsync(sceneToUnload);
+                _scenes.Add(layer, new HashSet<string>() {});
+            }
+
+            _scenes.TryGetValue(layer, out var layerScenes);
+            using var loadingScreen = _loadingScreen.Show();
+            if (layerScenes.Contains(sceneName))
+            {
+                await SceneManager.UnloadSceneAsync(sceneName);
                 _scenes.Remove(layer);
             }
 
             await SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
             if (isActivateAfterLoad)
                 SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
-            _scenes.Add(layer, sceneName);
+
+
+            if (!_scenes[layer].Contains(sceneName))
+                _scenes[layer].Add(sceneName);
+        }
+
+        public async Task UnloadScene(string sceneName, SceneLayer layer)
+        {
+            await SceneManager.UnloadSceneAsync(sceneName);
+            _scenes[layer].Remove(sceneName);
         }
     }
 }

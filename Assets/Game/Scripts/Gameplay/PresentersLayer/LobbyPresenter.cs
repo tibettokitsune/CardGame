@@ -1,3 +1,4 @@
+using Game.Scripts.Gameplay.DataLayer;
 using Game.Scripts.Gameplay.PresentersLayer.GameStates;
 using UnityEngine;
 using UnityHFSM;
@@ -7,15 +8,18 @@ namespace Game.Scripts.Gameplay.PresentersLayer
 {
     public class LobbyPresenter : ILobbyPresenter, IInitializable, ITickable
     {
+        private readonly ILobbyDataProvider _lobbyDataProvider;
         private readonly PreparePlayerState _preparePlayerState;
         private readonly FirstEnterInGameState _firstEnterInGameState;
         
         private StateMachine _gameStateMachine;
 
-        public LobbyPresenter(PreparePlayerState preparePlayerState, 
+        public LobbyPresenter(ILobbyDataProvider lobbyDataProvider,
+            PreparePlayerState preparePlayerState, 
             FirstEnterInGameState firstEnterInGameState
             )
         {
+            _lobbyDataProvider = lobbyDataProvider;
             _preparePlayerState = preparePlayerState;
             _firstEnterInGameState = firstEnterInGameState;
         }
@@ -29,7 +33,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer
             _gameStateMachine.AddState("PrepareRound", _preparePlayerState);
             
             _gameStateMachine.AddTransition(new Transition("FirstEnter", "PrepareRound", 
-                condition => _firstEnterInGameState.IsReadyToSwitch));
+                condition => _lobbyDataProvider.LobbyState.Value == LobbyState.PrepareToRound));
             
             _gameStateMachine.SetStartState("FirstEnter");
             

@@ -1,3 +1,4 @@
+using Game.Scripts.Gameplay.DataLayer;
 using Zenject;
 
 namespace Game.Scripts.Gameplay.Lobby.Player
@@ -7,6 +8,7 @@ namespace Game.Scripts.Gameplay.Lobby.Player
         public override void InstallBindings()
         {
             Container.BindInterfacesAndSelfTo<PlayerDataProvider>().AsSingle();
+            Container.BindInterfacesAndSelfTo<LobbyDataProvider>().AsSingle();
         }
     }
 }

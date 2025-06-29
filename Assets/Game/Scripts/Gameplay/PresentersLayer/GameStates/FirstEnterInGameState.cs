@@ -10,7 +10,6 @@ namespace Game.Scripts.Gameplay.PresentersLayer.GameStates
     {
         private readonly IFillStartHandUseCase _fillStartHandUseCase;
         private readonly IUIService _uiService;
-        public bool IsReadyToSwitch { get; private set; }
         public FirstEnterInGameState(IFillStartHandUseCase fillStartHandUseCase, IUIService uiService) 
             : base(needsExitTime: false, isGhostState: false)
         {
@@ -27,13 +26,11 @@ namespace Game.Scripts.Gameplay.PresentersLayer.GameStates
             await _uiService.ShowScreen("CharacterStats");
             await _uiService.ShowScreen("PlayerHand");
             await FillPlayerStartHand();
-            IsReadyToSwitch = true;
         }
         public override void OnLogic() { }
 
         public override void OnExit()
         {
-            IsReadyToSwitch = false;
             Debug.Log("FirstEnterInGame Exit");
         }
 

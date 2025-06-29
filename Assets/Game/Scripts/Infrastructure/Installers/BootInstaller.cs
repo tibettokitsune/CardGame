@@ -4,6 +4,7 @@ using Game.Scripts.Infrastructure.Configs;
 using Game.Scripts.Infrastructure.Loading;
 using Game.Scripts.Infrastructure.Menu;
 using Game.Scripts.Infrastructure.SceneManagment;
+using Game.Scripts.Infrastructure.TimeManagement;
 using Game.Scripts.Infrastructure.UI;
 using Game.Scripts.UI;
 using UnityEngine;
@@ -24,6 +25,7 @@ namespace Game.Scripts.Infrastructure.Installers
         private void InstallService()
         {
             Container.BindInterfacesAndSelfTo<SceneManagerService>().AsSingle();
+            Container.BindInterfacesAndSelfTo<TimerService>().AsSingle();
             Container.BindInterfacesAndSelfTo<ConfigService>().AsSingle();
             Container.BindInterfacesAndSelfTo<ServiceInitializer>().AsSingle();
             Container.BindInterfacesAndSelfTo<UIService>().AsSingle().WithArguments(uiRoot);

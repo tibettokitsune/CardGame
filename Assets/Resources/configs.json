@@ -27,6 +27,13 @@
       "HideOtherScreensOnLayer": false,
       "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.LobbyScreens.PlayerHandScreen",
       "Id": "PlayerHand"
+    },
+    {
+      "PrefabPath": "Prefabs/UI/Gameplay/TimerScreen",
+      "Layer": 1,
+      "HideOtherScreensOnLayer": false,
+      "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.TimerScreen",
+      "Id": "TimerScreen"
     }
   ],
   "CardConfigs": [

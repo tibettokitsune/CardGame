@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Game.Scripts.Gameplay.DataLayer;
 using Game.Scripts.Gameplay.DataLayer.Models;
 using Game.Scripts.Infrastructure.Configs;
 using Game.Scripts.Infrastructure.Configs.Configs;
@@ -10,46 +11,6 @@ using UniRx;
 
 namespace Game.Scripts.Gameplay.Lobby.Player
 {
-    internal static class DataParser
-    {
-        public static List<(PlayerStat, float)> ParseStats(string input)
-        {
-            var result = new List<(PlayerStat, float)>();
-            var statPairs = input.Split(';', StringSplitOptions.RemoveEmptyEntries);
-
-            foreach (var pair in statPairs)
-            {
-                var parts = pair.Split(',', StringSplitOptions.RemoveEmptyEntries);
-                string typePart = null;
-                string valuePart = null;
-
-                foreach (var part in parts)
-                {
-                    var kv = part.Split('=');
-                    if (kv.Length != 2)
-                        continue;
-
-                    if (kv[0].Trim().Equals("type", StringComparison.OrdinalIgnoreCase))
-                        typePart = kv[1].Trim();
-
-                    else if (kv[0].Trim().Equals("Value", StringComparison.OrdinalIgnoreCase))
-                        valuePart = kv[1].Trim();
-                }
-
-                if (Enum.TryParse<PlayerStat>(typePart, out var stat) && float.TryParse(valuePart, out var value))
-                {
-                    result.Add((stat, value));
-                }
-                else
-                {
-                    throw new FormatException($"Invalid stat or value in: '{pair}'");
-                }
-            }
-
-            return result;
-        }
-    }
-
     [Serializable]
     public enum PlayerStat
     {

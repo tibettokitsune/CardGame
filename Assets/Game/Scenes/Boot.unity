@@ -2295,6 +2295,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1d8513457c342d8a4390009382586c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _canvasGroup: {fileID: 0}
+  _fadeDuration: 0.3
   _references: 0
   fill: {fileID: 1556271861}
 --- !u!1 &1450700538

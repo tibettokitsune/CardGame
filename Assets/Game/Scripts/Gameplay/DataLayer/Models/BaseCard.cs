@@ -9,7 +9,6 @@ namespace Game.Scripts.Gameplay.DataLayer.Models
     {
         public const string Equipment = "Equipment";
         public const string Stats = "Stats";
-        public const string EquipmentDescription = "EquipmentDescription";
         public const string Name = "Name";
         public const string Description = "Description";
     }

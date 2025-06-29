@@ -116,36 +116,7 @@ namespace Game.Scripts.Gameplay.Lobby.Player
             EquipSlot(card);
             return Task.CompletedTask;
         }
-
-        // private void RecalculateStat()
-        // {
-        //     var statKeys = PlayersStats.Keys.ToArray();
-        //     foreach (var key in statKeys)
-        //     {
-        //         PlayersStats[key] = _defaultStats[key];
-        //     }
-        //
-        //     // Добавляем бонусы только от экипированных предметов
-        //     foreach (var equipmentId in PlayersEquipment)
-        //     {
-        //         var eqCard = _configService.Get<CardDataConfig>(equipmentId);
-        //
-        //         if (!eqCard.MetaDataDictionary.TryGetValue(MetaDataKeys.Stats, out var statsData))
-        //             continue;
-        //
-        //         var stats = DataParser.ParseStats(statsData);
-        //
-        //         foreach (var (stat, value) in stats)
-        //         {
-        //             if (PlayersStats.ContainsKey(stat))
-        //                 PlayersStats[stat] += value;
-        //             else
-        //                 PlayersStats[stat] = value; // если почему-то не было — добавить
-        //         }
-        //     }
-        // }
-
-
+        
         private void RemoveOccupiedSlot(CardDataConfig card)
         {
             if (!card.MetaDataDictionary.TryGetValue(MetaDataKeys.Equipment, out var equipmentSlot))

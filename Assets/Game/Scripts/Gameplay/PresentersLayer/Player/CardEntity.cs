@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Game.Scripts.Gameplay.DataLayer.Models;
 using Game.Scripts.Infrastructure.Configs.Configs;
@@ -22,7 +23,10 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
     
     public class EquipmentCardEntity : CardEntity
     {
-        public string EquipmentDescription => Card.MetaData[MetaDataKeys.EquipmentDescription];
+        public string EquipmentDescription => Card.MetaData[MetaDataKeys.Stats]
+            .Replace("type=", "", StringComparison.OrdinalIgnoreCase)
+            .Replace("value=", "+", StringComparison.OrdinalIgnoreCase)
+            .Replace(";", "\n");
         public EquipmentCardEntity(IBaseCard card) : base(card)
         {
         }

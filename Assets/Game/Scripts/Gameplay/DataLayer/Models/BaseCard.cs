@@ -31,7 +31,6 @@ namespace Game.Scripts.Gameplay.DataLayer.Models
             MainLayer = config.MainLayerId;
             BackgroundLayer = config.BackgroundLayerId;
             MetaData = JsonConvert.DeserializeObject<Dictionary<string, string>>(_config.MetaData);
-
         }
     }
 }

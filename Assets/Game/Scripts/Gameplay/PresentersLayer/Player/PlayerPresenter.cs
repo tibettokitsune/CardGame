@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Game.Scripts.Gameplay.DataLayer;
 using Game.Scripts.Gameplay.Lobby.Player;
 using Game.Scripts.Gameplay.PresentersLayer.Deck;
 using UniRx;
@@ -15,6 +16,8 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
         public ReactiveCollection<CardEntity> PlayerHand { get; } = new();
         public ReactiveCollection<EquipmentCardEntity> PlayerEquipment { get; } = new();
         public ReactiveDictionary<string, StatEntity> PlayerStats { get; } = new();
+        
+        public ReactiveProperty<DoorCardEntity> CurrentDoor { get; } = new();
 
         private readonly IDeckPresenter _deckPresenter;
         private readonly IPlayerDataProvider _playerDataProvider;
@@ -23,6 +26,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
         private readonly CompositeDisposable _statsSyncDisposables = new();
 
         public PlayerPresenter(IDeckPresenter deckPresenter,
+            ILobbyDataProvider lobbyDataProvider,
             IPlayerDataProvider playerDataProvider)
         {
             _deckPresenter = deckPresenter;
@@ -38,6 +42,9 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
                     Stat = stat,
                     Value = value,
                 });
+            lobbyDataProvider.LobbyState.Where(x => x == LobbyState.TakeEventCard)
+                .Subscribe(_ => TakeEventCard())
+                .AddTo(_disposables);
         }
 
         private void SyncPlayerStats(
@@ -48,14 +55,12 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
         {
             _statsSyncDisposables.Clear();
 
-            // Инициализировать существующие элементы
             foreach (var kvp in playersStats)
             {
                 var key = keyConverter(kvp.Key);
                 playerStats[key] = entityFactory(kvp.Key, kvp.Value);
             }
 
-            // Добавление
             playersStats
                 .ObserveAdd()
                 .Subscribe(e =>
@@ -65,7 +70,6 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
                 })
                 .AddTo(_statsSyncDisposables);
 
-            // Обновление
             playersStats
                 .ObserveReplace()
                 .Subscribe(e =>
@@ -75,7 +79,6 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
                 })
                 .AddTo(_statsSyncDisposables);
 
-            // Удаление
             playersStats
                 .ObserveRemove()
                 .Subscribe(e =>
@@ -85,7 +88,6 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
                 })
                 .AddTo(_statsSyncDisposables);
 
-            // Полный ресет
             playersStats
                 .ObserveReset()
                 .Subscribe(_ =>
@@ -121,6 +123,11 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
             PlayerEquipment.Remove(PlayerEquipment.First(x => x.ID == collectionRemoveEvent.Value));
         }
 
+        private async void TakeEventCard()
+        {
+            var card =  await _deckPresenter.TakeDoorCard();
+            CurrentDoor.Value = new DoorCardEntity(_deckPresenter.GetCardById(card));
+        }
 
         #region usecases
 
@@ -145,7 +152,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
 
         private async Task AddRandomCardByType()
         {
-            var cardId = await _deckPresenter.ClaimRandomCardFromDeck();
+            var cardId = await _deckPresenter.TakeTreasureCard();
             await _playerDataProvider.ClaimCard(cardId);
         }
 

@@ -77,7 +77,7 @@ namespace Game.Scripts.Gameplay.Lobby.Player
             EquipSlot(card);
             return Task.CompletedTask;
         }
-        
+
         private void RemoveOccupiedSlot(CardDataConfig card)
         {
             if (!card.MetaDataDictionary.TryGetValue(MetaDataKeys.Equipment, out var equipmentSlot))

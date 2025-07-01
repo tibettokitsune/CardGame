@@ -34,6 +34,20 @@
       "HideOtherScreensOnLayer": false,
       "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.TimerScreen",
       "Id": "TimerScreen"
+    },
+    {
+      "PrefabPath": "Prefabs/UI/Gameplay/OpenDoorScreen",
+      "Layer": 1,
+      "HideOtherScreensOnLayer": false,
+      "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.OpenDoorScreen",
+      "Id": "OpenDoorScreen"
+    },
+    {
+      "PrefabPath": "Prefabs/UI/Gameplay/FadeScreen",
+      "Layer": 1,
+      "HideOtherScreensOnLayer": false,
+      "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.FadeScreen",
+      "Id": "FadeScreen"
     }
   ],
   "CardConfigs": [
@@ -138,6 +152,36 @@
       "MainLayerId": "icons/hand3",
       "BackgroundLayerId": "backgroud",
       "MetaData": "{\"Equipment\":\"Hands\",\"EquipmentDescription\":\"+3 battle power\",\"Name\":\"Blacksmith's gloves\",\"Description\":\"The heavy-handed tool of the creator\",\"Stats\":\"type=Attack,Value=5;type=Health,Value=5\"}"
+    },
+    {
+      "Id": "npc1",
+      "MainLayerId": "icons/npc1",
+      "BackgroundLayerId": "backgroud",
+      "MetaData": "{\"Name\":\"Knight\",\"Description\":\"Strong buy with big sword\",\"Stats\":\"type=Attack,Value=5;type=Health,Value=20\"}"
+    },
+    {
+      "Id": "npc2",
+      "MainLayerId": "icons/npc2",
+      "BackgroundLayerId": "backgroud",
+      "MetaData": "{\"Name\":\"Monk\",\"Description\":\"Strong buy with big sword\",\"Stats\":\"type=Attack,Value=5;type=Health,Value=20\"}"
+    },
+    {
+      "Id": "npc3",
+      "MainLayerId": "icons/npc3",
+      "BackgroundLayerId": "backgroud",
+      "MetaData": "{\"Name\":\"Adventurer\",\"Description\":\"Strong buy with big sword\",\"Stats\":\"type=Attack,Value=5;type=Health,Value=20\"}"
+    },
+    {
+      "Id": "npc4",
+      "MainLayerId": "icons/npc4",
+      "BackgroundLayerId": "backgroud",
+      "MetaData": "{\"Name\":\"Rogue\",\"Description\":\"Strong buy with big sword\",\"Stats\":\"type=Attack,Value=5;type=Health,Value=20\"}"
+    },
+    {
+      "Id": "npc5",
+      "MainLayerId": "icons/npc5",
+      "BackgroundLayerId": "backgroud",
+      "MetaData": "{\"Name\":\"Pirate\",\"Description\":\"Strong buy with big sword\",\"Stats\":\"type=Attack,Value=5;type=Health,Value=20\"}"
     }
   ],
   "CardLayersConfigs": [

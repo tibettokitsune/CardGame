@@ -31,4 +31,11 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
         {
         }
     }
+    
+    public class DoorCardEntity : CardEntity
+    {
+        public DoorCardEntity(IBaseCard card) : base(card)
+        {
+        }
+    }
 }

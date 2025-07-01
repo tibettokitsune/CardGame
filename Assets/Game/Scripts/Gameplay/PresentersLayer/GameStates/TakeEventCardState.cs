@@ -10,7 +10,8 @@ namespace Game.Scripts.Gameplay.PresentersLayer.GameStates
         private readonly IUIService _uiService;
         private readonly ISceneManagerService _sceneManagerService;
 
-        public TakeEventCardState(IUIService uiService, ISceneManagerService sceneManagerService) 
+        public TakeEventCardState(IUIService uiService, 
+            ISceneManagerService sceneManagerService) 
             : base(needsExitTime: false, isGhostState: false)
         {
             _uiService = uiService;

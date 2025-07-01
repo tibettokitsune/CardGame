@@ -36,7 +36,6 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
             var token = _cancellationTokenSource.Token;
 
             _cardId = cardEntity.ID;
-            dragAndDropWidget.Setup(_cardId);
             descriptionLbl.text = $"{cardEntity.Name}\n{cardEntity.Description}";
             var mainLayerIcon =
                 await spriteService.LoadSpriteForObject(cardEntity.MainLayer, mainIcon.gameObject, token);
@@ -44,6 +43,8 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
             var bgLayerIcon =
                 await spriteService.LoadSpriteForObject(cardEntity.BackgroundLayer, bgIcon.gameObject, token);
             bgIcon.sprite = bgLayerIcon;
+            
+            dragAndDropWidget?.Setup(_cardId);
         }
 
         public void EnableGrouping()

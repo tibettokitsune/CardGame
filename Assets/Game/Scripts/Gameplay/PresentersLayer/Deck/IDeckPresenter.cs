@@ -5,7 +5,8 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Deck
 {
     public interface IDeckPresenter
     {
-        Task<string> ClaimRandomCardFromDeck();
+        Task<string> TakeTreasureCard();
+        Task<string> TakeDoorCard();
         BaseCard GetCardById(string cardId);
     }
 }

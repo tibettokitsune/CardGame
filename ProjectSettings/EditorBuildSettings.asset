@@ -20,5 +20,17 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Game/Scenes/GameplayPrepare.unity
     guid: ed10ab046e4554b79b289dbbadc5d880
+  - enabled: 1
+    path: Assets/URP_Polyquest Worlds Full Pack Vol.1/Polyquest Worlds Full Pack
+      Vol.1/scenes/Full_Scenes/Full_pack_sand.unity
+    guid: 9042860617659884db658e7561bc93a5
+  - enabled: 1
+    path: Assets/URP_Polyquest Worlds Full Pack Vol.1/Polyquest Worlds Full Pack
+      Vol.1/scenes/Full_Scenes/Rocks_ice_cave.unity
+    guid: fc8f38fdb721c8144b320e6db43d8491
+  - enabled: 1
+    path: Assets/URP_Polyquest Worlds Full Pack Vol.1/Polyquest Worlds Full Pack
+      Vol.1/scenes/Cliffs_Scenes/Cliffs_red_cave.unity
+    guid: de16080fdbf8b3c4e942c6f1dd98751d
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

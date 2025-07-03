@@ -21,13 +21,15 @@ namespace Game.Scripts.Gameplay.PresentersLayer.GameStates
         public override void OnEnter()
         {
             Debug.Log("TakeEventCardState Enter");
-            _sceneManagerService.LoadScene("GameplayTakeEvent", SceneLayer.GameplayElement, true);
+            _sceneManagerService.LoadScene("GameplayTakeEvent", SceneLayer.GameplayElement, false);
+            _sceneManagerService.LoadScene("Cliffs_red_cave", SceneLayer.GameplayElement, true);
         }
 
         public override void OnExit()
         {
             Debug.Log("TakeEventCardState Exit");
             _sceneManagerService.UnloadScene("GameplayTakeEvent", SceneLayer.GameplayElement);
+            _sceneManagerService.UnloadScene("Cliffs_red_cave", SceneLayer.GameplayElement);
         }
     }
 }

@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Game.Scripts.Gameplay.DataLayer.Models;
 using Game.Scripts.Infrastructure.Configs.Configs;
+using Newtonsoft.Json;
+using UnityEngine;
 
 namespace Game.Scripts.Gameplay.PresentersLayer.Player
 {
@@ -27,8 +30,18 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
             .Replace("type=", "", StringComparison.OrdinalIgnoreCase)
             .Replace("value=", "+", StringComparison.OrdinalIgnoreCase)
             .Replace(";", "\n");
+
+        public Dictionary<string, int> EquipmentReference;
         public EquipmentCardEntity(IBaseCard card) : base(card)
         {
+            var res = Card.MetaData.TryGetValue(MetaDataKeys.EquipmentReference, out var data);
+            if (!res)
+            {
+                EquipmentReference = new Dictionary<string, int>();
+                Debug.LogWarning($"EquipmentReference for card {card.ID} not found");
+                return;
+            }
+            EquipmentReference = JsonConvert.DeserializeObject<Dictionary<string, int>>(data);
         }
     }
     

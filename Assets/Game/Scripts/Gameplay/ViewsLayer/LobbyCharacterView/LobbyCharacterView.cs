@@ -10,16 +10,21 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyCharacterView
         private static readonly int Equipment = Animator.StringToHash("Equipment");
         [Inject] private IPlayerPresenter _playerPresenter;
         [SerializeField] private Animator animator;
-
-        private void Start()
+        [SerializeField] private CharacterCustomizer customizer;
+         private void Start()
         {
             _playerPresenter.PlayerEquipment.ObserveAdd()
-                .Subscribe(e => OnItemAdded(e.Value, e.Index)).AddTo(this);
+                .Subscribe(e => OnItemAdded(e.Value)).AddTo(this);
         }
 
-        private void OnItemAdded(object value, object index)
+        private void OnItemAdded(EquipmentCardEntity entity)
         {
             animator.SetTrigger(Equipment);
+            animator.SetFloat("LobbyState", Random.Range(0, 3));
+            foreach (var (item, index) in entity.EquipmentReference)
+            {
+                customizer.EnableItem(item, index);   
+            }
         }
     }
 }

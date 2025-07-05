@@ -35,7 +35,7 @@ namespace Game.Scripts.Gameplay.DataLayer
         {
             foreach (var source in Sources)
             {
-                _timerService.SetupTimer(source, source, TimeSpan.FromSeconds(15));
+                _timerService.SetupTimer(source, source, TimeSpan.FromMinutes(5));
             }
         }
         public void Handle(ITimerModel model)

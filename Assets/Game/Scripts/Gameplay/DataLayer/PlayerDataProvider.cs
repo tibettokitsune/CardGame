@@ -96,13 +96,13 @@ namespace Game.Scripts.Gameplay.Lobby.Player
         {
             PlayersEquipment.Remove(eqCard.Id);
             PlayersHand.Add(eqCard.Id);
-            
-            
+
+
             if (!eqCard.MetaDataDictionary.TryGetValue(MetaDataKeys.Stats, out var statsData))
                 return;
-            
+
             var stats = DataParser.ParseStats(statsData);
-            
+
             foreach (var (stat, value) in stats)
             {
                 PlayersStats[stat] -= value;
@@ -114,12 +114,12 @@ namespace Game.Scripts.Gameplay.Lobby.Player
             PlayersEquipment.Add(card.Id);
             var index = PlayersHand.IndexOf(PlayersHand.First(x => x.Equals(card.Id)));
             PlayersHand.RemoveAt(index);
-            
+
             if (!card.MetaDataDictionary.TryGetValue(MetaDataKeys.Stats, out var statsData))
                 return;
-            
+
             var stats = DataParser.ParseStats(statsData);
-            
+
             foreach (var (stat, value) in stats)
             {
                 PlayersStats[stat] += value;

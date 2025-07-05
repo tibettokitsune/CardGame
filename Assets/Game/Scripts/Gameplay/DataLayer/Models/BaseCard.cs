@@ -11,6 +11,7 @@ namespace Game.Scripts.Gameplay.DataLayer.Models
         public const string Stats = "Stats";
         public const string Name = "Name";
         public const string Description = "Description";
+        public const string EquipmentReference = "EquipmentReference";
     }
     
     public class BaseCard : IBaseCard

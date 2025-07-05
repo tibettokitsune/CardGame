@@ -55,55 +55,55 @@
       "Id": "head1",
       "MainLayerId": "icons/head1",
       "BackgroundLayerId": "backgroud",
-      "MetaData": "{\"Equipment\":\"Head\",\"EquipmentDescription\":\"+1 battle power\",\"Name\":\"Mask of the Eastern Beast\",\"Description\":\"A frightening appearance will help you avoid a dangerous battle\",\"Stats\":\"type=Attack,Value=5;type=Health,Value=5\"}"
+      "MetaData": "{\"Equipment\":\"Head\",\"EquipmentDescription\":\"+1 battle power\",\"Name\":\"Mask of the Eastern Beast\",\"Description\":\"A frightening appearance will help you avoid a dangerous battle\",\"Stats\":\"type=Attack,Value=5;type=Health,Value=5\",\"EquipmentReference\":\"{\\\"headCoverings_Base_Hair\\\":\\\"1\\\"}\"}"
     },
     {
       "Id": "head2",
       "MainLayerId": "icons/head2",
       "BackgroundLayerId": "backgroud",
-      "MetaData": "{\"Equipment\":\"Head\",\"EquipmentDescription\":\"+2 battle power\",\"Name\":\"Adventurer's Hat\",\"Description\":\"Adventures are calling\",\"Stats\":\"type=Attack,Value=5;type=Health,Value=5\"}"
+      "MetaData": "{\"Equipment\":\"Head\",\"EquipmentDescription\":\"+2 battle power\",\"Name\":\"Adventurer's Hat\",\"Description\":\"Adventures are calling\",\"Stats\":\"type=Attack,Value=5;type=Health,Value=5\",\"EquipmentReference\":\"{\\\"headCoverings_Base_Hair\\\":\\\"2\\\"}\"}"
     },
     {
       "Id": "head3",
       "MainLayerId": "icons/head3",
       "BackgroundLayerId": "backgroud",
-      "MetaData": "{\"Equipment\":\"Head\",\"EquipmentDescription\":\"+3 battle power\",\"Name\":\"Knight's helmet\",\"Description\":\"My head is safe, but where am I going?\",\"Stats\":\"type=Attack,Value=5;type=Health,Value=5\"}"
+      "MetaData": "{\"Equipment\":\"Head\",\"EquipmentDescription\":\"+3 battle power\",\"Name\":\"Knight's helmet\",\"Description\":\"My head is safe, but where am I going?\",\"Stats\":\"type=Attack,Value=5;type=Health,Value=5\",\"EquipmentReference\":\"{\\\"headCoverings_Base_Hair\\\":\\\"3\\\"}\"}"
     },
     {
       "Id": "head4",
       "MainLayerId": "icons/head4",
       "BackgroundLayerId": "backgroud",
-      "MetaData": "{\"Equipment\":\"Head\",\"EquipmentDescription\":\"+1 to combat strength\",\"Name\":\"Plug-hat\",\"Description\":\"Left over from a visit from a strange guy who suddenly disappeared into thin air\",\"Stats\":\"type=Attack,Value=5;type=Health,Value=5\"}"
+      "MetaData": "{\"Equipment\":\"Head\",\"EquipmentDescription\":\"+1 to combat strength\",\"Name\":\"Plug-hat\",\"Description\":\"Left over from a visit from a strange guy who suddenly disappeared into thin air\",\"Stats\":\"type=Attack,Value=5;type=Health,Value=5\",\"EquipmentReference\":\"{\\\"headCoverings_Base_Hair\\\":\\\"4\\\"}\"}"
     },
     {
       "Id": "head5",
       "MainLayerId": "icons/head5",
       "BackgroundLayerId": "backgroud",
-      "MetaData": "{\"Equipment\":\"Head\",\"EquipmentDescription\":\"+1 to combat strength\",\"Name\":\"Fashionable wig\",\"Description\":\"And let the poor envy your appearance\",\"Stats\":\"type=Attack,Value=5;type=Health,Value=5\"}"
+      "MetaData": "{\"Equipment\":\"Head\",\"EquipmentDescription\":\"+1 to combat strength\",\"Name\":\"Fashionable wig\",\"Description\":\"And let the poor envy your appearance\",\"Stats\":\"type=Attack,Value=5;type=Health,Value=5\",\"EquipmentReference\":\"{\\\"headCoverings_Base_Hair\\\":\\\"5\\\"}\"}"
     },
     {
       "Id": "chest1",
       "MainLayerId": "icons/chest1",
       "BackgroundLayerId": "backgroud",
-      "MetaData": "{\"Equipment\":\"Chest\",\"EquipmentDescription\":\"+1 battle power\",\"Name\":\"Barbarian Hero's Cuirass\",\"Description\":\"The former owner was insane and loved to drink blood from skulls\",\"Stats\":\"type=Attack,Value=5;type=Health,Value=5\"}"
+      "MetaData": "{\"Equipment\":\"Chest\",\"EquipmentDescription\":\"+1 battle power\",\"Name\":\"Barbarian Hero's Cuirass\",\"Description\":\"The former owner was insane and loved to drink blood from skulls\",\"Stats\":\"type=Attack,Value=5;type=Health,Value=5\",\"EquipmentReference\":\"{\\\"torso\\\":\\\"5\\\"}\"}"
     },
     {
       "Id": "chest2",
       "MainLayerId": "icons/chest2",
       "BackgroundLayerId": "backgroud",
-      "MetaData": "{\"Equipment\":\"Chest\",\"EquipmentDescription\":\"+3 battle power\",\"Name\":\"Armor from the East\",\"Description\":\"Strange armor but looks light and strong\",\"Stats\":\"type=Attack,Value=5;type=Health,Value=5\"}"
+      "MetaData": "{\"Equipment\":\"Chest\",\"EquipmentDescription\":\"+3 battle power\",\"Name\":\"Armor from the East\",\"Description\":\"Strange armor but looks light and strong\",\"Stats\":\"type=Attack,Value=5;type=Health,Value=5\",\"EquipmentReference\":\"{\\\"torso\\\":\\\"6\\\"}\"}"
     },
     {
       "Id": "chest3",
       "MainLayerId": "icons/chest3",
       "BackgroundLayerId": "backgroud",
-      "MetaData": "{\"Equipment\":\"Chest\",\"EquipmentDescription\":\"+3 battle power\",\"Name\":\"Knight's cuirass\",\"Description\":\"There's a hole in the back from a crossbow bolt, but it looks brand new.\",\"Stats\":\"type=Attack,Value=5;type=Health,Value=5\"}"
+      "MetaData": "{\"Equipment\":\"Chest\",\"EquipmentDescription\":\"+3 battle power\",\"Name\":\"Knight's cuirass\",\"Description\":\"There's a hole in the back from a crossbow bolt, but it looks brand new.\",\"Stats\":\"type=Attack,Value=5;type=Health,Value=5\",\"EquipmentReference\":\"{\\\"torso\\\":\\\"7\\\"}\"}"
     },
     {
       "Id": "chest4",
       "MainLayerId": "icons/chest4",
       "BackgroundLayerId": "backgroud",
-      "MetaData": "{\"Equipment\":\"Chest\",\"EquipmentDescription\":\"+3 battle power\",\"Name\":\"Mercenary armor\",\"Description\":\"To escape with the loot you need to run fast. A pile of metal on your chest will only get in the way\",\"Stats\":\"type=Attack,Value=5;type=Health,Value=5\"}"
+      "MetaData": "{\"Equipment\":\"Chest\",\"EquipmentDescription\":\"+3 battle power\",\"Name\":\"Mercenary armor\",\"Description\":\"To escape with the loot you need to run fast. A pile of metal on your chest will only get in the way\",\"Stats\":\"type=Attack,Value=5;type=Health,Value=5\",\"EquipmentReference\":\"{\\\"torso\\\":\\\"8\\\"}\"}"
     },
     {
       "Id": "boot1",

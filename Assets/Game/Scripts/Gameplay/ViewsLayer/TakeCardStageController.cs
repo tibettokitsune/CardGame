@@ -37,7 +37,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.GameStates
             await screen.ShowDoorCard(_playerPresenter.CurrentDoor.Value);
             await Task.Delay(2000);
             baseCameraData.cameraStack.Remove(overlayCamera);
-            var fadescreen = await _uiService.ShowScreen("FadeScreen") as FadeScreen;
+            await _uiService.Clear();
         }
     }
 }

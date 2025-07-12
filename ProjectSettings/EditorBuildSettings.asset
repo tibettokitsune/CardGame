@@ -21,6 +21,9 @@ EditorBuildSettings:
     path: Assets/Game/Scenes/GameplayPrepare.unity
     guid: ed10ab046e4554b79b289dbbadc5d880
   - enabled: 1
+    path: Assets/Game/Scenes/Battle.unity
+    guid: 00330810556da4d00b23c1755b22a539
+  - enabled: 1
     path: Assets/URP_Polyquest Worlds Full Pack Vol.1/Polyquest Worlds Full Pack
       Vol.1/scenes/Full_Scenes/Full_pack_sand.unity
     guid: 9042860617659884db658e7561bc93a5

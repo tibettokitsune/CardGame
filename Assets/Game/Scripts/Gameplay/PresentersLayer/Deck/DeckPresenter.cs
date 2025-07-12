@@ -21,6 +21,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Deck
             FillTreasures();
             FillDoors();
             Shuffle(_treasuresCards);
+            Shuffle(_doorsCards);
         }
 
         private void Shuffle(Queue<BaseCard> cardsCollection)

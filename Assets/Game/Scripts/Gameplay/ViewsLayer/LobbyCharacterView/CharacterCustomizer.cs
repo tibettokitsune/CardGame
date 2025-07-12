@@ -57,6 +57,7 @@ public class CharacterCustomizer : MonoBehaviour
         Female
     }
 
+    [Button]
     void Start()
     {
         SetGender(GenderType.Male); // Можно указать Female

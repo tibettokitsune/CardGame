@@ -20,6 +20,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer
             Container.BindInterfacesAndSelfTo<FirstEnterInGameState>().AsSingle();
             Container.BindInterfacesAndSelfTo<PreparePlayerState>().AsSingle();
             Container.BindInterfacesAndSelfTo<TakeEventCardState>().AsSingle();
+            Container.BindInterfacesAndSelfTo<BattleState>().AsSingle();
             Container.BindInterfacesAndSelfTo<PlayerPresenter>().AsSingle();
         }
     }

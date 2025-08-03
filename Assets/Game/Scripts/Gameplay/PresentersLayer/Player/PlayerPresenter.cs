@@ -8,9 +8,15 @@ using UniRx;
 
 namespace Game.Scripts.Gameplay.PresentersLayer.Player
 {
+    public interface ITakeEventCardUseCase
+    {
+        Task Execute();
+    }
+    
     public class PlayerPresenter : IPlayerPresenter,
         IFillStartHandUseCase,
         IEquipCardUseCase,
+        ITakeEventCardUseCase,
         IDisposable
     {
         public ReactiveCollection<CardEntity> PlayerHand { get; } = new();
@@ -42,9 +48,6 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
                     Stat = stat,
                     Value = value,
                 });
-            lobbyDataProvider.LobbyState.Where(x => x == LobbyState.TakeEventCard)
-                .Subscribe(_ => TakeEventCard())
-                .AddTo(_disposables);
         }
 
         private void SyncPlayerStats(
@@ -148,6 +151,12 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
             {
                 await AddRandomCardByType();
             }
+        }
+        
+        async Task ITakeEventCardUseCase.Execute()
+        {
+            var card =  await _deckPresenter.TakeDoorCard();
+            CurrentDoor.Value = new DoorCardEntity(_deckPresenter.GetCardById(card));
         }
 
         private async Task AddRandomCardByType()

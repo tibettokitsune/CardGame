@@ -1,33 +1,17 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Game.Scripts.Gameplay.DataLayer;
-using Game.Scripts.Gameplay.DataLayer.Models;
 using Game.Scripts.Infrastructure.Configs;
 using Game.Scripts.Infrastructure.Configs.Configs;
 using UniRx;
 
 namespace Game.Scripts.Gameplay.Lobby.Player
 {
-    [Serializable]
-    public enum PlayerStat
-    {
-        Health,
-        Attack,
-        Defend,
-        Agility,
-        Strength,
-        Intelligence,
-        Luck
-    }
-
     public interface IPlayerDataProvider
     {
-        public ReactiveCollection<string> PlayersHand { get; }
-        public ReactiveCollection<string> PlayersEquipment { get; }
-        public ReactiveDictionary<PlayerStat, float> PlayersStats { get; }
+        ReactiveCollection<string> PlayersHand { get; }
+        ReactiveCollection<string> PlayersEquipment { get; }
+        ReactiveDictionary<PlayerStat, float> PlayersStats { get; }
         Task ClaimCard(string cardId);
         bool IsPlayerCanEquipCard(string cardId);
         Task EquipCard(string cardId);
@@ -65,10 +49,7 @@ namespace Game.Scripts.Gameplay.Lobby.Player
             return Task.CompletedTask;
         }
 
-        public bool IsPlayerCanEquipCard(string cardId)
-        {
-            return true;
-        }
+        public bool IsPlayerCanEquipCard(string cardId) => true;
 
         public Task EquipCard(string cardId)
         {
@@ -80,16 +61,16 @@ namespace Game.Scripts.Gameplay.Lobby.Player
 
         private void RemoveOccupiedSlot(CardDataConfig card)
         {
-            if (!card.MetaDataDictionary.TryGetValue(MetaDataKeys.Equipment, out var equipmentSlot))
+            if (card?.Equipment == null || card.Equipment.Slot == EquipmentSlot.None)
                 return;
-            foreach (var eq in PlayersEquipment)
-            {
-                var eqCard = _configService.Get<CardDataConfig>(eq);
-                var equippedSlot = eqCard.MetaDataDictionary[MetaDataKeys.Equipment];
-                if (!equippedSlot.Equals(equipmentSlot)) continue;
-                TakeOffEquip(eqCard);
-                return;
-            }
+
+            var equipmentToReplace = PlayersEquipment
+                .Select(eq => _configService.Get<CardDataConfig>(eq))
+                .FirstOrDefault(eqConfig => eqConfig?.Equipment != null &&
+                                            eqConfig.Equipment.Slot == card.Equipment.Slot);
+
+            if (equipmentToReplace != null)
+                TakeOffEquip(equipmentToReplace);
         }
 
         private void TakeOffEquip(CardDataConfig eqCard)
@@ -97,16 +78,8 @@ namespace Game.Scripts.Gameplay.Lobby.Player
             PlayersEquipment.Remove(eqCard.Id);
             PlayersHand.Add(eqCard.Id);
 
-
-            if (!eqCard.MetaDataDictionary.TryGetValue(MetaDataKeys.Stats, out var statsData))
-                return;
-
-            var stats = DataParser.ParseStats(statsData);
-
-            foreach (var (stat, value) in stats)
-            {
-                PlayersStats[stat] -= value;
-            }
+            foreach (var modifier in eqCard.StatModifiers ?? Enumerable.Empty<StatModifier>())
+                PlayersStats[modifier.Stat] -= modifier.Value;
         }
 
         private void EquipSlot(CardDataConfig card)
@@ -115,15 +88,8 @@ namespace Game.Scripts.Gameplay.Lobby.Player
             var index = PlayersHand.IndexOf(PlayersHand.First(x => x.Equals(card.Id)));
             PlayersHand.RemoveAt(index);
 
-            if (!card.MetaDataDictionary.TryGetValue(MetaDataKeys.Stats, out var statsData))
-                return;
-
-            var stats = DataParser.ParseStats(statsData);
-
-            foreach (var (stat, value) in stats)
-            {
-                PlayersStats[stat] += value;
-            }
+            foreach (var modifier in card.StatModifiers ?? Enumerable.Empty<StatModifier>())
+                PlayersStats[modifier.Stat] += modifier.Value;
         }
     }
 }

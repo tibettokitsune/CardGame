@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Game.Scripts.Infrastructure.Configs.Configs;
@@ -27,6 +28,11 @@ namespace Game.Scripts.Infrastructure.Configs
 
             Debug.LogWarning($"Config not found: Type={typeof(T).Name}, ID={id}");
             return default;
+        }
+
+        public IEnumerable<T> GetAll<T>() where T : BaseConfig
+        {
+            return _configs.Values.OfType<T>();
         }
     }
 }

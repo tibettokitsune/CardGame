@@ -21,9 +21,9 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyCharacterView
         {
             animator.SetTrigger(Equipment);
             animator.SetFloat("LobbyState", Random.Range(0, 3));
-            foreach (var (item, index) in entity.EquipmentReference)
+            foreach (var overrideData in entity.Overrides)
             {
-                customizer.EnableItem(item, index);   
+                customizer.EnableItem(overrideData.Item, overrideData.Index);   
             }
         }
     }

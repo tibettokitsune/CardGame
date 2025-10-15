@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Game.Scripts.Gameplay.DataLayer;
 using Game.Scripts.Gameplay.Lobby.Player;
 using Game.Scripts.Gameplay.PresentersLayer.Deck;
+using Game.Scripts.Infrastructure.Configs.Configs;
 using UniRx;
 
 namespace Game.Scripts.Gameplay.PresentersLayer.Player

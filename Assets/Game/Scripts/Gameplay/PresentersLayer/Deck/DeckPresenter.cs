@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Game.Scripts.Gameplay.DataLayer.Models;
 using Game.Scripts.Infrastructure.Configs;
 using Game.Scripts.Infrastructure.Configs.Configs;
+using UnityEngine;
+using Random = System.Random;
 
 namespace Game.Scripts.Gameplay.PresentersLayer.Deck
 {
@@ -14,92 +17,80 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Deck
         private readonly Queue<BaseCard> _treasuresCards = new();
         private readonly Queue<BaseCard> _doorsCards = new();
 
-        private Dictionary<string, BaseCard> _cardsCollection = new();
+        private readonly Dictionary<string, BaseCard> _cardsCollection = new();
+
         public DeckPresenter(IConfigService configService)
         {
             _configService = configService;
-            FillTreasures();
-            FillDoors();
+            InitializeDecks();
+        }
+
+        private void InitializeDecks()
+        {
+            foreach (var config in _configService.GetAll<CardDataConfig>() ?? Enumerable.Empty<CardDataConfig>())
+            {
+                if (config == null)
+                    continue;
+
+                var card = new BaseCard(config);
+                _cardsCollection[card.ID] = card;
+
+                switch (card.Kind)
+                {
+                    case CardKind.Treasure:
+                        _treasuresCards.Enqueue(card);
+                        break;
+                    case CardKind.Door:
+                        _doorsCards.Enqueue(card);
+                        break;
+                }
+            }
+
             Shuffle(_treasuresCards);
             Shuffle(_doorsCards);
         }
 
         private void Shuffle(Queue<BaseCard> cardsCollection)
         {
-            Random rng = new Random();
+            var rng = new Random();
             var list = new List<BaseCard>(cardsCollection);
             cardsCollection.Clear();
 
-            int n = list.Count;
-            while (n > 1)
+            for (var i = list.Count - 1; i > 0; i--)
             {
-                n--;
-                int k = rng.Next(n + 1);
-                (list[k], list[n]) = (list[n], list[k]);
+                var swapIndex = rng.Next(i + 1);
+                (list[i], list[swapIndex]) = (list[swapIndex], list[i]);
             }
 
             foreach (var item in list)
-            {
                 cardsCollection.Enqueue(item);
-            }
-        }
-
-        private void FillTreasures()
-        {
-            for (var i = 0; i < 3; i++)
-            {
-                var cardConfig = _configService.Get<CardDataConfig>($"hand{i + 1}");
-                FilterAndAddCard(new BaseCard(cardConfig), _treasuresCards);
-            }
-            for (var i = 0; i < 5; i++)
-            {
-                var cardConfig = _configService.Get<CardDataConfig>($"head{i + 1}");
-                FilterAndAddCard(new BaseCard(cardConfig), _treasuresCards);
-            }
-            for (var i = 0; i < 4; i++)
-            {
-                var cardConfig = _configService.Get<CardDataConfig>($"chest{i + 1}");
-                FilterAndAddCard(new BaseCard(cardConfig), _treasuresCards);
-            }
-            for (var i = 0; i < 5; i++)
-            {
-                var cardConfig = _configService.Get<CardDataConfig>($"boot{i + 1}");
-                FilterAndAddCard(new BaseCard(cardConfig), _treasuresCards);
-            }
-        }
-
-        private void FillDoors()
-        {
-            for (var i = 0; i < 5; i++)
-            {
-                var cardConfig = _configService.Get<CardDataConfig>($"npc{i + 1}");
-                FilterAndAddCard(new BaseCard(cardConfig), _doorsCards);
-            }
-        }
-
-        private void FilterAndAddCard(BaseCard card, Queue<BaseCard> cardsCollection)
-        {
-            cardsCollection.Enqueue(card);
-            _cardsCollection.TryAdd(card.ID, card);
-        }
-
-        private string FilterAndReturnTreasure()
-        {
-            _treasuresCards.TryDequeue(out var card);
-            return card.ID;
         }
 
         public async Task<string> TakeTreasureCard()
         {
-            return FilterAndReturnTreasure();
+            return DequeueCard(_treasuresCards, "treasure");
         }
 
         public async Task<string> TakeDoorCard()
         {
-            _doorsCards.TryDequeue(out var card);
-            return card.ID;
+            return DequeueCard(_doorsCards, "door");
         }
 
-        public BaseCard GetCardById(string cardId) => _cardsCollection[cardId];
+        private string DequeueCard(Queue<BaseCard> source, string deckName)
+        {
+            if (source.TryDequeue(out var card))
+                return card.ID;
+
+            Debug.LogWarning($"Deck '{deckName}' is empty.");
+            return string.Empty;
+        }
+
+        public BaseCard GetCardById(string cardId)
+        {
+            if (_cardsCollection.TryGetValue(cardId, out var card))
+                return card;
+
+            throw new KeyNotFoundException($"Card with id '{cardId}' was not found.");
+        }
     }
 }

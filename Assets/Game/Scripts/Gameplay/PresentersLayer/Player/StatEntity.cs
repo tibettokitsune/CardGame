@@ -1,5 +1,5 @@
 using System;
-using Game.Scripts.Gameplay.Lobby.Player;
+using Game.Scripts.Infrastructure.Configs.Configs;
 
 namespace Game.Scripts.Gameplay.PresentersLayer.Player
 {

@@ -15,6 +15,9 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
 
         [SerializeField] private bool returnIfNotDropped = true;
 
+        public event Action<DragAndDropWidget> DragStarted;
+        public event Action<DragAndDropWidget> DragEnded;
+
         private RectTransform rectTransform;
         private CanvasGroup canvasGroup;
         private Canvas parentCanvas;
@@ -26,6 +29,7 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
         private LayoutGroup originalLayoutGroup;
         private bool wasInLayoutGroup;
         private string _cardId;
+        public bool IsDragging { get; private set; }
 
         private void Awake()
         {
@@ -44,6 +48,7 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
         {
             if (_currentTarget != null && _currentTarget != this) return;
             _currentTarget = this;
+            IsDragging = true;
             // Запоминаем оригинальный порядок в hierarchy
             originalSiblingIndex = transform.GetSiblingIndex();
 
@@ -65,6 +70,8 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
                     layoutElement.ignoreLayout = true;
                 }
             }
+
+            DragStarted?.Invoke(this);
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -85,6 +92,7 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
         {
             if (_currentTarget != null && _currentTarget != this) return;
             _currentTarget = null;
+            IsDragging = false;
             // Возвращаем прозрачность
             canvasGroup.alpha = 1f;
 
@@ -104,6 +112,8 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
             }
 
             ReturnToOriginalParent();
+
+            DragEnded?.Invoke(this);
         }
 
         private void ReturnToOriginalParent()

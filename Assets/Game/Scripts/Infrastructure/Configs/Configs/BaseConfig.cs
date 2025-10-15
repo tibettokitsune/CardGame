@@ -6,5 +6,6 @@ namespace Game.Scripts.Infrastructure.Configs.Configs
     public class BaseConfig : IBaseConfig
     {
         public string Id { get; set; }
+        public string ConfigType { get; set; }
     }
 }

@@ -36,11 +36,3 @@ namespace Game.Scripts.Infrastructure.Configs
         }
     }
 }
-
-[Serializable]
-public class ConfigsWrapper
-{
-    public List<UIDataConfig> UIConfigs { get; set; }
-    public List<CardDataConfig> CardConfigs { get; set; }
-    public List<CardLayerDataConfig> CardLayersConfigs { get; set; }
-}

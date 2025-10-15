@@ -1,629 +1,654 @@
 {
-  "UIConfigs": [
-    {
-      "PrefabPath": "Prefabs/UI/Menu/MenuScreen",
-      "Layer": 0,
-      "HideOtherScreensOnLayer": false,
-      "ScreenType": "Game.Scripts.Infrastructure.UI.MenuScreen",
-      "Id": "Menu"
-    },
-    {
-      "PrefabPath": "Prefabs/UI/Gameplay/CharacterActiveCardsScreen",
-      "Layer": 1,
-      "HideOtherScreensOnLayer": false,
-      "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.LobbyScreens.CharacterActiveCardsScreen",
-      "Id": "CharacterActiveCards"
-    },
-    {
-      "PrefabPath": "Prefabs/UI/Gameplay/CharacterStatsScreen",
-      "Layer": 1,
-      "HideOtherScreensOnLayer": false,
-      "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.LobbyScreens.CharacterStatsScreen",
-      "Id": "CharacterStats"
-    },
-    {
-      "PrefabPath": "Prefabs/UI/Gameplay/PlayerHandScreen",
-      "Layer": 1,
-      "HideOtherScreensOnLayer": false,
-      "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.LobbyScreens.PlayerHandScreen",
-      "Id": "PlayerHand"
-    },
-    {
-      "PrefabPath": "Prefabs/UI/Gameplay/TimerScreen",
-      "Layer": 1,
-      "HideOtherScreensOnLayer": false,
-      "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.TimerScreen",
-      "Id": "TimerScreen"
-    },
-    {
-      "PrefabPath": "Prefabs/UI/Gameplay/OpenDoorScreen",
-      "Layer": 1,
-      "HideOtherScreensOnLayer": false,
-      "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.OpenDoorScreen",
-      "Id": "OpenDoorScreen"
-    },
-    {
-      "PrefabPath": "Prefabs/UI/Gameplay/FadeScreen",
-      "Layer": 1,
-      "HideOtherScreensOnLayer": false,
-      "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.FadeScreen",
-      "Id": "FadeScreen"
-    }
-  ],
-  "CardConfigs": [
-    {
-      "Id": "head1",
-      "Kind": "Treasure",
-      "MainLayerId": "icons/head1",
-      "BackgroundLayerId": "backgroud",
-      "Name": "Mask of the Eastern Beast",
-      "Description": "A frightening appearance will help you avoid a dangerous battle",
-      "StatModifiers": [
-        {
-          "Stat": "Attack",
-          "Value": 5
-        },
-        {
-          "Stat": "Health",
-          "Value": 5
-        }
-      ],
-      "Equipment": {
-        "Slot": "Head",
-        "Description": "+1 battle power",
-        "Overrides": [
-          {
-            "Item": "headCoverings_Base_Hair",
-            "Index": 1
-          }
-        ]
+  "Menu": {
+    "PrefabPath": "Prefabs/UI/Menu/MenuScreen",
+    "Layer": 0,
+    "HideOtherScreensOnLayer": false,
+    "ScreenType": "Game.Scripts.Infrastructure.UI.MenuScreen",
+    "Id": "Menu",
+    "ConfigType": "UIDataConfig"
+  },
+  "CharacterActiveCards": {
+    "PrefabPath": "Prefabs/UI/Gameplay/CharacterActiveCardsScreen",
+    "Layer": 1,
+    "HideOtherScreensOnLayer": false,
+    "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.LobbyScreens.CharacterActiveCardsScreen",
+    "Id": "CharacterActiveCards",
+    "ConfigType": "UIDataConfig"
+  },
+  "CharacterStats": {
+    "PrefabPath": "Prefabs/UI/Gameplay/CharacterStatsScreen",
+    "Layer": 1,
+    "HideOtherScreensOnLayer": false,
+    "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.LobbyScreens.CharacterStatsScreen",
+    "Id": "CharacterStats",
+    "ConfigType": "UIDataConfig"
+  },
+  "PlayerHand": {
+    "PrefabPath": "Prefabs/UI/Gameplay/PlayerHandScreen",
+    "Layer": 1,
+    "HideOtherScreensOnLayer": false,
+    "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.LobbyScreens.PlayerHandScreen",
+    "Id": "PlayerHand",
+    "ConfigType": "UIDataConfig"
+  },
+  "TimerScreen": {
+    "PrefabPath": "Prefabs/UI/Gameplay/TimerScreen",
+    "Layer": 1,
+    "HideOtherScreensOnLayer": false,
+    "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.TimerScreen",
+    "Id": "TimerScreen",
+    "ConfigType": "UIDataConfig"
+  },
+  "OpenDoorScreen": {
+    "PrefabPath": "Prefabs/UI/Gameplay/OpenDoorScreen",
+    "Layer": 1,
+    "HideOtherScreensOnLayer": false,
+    "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.OpenDoorScreen",
+    "Id": "OpenDoorScreen",
+    "ConfigType": "UIDataConfig"
+  },
+  "FadeScreen": {
+    "PrefabPath": "Prefabs/UI/Gameplay/FadeScreen",
+    "Layer": 1,
+    "HideOtherScreensOnLayer": false,
+    "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.FadeScreen",
+    "Id": "FadeScreen",
+    "ConfigType": "UIDataConfig"
+  },
+  "head1": {
+    "Id": "head1",
+    "Kind": "Treasure",
+    "MainLayerId": "icons/head1",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Mask of the Eastern Beast",
+    "Description": "A frightening appearance will help you avoid a dangerous battle",
+    "StatModifiers": [
+      {
+        "Stat": "Attack",
+        "Value": 5
+      },
+      {
+        "Stat": "Health",
+        "Value": 5
       }
-    },
-    {
-      "Id": "head2",
-      "Kind": "Treasure",
-      "MainLayerId": "icons/head2",
-      "BackgroundLayerId": "backgroud",
-      "Name": "Adventurer's Hat",
-      "Description": "Adventures are calling",
-      "StatModifiers": [
+    ],
+    "Equipment": {
+      "Slot": "Head",
+      "Description": "+1 battle power",
+      "Overrides": [
         {
-          "Stat": "Attack",
-          "Value": 5
-        },
-        {
-          "Stat": "Health",
-          "Value": 5
-        }
-      ],
-      "Equipment": {
-        "Slot": "Head",
-        "Description": "+2 battle power",
-        "Overrides": [
-          {
-            "Item": "headCoverings_Base_Hair",
-            "Index": 2
-          }
-        ]
-      }
-    },
-    {
-      "Id": "head3",
-      "Kind": "Treasure",
-      "MainLayerId": "icons/head3",
-      "BackgroundLayerId": "backgroud",
-      "Name": "Knight's helmet",
-      "Description": "My head is safe, but where am I going?",
-      "StatModifiers": [
-        {
-          "Stat": "Attack",
-          "Value": 5
-        },
-        {
-          "Stat": "Health",
-          "Value": 5
-        }
-      ],
-      "Equipment": {
-        "Slot": "Head",
-        "Description": "+3 battle power",
-        "Overrides": [
-          {
-            "Item": "headCoverings_Base_Hair",
-            "Index": 3
-          }
-        ]
-      }
-    },
-    {
-      "Id": "head4",
-      "Kind": "Treasure",
-      "MainLayerId": "icons/head4",
-      "BackgroundLayerId": "backgroud",
-      "Name": "Plug-hat",
-      "Description": "Left over from a visit from a strange guy who suddenly disappeared into thin air",
-      "StatModifiers": [
-        {
-          "Stat": "Attack",
-          "Value": 5
-        },
-        {
-          "Stat": "Health",
-          "Value": 5
-        }
-      ],
-      "Equipment": {
-        "Slot": "Head",
-        "Description": "+1 to combat strength",
-        "Overrides": [
-          {
-            "Item": "headCoverings_Base_Hair",
-            "Index": 4
-          }
-        ]
-      }
-    },
-    {
-      "Id": "head5",
-      "Kind": "Treasure",
-      "MainLayerId": "icons/head5",
-      "BackgroundLayerId": "backgroud",
-      "Name": "Fashionable wig",
-      "Description": "And let the poor envy your appearance",
-      "StatModifiers": [
-        {
-          "Stat": "Attack",
-          "Value": 5
-        },
-        {
-          "Stat": "Health",
-          "Value": 5
-        }
-      ],
-      "Equipment": {
-        "Slot": "Head",
-        "Description": "+1 to combat strength",
-        "Overrides": [
-          {
-            "Item": "headCoverings_Base_Hair",
-            "Index": 5
-          }
-        ]
-      }
-    },
-    {
-      "Id": "chest1",
-      "Kind": "Treasure",
-      "MainLayerId": "icons/chest1",
-      "BackgroundLayerId": "backgroud",
-      "Name": "Barbarian Hero's Cuirass",
-      "Description": "The former owner was insane and loved to drink blood from skulls",
-      "StatModifiers": [
-        {
-          "Stat": "Attack",
-          "Value": 5
-        },
-        {
-          "Stat": "Health",
-          "Value": 5
-        }
-      ],
-      "Equipment": {
-        "Slot": "Chest",
-        "Description": "+1 battle power",
-        "Overrides": [
-          {
-            "Item": "torso",
-            "Index": 5
-          }
-        ]
-      }
-    },
-    {
-      "Id": "chest2",
-      "Kind": "Treasure",
-      "MainLayerId": "icons/chest2",
-      "BackgroundLayerId": "backgroud",
-      "Name": "Armor from the East",
-      "Description": "Strange armor but looks light and strong",
-      "StatModifiers": [
-        {
-          "Stat": "Attack",
-          "Value": 5
-        },
-        {
-          "Stat": "Health",
-          "Value": 5
-        }
-      ],
-      "Equipment": {
-        "Slot": "Chest",
-        "Description": "+3 battle power",
-        "Overrides": [
-          {
-            "Item": "torso",
-            "Index": 6
-          }
-        ]
-      }
-    },
-    {
-      "Id": "chest3",
-      "Kind": "Treasure",
-      "MainLayerId": "icons/chest3",
-      "BackgroundLayerId": "backgroud",
-      "Name": "Knight's cuirass",
-      "Description": "There's a hole in the back from a crossbow bolt, but it looks brand new.",
-      "StatModifiers": [
-        {
-          "Stat": "Attack",
-          "Value": 5
-        },
-        {
-          "Stat": "Health",
-          "Value": 5
-        }
-      ],
-      "Equipment": {
-        "Slot": "Chest",
-        "Description": "+3 battle power",
-        "Overrides": [
-          {
-            "Item": "torso",
-            "Index": 7
-          }
-        ]
-      }
-    },
-    {
-      "Id": "chest4",
-      "Kind": "Treasure",
-      "MainLayerId": "icons/chest4",
-      "BackgroundLayerId": "backgroud",
-      "Name": "Mercenary armor",
-      "Description": "To escape with the loot you need to run fast. A pile of metal on your chest will only get in the way",
-      "StatModifiers": [
-        {
-          "Stat": "Attack",
-          "Value": 5
-        },
-        {
-          "Stat": "Health",
-          "Value": 5
-        }
-      ],
-      "Equipment": {
-        "Slot": "Chest",
-        "Description": "+3 battle power",
-        "Overrides": [
-          {
-            "Item": "torso",
-            "Index": 8
-          }
-        ]
-      }
-    },
-    {
-      "Id": "boot1",
-      "Kind": "Treasure",
-      "MainLayerId": "icons/boot1",
-      "BackgroundLayerId": "backgroud",
-      "Name": "Rider's boots",
-      "Description": "Good comfortable shoes for all conditions",
-      "StatModifiers": [
-        {
-          "Stat": "Attack",
-          "Value": 5
-        },
-        {
-          "Stat": "Health",
-          "Value": 5
-        }
-      ],
-      "Equipment": {
-        "Slot": "Legs",
-        "Description": "+3 battle power",
-        "Overrides": []
-      }
-    },
-    {
-      "Id": "boot2",
-      "Kind": "Treasure",
-      "MainLayerId": "icons/boot2",
-      "BackgroundLayerId": "backgroud",
-      "Name": "Knight's boots",
-      "Description": "Shoes of an experienced warrior. Will protect from a shot to the knee",
-      "StatModifiers": [
-        {
-          "Stat": "Attack",
-          "Value": 5
-        },
-        {
-          "Stat": "Health",
-          "Value": 5
-        }
-      ],
-      "Equipment": {
-        "Slot": "Legs",
-        "Description": "+3 battle power",
-        "Overrides": []
-      }
-    },
-    {
-      "Id": "boot3",
-      "Kind": "Treasure",
-      "MainLayerId": "icons/boot3",
-      "BackgroundLayerId": "backgroud",
-      "Name": "Monk's Sandals",
-      "Description": "The wearer of this shoe is wiser than the shoe. Or at least tries to appear so.",
-      "StatModifiers": [
-        {
-          "Stat": "Attack",
-          "Value": 5
-        },
-        {
-          "Stat": "Health",
-          "Value": 5
-        }
-      ],
-      "Equipment": {
-        "Slot": "Legs",
-        "Description": "+3 battle power",
-        "Overrides": []
-      }
-    },
-    {
-      "Id": "boot4",
-      "Kind": "Treasure",
-      "MainLayerId": "icons/boot4",
-      "BackgroundLayerId": "backgroud",
-      "Name": "Aristocrat's shoes",
-      "Description": "Shoes expensive enough to pass for rich",
-      "StatModifiers": [
-        {
-          "Stat": "Attack",
-          "Value": 5
-        },
-        {
-          "Stat": "Health",
-          "Value": 5
-        }
-      ],
-      "Equipment": {
-        "Slot": "Legs",
-        "Description": "+3 battle power",
-        "Overrides": []
-      }
-    },
-    {
-      "Id": "boot5",
-      "Kind": "Treasure",
-      "MainLayerId": "icons/boot5",
-      "BackgroundLayerId": "backgroud",
-      "Name": "Bandit Boots",
-      "Description": "I hope this is dried tomato sauce stain",
-      "StatModifiers": [
-        {
-          "Stat": "Attack",
-          "Value": 5
-        },
-        {
-          "Stat": "Health",
-          "Value": 5
-        }
-      ],
-      "Equipment": {
-        "Slot": "Legs",
-        "Description": "+3 battle power",
-        "Overrides": []
-      }
-    },
-    {
-      "Id": "hand1",
-      "Kind": "Treasure",
-      "MainLayerId": "icons/hand1",
-      "BackgroundLayerId": "backgroud",
-      "Name": "Knight's gloves",
-      "Description": "A heavy hand that can drive nails with a blow",
-      "StatModifiers": [
-        {
-          "Stat": "Attack",
-          "Value": 5
-        },
-        {
-          "Stat": "Health",
-          "Value": 5
-        }
-      ],
-      "Equipment": {
-        "Slot": "Hands",
-        "Description": "+3 battle power",
-        "Overrides": []
-      }
-    },
-    {
-      "Id": "hand2",
-      "Kind": "Treasure",
-      "MainLayerId": "icons/hand2",
-      "BackgroundLayerId": "backgroud",
-      "Name": "Thief gloves",
-      "Description": "Meant to leave no trace",
-      "StatModifiers": [
-        {
-          "Stat": "Attack",
-          "Value": 5
-        },
-        {
-          "Stat": "Health",
-          "Value": 5
-        }
-      ],
-      "Equipment": {
-        "Slot": "Hands",
-        "Description": "+3 battle power",
-        "Overrides": []
-      }
-    },
-    {
-      "Id": "hand3",
-      "Kind": "Treasure",
-      "MainLayerId": "icons/hand3",
-      "BackgroundLayerId": "backgroud",
-      "Name": "Blacksmith's gloves",
-      "Description": "The heavy-handed tool of the creator",
-      "StatModifiers": [
-        {
-          "Stat": "Attack",
-          "Value": 5
-        },
-        {
-          "Stat": "Health",
-          "Value": 5
-        }
-      ],
-      "Equipment": {
-        "Slot": "Hands",
-        "Description": "+3 battle power",
-        "Overrides": []
-      }
-    },
-    {
-      "Id": "npc1",
-      "Kind": "Door",
-      "MainLayerId": "icons/npc1",
-      "BackgroundLayerId": "backgroud",
-      "Name": "Knight",
-      "Description": "Strong buy with big sword",
-      "StatModifiers": [
-        {
-          "Stat": "Attack",
-          "Value": 5
-        },
-        {
-          "Stat": "Health",
-          "Value": 20
+          "Item": "headCoverings_Base_Hair",
+          "Index": 1
         }
       ]
     },
-    {
-      "Id": "npc2",
-      "Kind": "Door",
-      "MainLayerId": "icons/npc2",
-      "BackgroundLayerId": "backgroud",
-      "Name": "Monk",
-      "Description": "Strong buy with big sword",
-      "StatModifiers": [
+    "ConfigType": "CardDataConfig"
+  },
+  "head2": {
+    "Id": "head2",
+    "Kind": "Treasure",
+    "MainLayerId": "icons/head2",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Adventurer's Hat",
+    "Description": "Adventures are calling",
+    "StatModifiers": [
+      {
+        "Stat": "Attack",
+        "Value": 5
+      },
+      {
+        "Stat": "Health",
+        "Value": 5
+      }
+    ],
+    "Equipment": {
+      "Slot": "Head",
+      "Description": "+2 battle power",
+      "Overrides": [
         {
-          "Stat": "Attack",
-          "Value": 5
-        },
-        {
-          "Stat": "Health",
-          "Value": 20
+          "Item": "headCoverings_Base_Hair",
+          "Index": 2
         }
       ]
     },
-    {
-      "Id": "npc3",
-      "Kind": "Door",
-      "MainLayerId": "icons/npc3",
-      "BackgroundLayerId": "backgroud",
-      "Name": "Adventurer",
-      "Description": "Strong buy with big sword",
-      "StatModifiers": [
+    "ConfigType": "CardDataConfig"
+  },
+  "head3": {
+    "Id": "head3",
+    "Kind": "Treasure",
+    "MainLayerId": "icons/head3",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Knight's helmet",
+    "Description": "My head is safe, but where am I going?",
+    "StatModifiers": [
+      {
+        "Stat": "Attack",
+        "Value": 5
+      },
+      {
+        "Stat": "Health",
+        "Value": 5
+      }
+    ],
+    "Equipment": {
+      "Slot": "Head",
+      "Description": "+3 battle power",
+      "Overrides": [
         {
-          "Stat": "Attack",
-          "Value": 5
-        },
-        {
-          "Stat": "Health",
-          "Value": 20
+          "Item": "headCoverings_Base_Hair",
+          "Index": 3
         }
       ]
     },
-    {
-      "Id": "npc4",
-      "Kind": "Door",
-      "MainLayerId": "icons/npc4",
-      "BackgroundLayerId": "backgroud",
-      "Name": "Rogue",
-      "Description": "Strong buy with big sword",
-      "StatModifiers": [
+    "ConfigType": "CardDataConfig"
+  },
+  "head4": {
+    "Id": "head4",
+    "Kind": "Treasure",
+    "MainLayerId": "icons/head4",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Plug-hat",
+    "Description": "Left over from a visit from a strange guy who suddenly disappeared into thin air",
+    "StatModifiers": [
+      {
+        "Stat": "Attack",
+        "Value": 5
+      },
+      {
+        "Stat": "Health",
+        "Value": 5
+      }
+    ],
+    "Equipment": {
+      "Slot": "Head",
+      "Description": "+1 to combat strength",
+      "Overrides": [
         {
-          "Stat": "Attack",
-          "Value": 5
-        },
-        {
-          "Stat": "Health",
-          "Value": 20
+          "Item": "headCoverings_Base_Hair",
+          "Index": 4
         }
       ]
     },
-    {
-      "Id": "npc5",
-      "Kind": "Door",
-      "MainLayerId": "icons/npc5",
-      "BackgroundLayerId": "backgroud",
-      "Name": "Pirate",
-      "Description": "Strong buy with big sword",
-      "StatModifiers": [
+    "ConfigType": "CardDataConfig"
+  },
+  "head5": {
+    "Id": "head5",
+    "Kind": "Treasure",
+    "MainLayerId": "icons/head5",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Fashionable wig",
+    "Description": "And let the poor envy your appearance",
+    "StatModifiers": [
+      {
+        "Stat": "Attack",
+        "Value": 5
+      },
+      {
+        "Stat": "Health",
+        "Value": 5
+      }
+    ],
+    "Equipment": {
+      "Slot": "Head",
+      "Description": "+1 to combat strength",
+      "Overrides": [
         {
-          "Stat": "Attack",
-          "Value": 5
-        },
-        {
-          "Stat": "Health",
-          "Value": 20
+          "Item": "headCoverings_Base_Hair",
+          "Index": 5
         }
       ]
-    }
-  ],
-  "CardLayersConfigs": [
-    {
-      "Layers": [
-        {
-          "SpritePath": "",
-          "Offset": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Scale": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          }
-        }
-      ],
-      "Id": "card_main_layer_1"
     },
-    {
-      "Layers": [
+    "ConfigType": "CardDataConfig"
+  },
+  "chest1": {
+    "Id": "chest1",
+    "Kind": "Treasure",
+    "MainLayerId": "icons/chest1",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Barbarian Hero's Cuirass",
+    "Description": "The former owner was insane and loved to drink blood from skulls",
+    "StatModifiers": [
+      {
+        "Stat": "Attack",
+        "Value": 5
+      },
+      {
+        "Stat": "Health",
+        "Value": 5
+      }
+    ],
+    "Equipment": {
+      "Slot": "Chest",
+      "Description": "+1 battle power",
+      "Overrides": [
         {
-          "SpritePath": "",
-          "Offset": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Scale": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          },
-          "Rotation": {
-            "X": 0.0,
-            "Y": 0.0,
-            "Z": 0.0
-          }
+          "Item": "torso",
+          "Index": 5
         }
-      ],
-      "Id": "card_background_1"
-    }
-  ]
+      ]
+    },
+    "ConfigType": "CardDataConfig"
+  },
+  "chest2": {
+    "Id": "chest2",
+    "Kind": "Treasure",
+    "MainLayerId": "icons/chest2",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Armor from the East",
+    "Description": "Strange armor but looks light and strong",
+    "StatModifiers": [
+      {
+        "Stat": "Attack",
+        "Value": 5
+      },
+      {
+        "Stat": "Health",
+        "Value": 5
+      }
+    ],
+    "Equipment": {
+      "Slot": "Chest",
+      "Description": "+3 battle power",
+      "Overrides": [
+        {
+          "Item": "torso",
+          "Index": 6
+        }
+      ]
+    },
+    "ConfigType": "CardDataConfig"
+  },
+  "chest3": {
+    "Id": "chest3",
+    "Kind": "Treasure",
+    "MainLayerId": "icons/chest3",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Knight's cuirass",
+    "Description": "There's a hole in the back from a crossbow bolt, but it looks brand new.",
+    "StatModifiers": [
+      {
+        "Stat": "Attack",
+        "Value": 5
+      },
+      {
+        "Stat": "Health",
+        "Value": 5
+      }
+    ],
+    "Equipment": {
+      "Slot": "Chest",
+      "Description": "+3 battle power",
+      "Overrides": [
+        {
+          "Item": "torso",
+          "Index": 7
+        }
+      ]
+    },
+    "ConfigType": "CardDataConfig"
+  },
+  "chest4": {
+    "Id": "chest4",
+    "Kind": "Treasure",
+    "MainLayerId": "icons/chest4",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Mercenary armor",
+    "Description": "To escape with the loot you need to run fast. A pile of metal on your chest will only get in the way",
+    "StatModifiers": [
+      {
+        "Stat": "Attack",
+        "Value": 5
+      },
+      {
+        "Stat": "Health",
+        "Value": 5
+      }
+    ],
+    "Equipment": {
+      "Slot": "Chest",
+      "Description": "+3 battle power",
+      "Overrides": [
+        {
+          "Item": "torso",
+          "Index": 8
+        }
+      ]
+    },
+    "ConfigType": "CardDataConfig"
+  },
+  "boot1": {
+    "Id": "boot1",
+    "Kind": "Treasure",
+    "MainLayerId": "icons/boot1",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Rider's boots",
+    "Description": "Good comfortable shoes for all conditions",
+    "StatModifiers": [
+      {
+        "Stat": "Attack",
+        "Value": 5
+      },
+      {
+        "Stat": "Health",
+        "Value": 5
+      }
+    ],
+    "Equipment": {
+      "Slot": "Legs",
+      "Description": "+3 battle power",
+      "Overrides": []
+    },
+    "ConfigType": "CardDataConfig"
+  },
+  "boot2": {
+    "Id": "boot2",
+    "Kind": "Treasure",
+    "MainLayerId": "icons/boot2",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Knight's boots",
+    "Description": "Shoes of an experienced warrior. Will protect from a shot to the knee",
+    "StatModifiers": [
+      {
+        "Stat": "Attack",
+        "Value": 5
+      },
+      {
+        "Stat": "Health",
+        "Value": 5
+      }
+    ],
+    "Equipment": {
+      "Slot": "Legs",
+      "Description": "+3 battle power",
+      "Overrides": []
+    },
+    "ConfigType": "CardDataConfig"
+  },
+  "boot3": {
+    "Id": "boot3",
+    "Kind": "Treasure",
+    "MainLayerId": "icons/boot3",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Monk's Sandals",
+    "Description": "The wearer of this shoe is wiser than the shoe. Or at least tries to appear so.",
+    "StatModifiers": [
+      {
+        "Stat": "Attack",
+        "Value": 5
+      },
+      {
+        "Stat": "Health",
+        "Value": 5
+      }
+    ],
+    "Equipment": {
+      "Slot": "Legs",
+      "Description": "+3 battle power",
+      "Overrides": []
+    },
+    "ConfigType": "CardDataConfig"
+  },
+  "boot4": {
+    "Id": "boot4",
+    "Kind": "Treasure",
+    "MainLayerId": "icons/boot4",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Aristocrat's shoes",
+    "Description": "Shoes expensive enough to pass for rich",
+    "StatModifiers": [
+      {
+        "Stat": "Attack",
+        "Value": 5
+      },
+      {
+        "Stat": "Health",
+        "Value": 5
+      }
+    ],
+    "Equipment": {
+      "Slot": "Legs",
+      "Description": "+3 battle power",
+      "Overrides": []
+    },
+    "ConfigType": "CardDataConfig"
+  },
+  "boot5": {
+    "Id": "boot5",
+    "Kind": "Treasure",
+    "MainLayerId": "icons/boot5",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Bandit Boots",
+    "Description": "I hope this is dried tomato sauce stain",
+    "StatModifiers": [
+      {
+        "Stat": "Attack",
+        "Value": 5
+      },
+      {
+        "Stat": "Health",
+        "Value": 5
+      }
+    ],
+    "Equipment": {
+      "Slot": "Legs",
+      "Description": "+3 battle power",
+      "Overrides": []
+    },
+    "ConfigType": "CardDataConfig"
+  },
+  "hand1": {
+    "Id": "hand1",
+    "Kind": "Treasure",
+    "MainLayerId": "icons/hand1",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Knight's gloves",
+    "Description": "A heavy hand that can drive nails with a blow",
+    "StatModifiers": [
+      {
+        "Stat": "Attack",
+        "Value": 5
+      },
+      {
+        "Stat": "Health",
+        "Value": 5
+      }
+    ],
+    "Equipment": {
+      "Slot": "Hands",
+      "Description": "+3 battle power",
+      "Overrides": []
+    },
+    "ConfigType": "CardDataConfig"
+  },
+  "hand2": {
+    "Id": "hand2",
+    "Kind": "Treasure",
+    "MainLayerId": "icons/hand2",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Thief gloves",
+    "Description": "Meant to leave no trace",
+    "StatModifiers": [
+      {
+        "Stat": "Attack",
+        "Value": 5
+      },
+      {
+        "Stat": "Health",
+        "Value": 5
+      }
+    ],
+    "Equipment": {
+      "Slot": "Hands",
+      "Description": "+3 battle power",
+      "Overrides": []
+    },
+    "ConfigType": "CardDataConfig"
+  },
+  "hand3": {
+    "Id": "hand3",
+    "Kind": "Treasure",
+    "MainLayerId": "icons/hand3",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Blacksmith's gloves",
+    "Description": "The heavy-handed tool of the creator",
+    "StatModifiers": [
+      {
+        "Stat": "Attack",
+        "Value": 5
+      },
+      {
+        "Stat": "Health",
+        "Value": 5
+      }
+    ],
+    "Equipment": {
+      "Slot": "Hands",
+      "Description": "+3 battle power",
+      "Overrides": []
+    },
+    "ConfigType": "CardDataConfig"
+  },
+  "npc1": {
+    "Id": "npc1",
+    "Kind": "Door",
+    "MainLayerId": "icons/npc1",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Knight",
+    "Description": "Strong buy with big sword",
+    "StatModifiers": [
+      {
+        "Stat": "Attack",
+        "Value": 5
+      },
+      {
+        "Stat": "Health",
+        "Value": 20
+      }
+    ],
+    "ConfigType": "CardDataConfig"
+  },
+  "npc2": {
+    "Id": "npc2",
+    "Kind": "Door",
+    "MainLayerId": "icons/npc2",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Monk",
+    "Description": "Strong buy with big sword",
+    "StatModifiers": [
+      {
+        "Stat": "Attack",
+        "Value": 5
+      },
+      {
+        "Stat": "Health",
+        "Value": 20
+      }
+    ],
+    "ConfigType": "CardDataConfig"
+  },
+  "npc3": {
+    "Id": "npc3",
+    "Kind": "Door",
+    "MainLayerId": "icons/npc3",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Adventurer",
+    "Description": "Strong buy with big sword",
+    "StatModifiers": [
+      {
+        "Stat": "Attack",
+        "Value": 5
+      },
+      {
+        "Stat": "Health",
+        "Value": 20
+      }
+    ],
+    "ConfigType": "CardDataConfig"
+  },
+  "npc4": {
+    "Id": "npc4",
+    "Kind": "Door",
+    "MainLayerId": "icons/npc4",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Rogue",
+    "Description": "Strong buy with big sword",
+    "StatModifiers": [
+      {
+        "Stat": "Attack",
+        "Value": 5
+      },
+      {
+        "Stat": "Health",
+        "Value": 20
+      }
+    ],
+    "ConfigType": "CardDataConfig"
+  },
+  "npc5": {
+    "Id": "npc5",
+    "Kind": "Door",
+    "MainLayerId": "icons/npc5",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Pirate",
+    "Description": "Strong buy with big sword",
+    "StatModifiers": [
+      {
+        "Stat": "Attack",
+        "Value": 5
+      },
+      {
+        "Stat": "Health",
+        "Value": 20
+      }
+    ],
+    "ConfigType": "CardDataConfig"
+  },
+  "card_main_layer_1": {
+    "Layers": [
+      {
+        "SpritePath": "",
+        "Offset": {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0
+        },
+        "Scale": {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0
+        }
+      }
+    ],
+    "Id": "card_main_layer_1",
+    "ConfigType": "CardLayerDataConfig"
+  },
+  "card_background_1": {
+    "Layers": [
+      {
+        "SpritePath": "",
+        "Offset": {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0
+        },
+        "Scale": {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0
+        }
+      }
+    ],
+    "Id": "card_background_1",
+    "ConfigType": "CardLayerDataConfig"
+  }
 }

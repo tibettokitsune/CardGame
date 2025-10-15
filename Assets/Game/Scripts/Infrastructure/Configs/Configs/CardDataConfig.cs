@@ -49,7 +49,28 @@ namespace Game.Scripts.Infrastructure.Configs.Configs
         public string BackgroundLayerId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public EquipmentConfig Equipment { get; set; }
+    }
+
+    [Serializable]
+    public class CardWithStatModifiersConfig : CardDataConfig
+    {
         public List<StatModifier> StatModifiers { get; set; } = new();
+    }
+
+    [Serializable]
+    public class TreasureCardConfig : CardWithStatModifiersConfig
+    {
+        public EquipmentConfig Equipment { get; set; } = new();
+    }
+
+    [Serializable]
+    public class DoorCardConfig : CardWithStatModifiersConfig
+    {
+    }
+
+    [Serializable]
+    public class EventCardConfig : CardWithStatModifiersConfig
+    {
+        public bool IsPersistent { get; set; }
     }
 }

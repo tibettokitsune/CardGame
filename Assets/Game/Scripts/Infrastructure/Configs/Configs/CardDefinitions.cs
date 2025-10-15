@@ -3,7 +3,8 @@ namespace Game.Scripts.Infrastructure.Configs.Configs
     public enum CardKind
     {
         Treasure,
-        Door
+        Door,
+        Event
     }
 
     public enum EquipmentSlot

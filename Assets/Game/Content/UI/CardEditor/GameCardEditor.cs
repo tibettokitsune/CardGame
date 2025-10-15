@@ -4,6 +4,7 @@ using System.Linq;
 using Game.Scripts.Infrastructure.Configs.Configs;
 using Game.Scripts.Infrastructure.Helpers;
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -30,6 +31,14 @@ public class GameCardEditor : EditorWindow
     private readonly List<CardDataConfig> _cardItems = new();
     private CardDataConfig _selectedCard;
     private bool _hasUnsavedChanges;
+    private enum CardConfigVariant
+    {
+        Base,
+        StatModifiers,
+        Treasure,
+        Door,
+        Event
+    }
 
     public async void CreateGUI()
     {
@@ -117,14 +126,21 @@ public class GameCardEditor : EditorWindow
 
     private void EnsureCollections(CardDataConfig card)
     {
-        card.ConfigType = nameof(CardDataConfig);
-        card.StatModifiers ??= new List<StatModifier>();
-        if (card.Equipment == null)
+        if (card == null)
+            return;
+
+        card.ConfigType = card.GetType().Name;
+
+        if (card is CardWithStatModifiersConfig statsCard)
         {
-            card.Equipment = new EquipmentConfig();
+            statsCard.StatModifiers ??= new List<StatModifier>();
         }
 
-        card.Equipment.Overrides ??= new List<AppearanceOverride>();
+        if (card is TreasureCardConfig treasureCard)
+        {
+            treasureCard.Equipment ??= new EquipmentConfig();
+            treasureCard.Equipment.Overrides ??= new List<AppearanceOverride>();
+        }
     }
 
     private void OnSelectionChanged(IEnumerable<object> selectedItems)
@@ -148,9 +164,18 @@ public class GameCardEditor : EditorWindow
             return;
         }
 
+        EnsureCollections(card);
+
         var header = new Label($"{card.Id}") { name = "CardHeader" };
         header.AddToClassList("custom-label");
         _detailPanel.Add(header);
+
+        var variantField = new EnumField("Тип конфигурации", GetVariant(card));
+        variantField.RegisterValueChangedCallback(evt =>
+        {
+            ApplyVariantChange(card, (CardConfigVariant)evt.newValue);
+        });
+        _detailPanel.Add(variantField);
 
         _detailPanel.Add(CreateIdField(card));
         _detailPanel.Add(CreateTextField("Name", card.Name, newValue =>
@@ -171,20 +196,38 @@ public class GameCardEditor : EditorWindow
             MarkDirty();
         }));
 
-        _detailPanel.Add(CreateTextField("Main Layer Id", card.MainLayerId, newValue =>
-        {
-            card.MainLayerId = newValue;
-            MarkDirty();
-        }));
+        _detailPanel.Add(CreateLayerSelector(
+            "Main Layer Id",
+            card,
+            c => c.MainLayerId,
+            (c, value) => c.MainLayerId = value));
 
-        _detailPanel.Add(CreateTextField("Background Layer Id", card.BackgroundLayerId, newValue =>
-        {
-            card.BackgroundLayerId = newValue;
-            MarkDirty();
-        }));
+        _detailPanel.Add(CreateLayerSelector(
+            "Background Layer Id",
+            card,
+            c => c.BackgroundLayerId,
+            (c, value) => c.BackgroundLayerId = value));
 
-        _detailPanel.Add(CreateEquipmentSection(card));
-        _detailPanel.Add(CreateStatModifiersSection(card));
+        if (card is TreasureCardConfig treasureCard)
+        {
+            _detailPanel.Add(CreateEquipmentSection(treasureCard));
+        }
+
+        if (card is CardWithStatModifiersConfig statsCard)
+        {
+            _detailPanel.Add(CreateStatModifiersSection(statsCard));
+        }
+
+        if (card is EventCardConfig eventCard)
+        {
+            var persistentToggle = new Toggle("Persistent Effect") { value = eventCard.IsPersistent };
+            persistentToggle.RegisterValueChangedCallback(evt =>
+            {
+                eventCard.IsPersistent = evt.newValue;
+                MarkDirty();
+            });
+            _detailPanel.Add(persistentToggle);
+        }
     }
 
     private VisualElement CreateIdField(CardDataConfig card)
@@ -226,7 +269,162 @@ public class GameCardEditor : EditorWindow
         return field;
     }
 
-    private VisualElement CreateEquipmentSection(CardDataConfig card)
+    private VisualElement CreateLayerSelector(
+        string fieldLabel,
+        CardDataConfig card,
+        Func<CardDataConfig, string> getter,
+        Action<CardDataConfig, string> setter,
+        bool refreshListOnChange = false)
+    {
+        var sectionName = fieldLabel.Replace(" ", string.Empty);
+        var container = new VisualElement { name = $"{sectionName}Section" };
+        container.style.marginBottom = 6;
+
+        var textField = new TextField(fieldLabel)
+        {
+            value = getter(card) ?? string.Empty
+        };
+
+        var iconPreview = new Image
+        {
+            name = $"{sectionName}Preview",
+            scaleMode = ScaleMode.ScaleToFit
+        };
+        iconPreview.AddToClassList("icon-frame");
+        iconPreview.style.width = 128;
+        iconPreview.style.height = 128;
+        UpdateIconPreview(iconPreview, textField.value);
+
+        var objectField = new ObjectField("Sprite")
+        {
+            objectType = typeof(Sprite),
+            allowSceneObjects = false
+        };
+        objectField.SetValueWithoutNotify(LoadSpriteAsset(textField.value));
+
+        void ApplyPath(string path)
+        {
+            var normalized = string.IsNullOrWhiteSpace(path) ? string.Empty : path.Trim();
+            setter(card, normalized);
+            MarkDirty();
+            UpdateIconPreview(iconPreview, normalized);
+
+            if (refreshListOnChange)
+            {
+                RefreshCardList(card);
+            }
+        }
+
+        textField.RegisterValueChangedCallback(evt =>
+        {
+            var newPath = evt.newValue ?? string.Empty;
+            ApplyPath(newPath);
+            objectField.SetValueWithoutNotify(LoadSpriteAsset(newPath));
+        });
+
+        objectField.RegisterValueChangedCallback(evt =>
+        {
+            if (evt.newValue is Sprite sprite)
+            {
+                if (!TryGetResourcesPath(sprite, out var resourcePath))
+                {
+                    EditorUtility.DisplayDialog("Ошибка ресурсов", "Выбранный ассет должен находиться внутри папки Resources.", "OK");
+                    objectField.SetValueWithoutNotify(evt.previousValue as Sprite);
+                    return;
+                }
+
+                textField.SetValueWithoutNotify(resourcePath);
+                ApplyPath(resourcePath);
+            }
+            else
+            {
+                textField.SetValueWithoutNotify(string.Empty);
+                ApplyPath(string.Empty);
+            }
+        });
+
+        var reloadButton = new Button(() =>
+        {
+            var currentPath = getter(card) ?? string.Empty;
+            textField.SetValueWithoutNotify(currentPath);
+            objectField.SetValueWithoutNotify(LoadSpriteAsset(currentPath));
+            UpdateIconPreview(iconPreview, currentPath);
+        })
+        {
+            text = "Обновить превью"
+        };
+
+        container.Add(textField);
+        container.Add(iconPreview);
+        container.Add(objectField);
+        container.Add(reloadButton);
+
+        return container;
+    }
+
+    private void UpdateIconPreview(Image iconPreview, string resourcePath)
+    {
+        if (iconPreview == null)
+            return;
+
+        if (string.IsNullOrWhiteSpace(resourcePath))
+        {
+            iconPreview.image = null;
+            iconPreview.tooltip = "Путь не задан";
+            return;
+        }
+
+        var sprite = LoadSpriteAsset(resourcePath);
+        if (sprite != null && sprite.texture != null)
+        {
+            iconPreview.image = sprite.texture;
+            iconPreview.tooltip = resourcePath;
+        }
+        else
+        {
+            iconPreview.image = null;
+            iconPreview.tooltip = $"Не удалось загрузить ресурс: {resourcePath}";
+        }
+    }
+
+    private Sprite LoadSpriteAsset(string resourcePath)
+    {
+        if (string.IsNullOrWhiteSpace(resourcePath))
+            return null;
+
+        return Resources.Load<Sprite>(resourcePath);
+    }
+
+    private bool TryGetResourcesPath(UnityEngine.Object asset, out string resourcePath)
+    {
+        resourcePath = string.Empty;
+        if (asset == null)
+            return false;
+
+        var assetPath = AssetDatabase.GetAssetPath(asset);
+        if (string.IsNullOrEmpty(assetPath))
+            return false;
+
+        const string resourcesMarker = "/Resources/";
+        var index = assetPath.IndexOf(resourcesMarker, StringComparison.OrdinalIgnoreCase);
+        if (index < 0)
+            return false;
+
+        var startIndex = index + resourcesMarker.Length;
+        var extensionIndex = assetPath.LastIndexOf('.');
+        if (extensionIndex <= startIndex)
+        {
+            resourcePath = assetPath.Substring(startIndex).Replace("\\", "/");
+        }
+        else
+        {
+            resourcePath = assetPath.Substring(startIndex, extensionIndex - startIndex).Replace("\\", "/");
+        }
+
+        return true;
+    }
+
+    private VisualElement CreateEquipmentSection(TreasureCardConfig card)
     {
         EnsureCollections(card);
 
@@ -251,7 +449,7 @@ public class GameCardEditor : EditorWindow
         return foldout;
     }
 
-    private VisualElement CreateAppearanceOverridesSection(CardDataConfig card)
+    private VisualElement CreateAppearanceOverridesSection(TreasureCardConfig card)
     {
         var overridesFoldout = new Foldout { text = "Appearance Overrides", value = false };
 
@@ -321,7 +519,7 @@ public class GameCardEditor : EditorWindow
         return overridesFoldout;
     }
 
-    private VisualElement CreateStatModifiersSection(CardDataConfig card)
+    private VisualElement CreateStatModifiersSection(CardWithStatModifiersConfig card)
     {
         var foldout = new Foldout { text = "Stat Modifiers", value = false };
         var listContainer = new VisualElement { name = "StatModifiersContainer" };
@@ -392,12 +590,143 @@ public class GameCardEditor : EditorWindow
         return foldout;
     }
 
+    private CardConfigVariant GetVariant(CardDataConfig card)
+    {
+        return card switch
+        {
+            TreasureCardConfig => CardConfigVariant.Treasure,
+            DoorCardConfig => CardConfigVariant.Door,
+            EventCardConfig => CardConfigVariant.Event,
+            CardWithStatModifiersConfig => CardConfigVariant.StatModifiers,
+            _ => CardConfigVariant.Base
+        };
+    }
+
+    private void ApplyVariantChange(CardDataConfig source, CardConfigVariant targetVariant)
+    {
+        if (source == null)
+            return;
+
+        var newCard = ConvertCardVariant(source, targetVariant);
+        if (newCard == null || ReferenceEquals(source, newCard))
+            return;
+
+        ReplaceCardReference(source, newCard);
+        _selectedCard = newCard;
+        RefreshCardList(newCard);
+        MarkDirty();
+    }
+
+    private CardDataConfig ConvertCardVariant(CardDataConfig source, CardConfigVariant targetVariant)
+    {
+        var currentVariant = GetVariant(source);
+        if (currentVariant == targetVariant)
+            return source;
+
+        CardDataConfig CreateInstance(CardConfigVariant variant) => variant switch
+        {
+            CardConfigVariant.Base => new CardDataConfig(),
+            CardConfigVariant.StatModifiers => new CardWithStatModifiersConfig(),
+            CardConfigVariant.Treasure => new TreasureCardConfig(),
+            CardConfigVariant.Door => new DoorCardConfig(),
+            CardConfigVariant.Event => new EventCardConfig(),
+            _ => new CardDataConfig()
+        };
+
+        var target = CreateInstance(targetVariant);
+        CopyBaseCardData(source, target, targetVariant);
+
+        if (target is CardWithStatModifiersConfig statsTarget)
+        {
+            statsTarget.StatModifiers = CloneStatModifiers(source as CardWithStatModifiersConfig);
+        }
+
+        if (target is TreasureCardConfig treasureTarget)
+        {
+            treasureTarget.Equipment = CloneEquipment((source as TreasureCardConfig)?.Equipment);
+        }
+
+        EnsureCollections(target);
+        return target;
+    }
+
+    private void ReplaceCardReference(CardDataConfig oldCard, CardDataConfig newCard)
+    {
+        if (oldCard == null || newCard == null)
+            return;
+
+        if (_configs.ContainsKey(oldCard.Id))
+        {
+            _configs[oldCard.Id] = newCard;
+        }
+
+        var index = _cardItems.IndexOf(oldCard);
+        if (index >= 0)
+        {
+            _cardItems[index] = newCard;
+        }
+    }
+
+    private static void CopyBaseCardData(CardDataConfig source, CardDataConfig target, CardConfigVariant targetVariant)
+    {
+        target.Id = source.Id;
+        target.ConfigType = target.GetType().Name;
+        target.Kind = ResolveKindForVariant(targetVariant, source.Kind);
+        target.Name = source.Name;
+        target.Description = source.Description;
+        target.MainLayerId = source.MainLayerId;
+        target.BackgroundLayerId = source.BackgroundLayerId;
+    }
+
+    private static CardKind ResolveKindForVariant(CardConfigVariant variant, CardKind current)
+    {
+        return variant switch
+        {
+            CardConfigVariant.Treasure => CardKind.Treasure,
+            CardConfigVariant.Door => CardKind.Door,
+            CardConfigVariant.Event => CardKind.Event,
+            _ => current
+        };
+    }
+
+    private static List<StatModifier> CloneStatModifiers(CardWithStatModifiersConfig source)
+    {
+        if (source?.StatModifiers == null)
+            return new List<StatModifier>();
+
+        return source.StatModifiers
+            .Select(modifier => new StatModifier { Stat = modifier.Stat, Value = modifier.Value })
+            .ToList();
+    }
+
+    private static EquipmentConfig CloneEquipment(EquipmentConfig equipment)
+    {
+        if (equipment == null)
+            return new EquipmentConfig();
+
+        return new EquipmentConfig
+        {
+            Slot = equipment.Slot,
+            Description = equipment.Description,
+            Overrides = CloneAppearanceOverrides(equipment.Overrides)
+        };
+    }
+
+    private static List<AppearanceOverride> CloneAppearanceOverrides(IEnumerable<AppearanceOverride> overrides)
+    {
+        if (overrides == null)
+            return new List<AppearanceOverride>();
+
+        return overrides
+            .Select(item => new AppearanceOverride { Item = item.Item, Index = item.Index })
+            .ToList();
+    }
+
     private void OnAddCard()
     {
-        var newCard = new CardDataConfig
+        var newCard = new TreasureCardConfig
         {
             Id = GenerateUniqueId(),
-            ConfigType = nameof(CardDataConfig),
             Kind = CardKind.Treasure,
             Name = "New Card",
             Description = string.Empty,

@@ -82,7 +82,7 @@
         }
       ]
     },
-    "ConfigType": "CardDataConfig"
+    "ConfigType": "TreasureCardConfig"
   },
   "head2": {
     "Id": "head2",
@@ -111,7 +111,7 @@
         }
       ]
     },
-    "ConfigType": "CardDataConfig"
+    "ConfigType": "TreasureCardConfig"
   },
   "head3": {
     "Id": "head3",
@@ -140,7 +140,7 @@
         }
       ]
     },
-    "ConfigType": "CardDataConfig"
+    "ConfigType": "TreasureCardConfig"
   },
   "head4": {
     "Id": "head4",
@@ -169,7 +169,7 @@
         }
       ]
     },
-    "ConfigType": "CardDataConfig"
+    "ConfigType": "TreasureCardConfig"
   },
   "head5": {
     "Id": "head5",
@@ -198,7 +198,7 @@
         }
       ]
     },
-    "ConfigType": "CardDataConfig"
+    "ConfigType": "TreasureCardConfig"
   },
   "chest1": {
     "Id": "chest1",
@@ -227,7 +227,7 @@
         }
       ]
     },
-    "ConfigType": "CardDataConfig"
+    "ConfigType": "TreasureCardConfig"
   },
   "chest2": {
     "Id": "chest2",
@@ -256,7 +256,7 @@
         }
       ]
     },
-    "ConfigType": "CardDataConfig"
+    "ConfigType": "TreasureCardConfig"
   },
   "chest3": {
     "Id": "chest3",
@@ -285,7 +285,7 @@
         }
       ]
     },
-    "ConfigType": "CardDataConfig"
+    "ConfigType": "TreasureCardConfig"
   },
   "chest4": {
     "Id": "chest4",
@@ -314,7 +314,7 @@
         }
       ]
     },
-    "ConfigType": "CardDataConfig"
+    "ConfigType": "TreasureCardConfig"
   },
   "boot1": {
     "Id": "boot1",
@@ -338,7 +338,7 @@
       "Description": "+3 battle power",
       "Overrides": []
     },
-    "ConfigType": "CardDataConfig"
+    "ConfigType": "TreasureCardConfig"
   },
   "boot2": {
     "Id": "boot2",
@@ -362,7 +362,7 @@
       "Description": "+3 battle power",
       "Overrides": []
     },
-    "ConfigType": "CardDataConfig"
+    "ConfigType": "TreasureCardConfig"
   },
   "boot3": {
     "Id": "boot3",
@@ -386,7 +386,7 @@
       "Description": "+3 battle power",
       "Overrides": []
     },
-    "ConfigType": "CardDataConfig"
+    "ConfigType": "TreasureCardConfig"
   },
   "boot4": {
     "Id": "boot4",
@@ -410,7 +410,7 @@
       "Description": "+3 battle power",
       "Overrides": []
     },
-    "ConfigType": "CardDataConfig"
+    "ConfigType": "TreasureCardConfig"
   },
   "boot5": {
     "Id": "boot5",
@@ -434,7 +434,7 @@
       "Description": "+3 battle power",
       "Overrides": []
     },
-    "ConfigType": "CardDataConfig"
+    "ConfigType": "TreasureCardConfig"
   },
   "hand1": {
     "Id": "hand1",
@@ -458,7 +458,7 @@
       "Description": "+3 battle power",
       "Overrides": []
     },
-    "ConfigType": "CardDataConfig"
+    "ConfigType": "TreasureCardConfig"
   },
   "hand2": {
     "Id": "hand2",
@@ -482,7 +482,7 @@
       "Description": "+3 battle power",
       "Overrides": []
     },
-    "ConfigType": "CardDataConfig"
+    "ConfigType": "TreasureCardConfig"
   },
   "hand3": {
     "Id": "hand3",
@@ -506,7 +506,7 @@
       "Description": "+3 battle power",
       "Overrides": []
     },
-    "ConfigType": "CardDataConfig"
+    "ConfigType": "TreasureCardConfig"
   },
   "npc1": {
     "Id": "npc1",
@@ -525,7 +525,7 @@
         "Value": 20
       }
     ],
-    "ConfigType": "CardDataConfig"
+    "ConfigType": "DoorCardConfig"
   },
   "npc2": {
     "Id": "npc2",
@@ -544,7 +544,7 @@
         "Value": 20
       }
     ],
-    "ConfigType": "CardDataConfig"
+    "ConfigType": "DoorCardConfig"
   },
   "npc3": {
     "Id": "npc3",
@@ -563,7 +563,7 @@
         "Value": 20
       }
     ],
-    "ConfigType": "CardDataConfig"
+    "ConfigType": "DoorCardConfig"
   },
   "npc4": {
     "Id": "npc4",
@@ -582,7 +582,7 @@
         "Value": 20
       }
     ],
-    "ConfigType": "CardDataConfig"
+    "ConfigType": "DoorCardConfig"
   },
   "npc5": {
     "Id": "npc5",
@@ -601,7 +601,7 @@
         "Value": 20
       }
     ],
-    "ConfigType": "CardDataConfig"
+    "ConfigType": "DoorCardConfig"
   },
   "card_main_layer_1": {
     "Layers": [

@@ -49,23 +49,37 @@ namespace Game.Scripts.Gameplay.Lobby.Player
             return Task.CompletedTask;
         }
 
-        public bool IsPlayerCanEquipCard(string cardId) => true;
+        public bool IsPlayerCanEquipCard(string cardId)
+        {
+            if (string.IsNullOrWhiteSpace(cardId))
+                return false;
+
+            var card = _configService.Get<CardDataConfig>(cardId) as TreasureCardConfig;
+            if (card == null)
+                return false;
+
+            var equipment = card.Equipment;
+            return equipment != null && equipment.Slot != EquipmentSlot.None;
+        }
 
         public Task EquipCard(string cardId)
         {
             var card = _configService.Get<CardDataConfig>(cardId);
-            RemoveOccupiedSlot(card);
-            EquipSlot(card);
+            if (card is not TreasureCardConfig treasureCard)
+                return Task.CompletedTask;
+
+            RemoveOccupiedSlot(treasureCard);
+            EquipSlot(treasureCard);
             return Task.CompletedTask;
         }
 
-        private void RemoveOccupiedSlot(CardDataConfig card)
+        private void RemoveOccupiedSlot(TreasureCardConfig card)
         {
             if (card?.Equipment == null || card.Equipment.Slot == EquipmentSlot.None)
                 return;
 
             var equipmentToReplace = PlayersEquipment
-                .Select(eq => _configService.Get<CardDataConfig>(eq))
+                .Select(eq => _configService.Get<CardDataConfig>(eq) as TreasureCardConfig)
                 .FirstOrDefault(eqConfig => eqConfig?.Equipment != null &&
                                             eqConfig.Equipment.Slot == card.Equipment.Slot);
 
@@ -73,7 +87,7 @@ namespace Game.Scripts.Gameplay.Lobby.Player
                 TakeOffEquip(equipmentToReplace);
         }
 
-        private void TakeOffEquip(CardDataConfig eqCard)
+        private void TakeOffEquip(TreasureCardConfig eqCard)
         {
             PlayersEquipment.Remove(eqCard.Id);
             PlayersHand.Add(eqCard.Id);
@@ -82,7 +96,7 @@ namespace Game.Scripts.Gameplay.Lobby.Player
                 PlayersStats[modifier.Stat] -= modifier.Value;
         }
 
-        private void EquipSlot(CardDataConfig card)
+        private void EquipSlot(TreasureCardConfig card)
         {
             PlayersEquipment.Add(card.Id);
             var index = PlayersHand.IndexOf(PlayersHand.First(x => x.Equals(card.Id)));

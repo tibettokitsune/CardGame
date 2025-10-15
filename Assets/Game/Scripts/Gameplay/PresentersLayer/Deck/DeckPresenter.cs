@@ -43,6 +43,12 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Deck
                     case CardKind.Door:
                         _doorsCards.Enqueue(card);
                         break;
+                    case CardKind.Event:
+                        // Event cards are queued elsewhere when such gameplay is added.
+                        break;
+                    default:
+                        Debug.LogWarning($"Unhandled card kind: {card.Kind} for card {card.ID}");
+                        break;
                 }
             }
 

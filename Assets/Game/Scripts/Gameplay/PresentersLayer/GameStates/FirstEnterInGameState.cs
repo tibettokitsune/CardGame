@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Game.Scripts.Gameplay.PresentersLayer.Contracts.UI;
 using Game.Scripts.Gameplay.PresentersLayer.Player;
 using Game.Scripts.UI;
 using UnityEngine;
@@ -22,9 +23,9 @@ namespace Game.Scripts.Gameplay.PresentersLayer.GameStates
         public override async void OnEnter()
         {
             Debug.Log("FirstEnterInGameState Enter");
-            await _uiService.ShowScreen("CharacterActiveCards");
-            await _uiService.ShowScreen("CharacterStats");
-            await _uiService.ShowScreen("PlayerHand");
+            await _uiService.ShowAsync<ICharacterActiveCardsScreen>();
+            await _uiService.ShowAsync<ICharacterStatsScreen>();
+            await _uiService.ShowAsync<IPlayerHandScreen>();
             await FillPlayerStartHand();
         }
         public override void OnLogic() { }

@@ -6,6 +6,7 @@ using Zenject;
 
 namespace Game.Scripts.Infrastructure.UI
 {
+    [UIScreen("Menu")]
     public class MenuScreen : UIScreen
     {
         [Inject] private IStartGameUseCase startGameUseCase;

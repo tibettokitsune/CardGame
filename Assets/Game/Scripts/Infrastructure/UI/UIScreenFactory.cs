@@ -1,4 +1,3 @@
-using System;
 using Game.Scripts.UI;
 using UnityEngine;
 using Zenject;
@@ -6,7 +5,7 @@ using Object = UnityEngine.Object;
 
 namespace Game.Scripts.Infrastructure.UI
 {
-    public class UIScreenFactory : PlaceholderFactory<UIScreen, Transform, Type, UIScreen>
+    public class UIScreenFactory
     {
         private readonly DiContainer _bootContainer;
         private DiContainer _gameplayContainer;
@@ -16,21 +15,20 @@ namespace Game.Scripts.Infrastructure.UI
             _bootContainer = bootContainer;
         }
 
-        public UIScreen Create(UIScreen prefab, Transform parent, Type screenType)
+        public UIScreen Create(GameObject prefab, Transform parent, System.Type screenType)
         {
             var container = _gameplayContainer ?? _bootContainer;
 
-            var gameObj = container.InstantiatePrefab(prefab.gameObject, parent);
-            var instance = (UIScreen) gameObj.GetComponent(screenType);
+            var gameObject = container.InstantiatePrefab(prefab, parent);
+            var instance = gameObject.GetComponent(screenType) as UIScreen;
             if (instance == null)
             {
-                Object.Destroy(gameObj);
-                throw new InvalidOperationException(
-                    $"Prefab {prefab.name} doesn't contain component of type {screenType.Name}");
+                Object.Destroy(gameObject);
+                throw new System.InvalidOperationException(
+                    $"Prefab {prefab.name} does not contain component of type {screenType.FullName}.");
             }
 
-            instance.transform.localPosition = Vector3.zero;
-            instance.transform.localScale = Vector3.one;
+            ApplyDefaultLayout(instance.transform);
             container.Inject(instance);
             return instance;
         }
@@ -38,6 +36,21 @@ namespace Game.Scripts.Infrastructure.UI
         public void SetGameplayContainer(DiContainer gameplayContainer)
         {
             _gameplayContainer = gameplayContainer;
+        }
+
+        private static void ApplyDefaultLayout(Transform transform)
+        {
+            transform.localPosition = Vector3.zero;
+            transform.localScale = Vector3.one;
+
+            if (transform is RectTransform rectTransform)
+            {
+                rectTransform.anchorMin = Vector2.zero;
+                rectTransform.anchorMax = Vector2.one;
+                rectTransform.offsetMin = Vector2.zero;
+                rectTransform.offsetMax = Vector2.zero;
+                rectTransform.localRotation = Quaternion.identity;
+            }
         }
     }
 }

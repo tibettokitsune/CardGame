@@ -1,4 +1,3 @@
-using System;
 using Game.Scripts.Infrastructure.AsyncAssets;
 using Game.Scripts.Infrastructure.Configs;
 using Game.Scripts.Infrastructure.Loading;
@@ -36,9 +35,8 @@ namespace Game.Scripts.Infrastructure.Installers
         private void InstallUI()
         {
             Container.Bind<LoadingScreen>().FromComponentInHierarchy(true).AsSingle();
-            Container.BindFactory<UIScreen, Transform, Type, UIScreen, UIScreenFactory>()
-                .FromFactory<UIScreenFactory>();
-
+            Container.Bind<UIScreenFactory>().AsSingle();
+            Container.Bind<IUIScreenPrefabProvider>().To<ResourcesUIScreenPrefabProvider>().AsSingle();
         }
     }
 }

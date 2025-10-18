@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Game.Scripts.Gameplay.PresentersLayer.Contracts.UI;
 using Game.Scripts.Gameplay.PresentersLayer.GameStates;
 using Game.Scripts.Gameplay.PresentersLayer.Player;
 using Game.Scripts.Infrastructure;
@@ -33,11 +34,11 @@ namespace Game.Scripts.Gameplay.ViewsLayer.TakeEventCardStage
                 baseCameraData.cameraStack.Add(overlayCamera);
             }
 
-            var screen = await _uiService.ShowScreen("OpenDoorScreen") as OpenDoorScreen;
+            var screen = await _uiService.ShowAsync<IOpenDoorScreen>();
             await screen.ShowDoorCard(_playerPresenter.CurrentDoor.Value);
             baseCameraData.cameraStack.Remove(overlayCamera);
             await Task.Delay(3000);
-            await _uiService.Clear();
+            await _uiService.ClearAsync();
             _finishTakeEventCardStateUseCase.Execute();
         }
     }

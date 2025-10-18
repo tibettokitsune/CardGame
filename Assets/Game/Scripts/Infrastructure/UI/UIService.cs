@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Game.Scripts.Infrastructure.Configs;
@@ -16,11 +15,13 @@ namespace Game.Scripts.Infrastructure.UI
     {
         [Inject] private IConfigService _configService;
         [Inject] private UIScreenFactory _screensFactory;
-        
-        private readonly Dictionary<string, UIScreen> _loadedScreens = new();
+        [Inject] private IUIScreenPrefabProvider _prefabProvider;
+
+        private readonly Dictionary<string, GameObject> _loadedPrefabs = new();
         private readonly Dictionary<UILayer, List<UIScreen>> _activeScreens = new();
+        private readonly Dictionary<UIScreen, UILayer> _screenLayers = new();
+        private readonly List<UIScreen> _history = new();
         private readonly Dictionary<UILayer, Transform> _layerRoots = new();
-        private readonly List<string> _history = new();
         private readonly Transform _uiRoot;
 
         public UIService(Transform uiRoot)
@@ -31,148 +32,198 @@ namespace Game.Scripts.Infrastructure.UI
 
         public async Task InitializeAsync(CancellationToken cancellationToken = default)
         {
-            // Preload any necessary UI elements here if needed
             await Task.CompletedTask;
+        }
+
+        public async Task<TScreen> ShowAsync<TScreen>(CancellationToken cancellationToken = default)
+            where TScreen : class
+        {
+            var metadata = UIScreenMetadataCache.For<TScreen>();
+            var config = ResolveConfig(metadata.ConfigId, metadata.ScreenType);
+
+            if (config.HideOtherScreensOnLayer)
+            {
+                await HideLayerAsync(config.Layer, cancellationToken);
+            }
+
+            var prefab = await GetOrLoadPrefabAsync(metadata.ConfigId, config, cancellationToken);
+            var parent = GetLayerRoot(config.Layer);
+            var screen = _screensFactory.Create(prefab, parent, metadata.ScreenType);
+            screen.name = $"{metadata.ConfigId}_{metadata.ScreenType.Name}";
+
+            await screen.ShowAsync();
+
+            RegisterScreen(config.Layer, screen);
+            if (screen is not TScreen typedScreen)
+            {
+                throw new InvalidOperationException(
+                    $"Screen instance of type {metadata.ScreenType.FullName} does not implement {typeof(TScreen).FullName}.");
+            }
+
+            return typedScreen;
+        }
+
+        public async Task HideAsync<TScreen>(CancellationToken cancellationToken = default)
+            where TScreen : class
+        {
+            var instance = FindInstance(typeof(TScreen));
+            if (instance != null)
+            {
+                await HideAsync(instance, cancellationToken);
+            }
+        }
+
+        public async Task HideAsync(UIScreen screen, CancellationToken cancellationToken = default)
+        {
+            if (screen == null)
+                return;
+
+            if (!_screenLayers.TryGetValue(screen, out var layer))
+                return;
+
+            await screen.HideAsync();
+
+            if (_activeScreens.TryGetValue(layer, out var screens))
+            {
+                screens.Remove(screen);
+                if (screens.Count == 0)
+                {
+                    _activeScreens.Remove(layer);
+                }
+            }
+
+            _screenLayers.Remove(screen);
+            _history.Remove(screen);
+            Object.Destroy(screen.gameObject);
+        }
+
+        public async Task HideLayerAsync(UILayer layer, CancellationToken cancellationToken = default)
+        {
+            if (!_activeScreens.TryGetValue(layer, out var screens) || screens.Count == 0)
+                return;
+
+            var copy = screens.ToArray();
+            foreach (var screen in copy)
+            {
+                await HideAsync(screen, cancellationToken);
+            }
+        }
+
+        public async Task HideTopAsync(CancellationToken cancellationToken = default)
+        {
+            if (_history.Count == 0)
+                return;
+
+            var screen = _history[^1];
+            await HideAsync(screen, cancellationToken);
+        }
+
+        public async Task ClearAsync(CancellationToken cancellationToken = default)
+        {
+            var copy = _history.ToArray();
+            foreach (var screen in copy)
+            {
+                await HideAsync(screen, cancellationToken);
+            }
+
+            _activeScreens.Clear();
+            _screenLayers.Clear();
+            _history.Clear();
+        }
+
+        public TScreen GetActiveScreen<TScreen>() where TScreen : class
+        {
+            for (var i = _history.Count - 1; i >= 0; i--)
+            {
+                if (_history[i] is TScreen typed)
+                    return typed;
+            }
+
+            return null;
         }
 
         private void InitializeLayerRoots()
         {
-            foreach (UILayer layer in System.Enum.GetValues(typeof(UILayer)))
+            foreach (UILayer layer in Enum.GetValues(typeof(UILayer)))
             {
                 var layerGO = new GameObject(layer.ToString());
-                layerGO.transform.SetParent(_uiRoot);
                 var rectTransform = layerGO.AddComponent<RectTransform>();
                 rectTransform.anchorMin = Vector2.zero;
                 rectTransform.anchorMax = Vector2.one;
-                rectTransform.sizeDelta = Vector2.zero;
+                rectTransform.offsetMin = Vector2.zero;
+                rectTransform.offsetMax = Vector2.zero;
                 rectTransform.localPosition = Vector3.zero;
+
+                layerGO.transform.SetParent(_uiRoot, false);
                 _layerRoots[layer] = layerGO.transform;
             }
         }
 
-        private Type GetScreenType(string typeName)
+        private UIDataConfig ResolveConfig(string configId, Type screenType)
         {
-            // Попробуем стандартный способ
-            var type = Type.GetType(typeName);
-            if (type != null) return type;
-    
-            // Если не найдено, поищем во всех сборках
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            var config = _configService.Get<UIDataConfig>(configId);
+            if (config == null)
             {
-                type = assembly.GetType(typeName);
-                if (type != null) return type;
-            }
-    
-            throw new Exception($"Screen type {typeName} not found in any loaded assembly");
-        }
-        
-        public async Task<UIScreen> ShowScreen(string id)
-        {
-            var config = _configService.Get<UIDataConfig>(id);
-            if (config == null) 
-                throw new System.Exception($"UI config not found for id: {id}");
-
-            // Получаем тип экрана из конфига
-            var screenType = GetScreenType(config.ScreenType);
-            if (screenType == null || !typeof(UIScreen).IsAssignableFrom(screenType))
-                throw new System.Exception($"Invalid screen type in config for id: {id}");
-
-            // Остальная логика остается прежней, но с использованием Type
-            if (!_loadedScreens.TryGetValue(id, out var prefab))
-            {
-                var request = Resources.LoadAsync<UIScreen>(config.PrefabPath);
-                await request;
-                prefab = request.asset as UIScreen;
-            
-                if (prefab == null)
-                    throw new System.Exception($"Failed to load UI prefab at path: {config.PrefabPath}");
-
-                _loadedScreens[id] = prefab;
+                throw new InvalidOperationException(
+                    $"UI config '{configId}' not found for screen {screenType.FullName}.");
             }
 
-            // Используем модифицированную фабрику
-            var screen = _screensFactory.Create(prefab, _layerRoots[config.Layer], screenType);
-            screen.name = $"{id}_Screen";
-
-            await screen.ShowAsync();
-
-            if (!_activeScreens.ContainsKey(config.Layer))
-                _activeScreens.Add(config.Layer, new List<UIScreen>());
-
-            _activeScreens[config.Layer].Add(screen);
-            _history.Add(id);
-
-            return screen;
+            return config;
         }
 
-        public async Task HideScreen(string id)
+        private async Task<GameObject> GetOrLoadPrefabAsync(string configId, UIDataConfig config,
+            CancellationToken cancellationToken)
         {
-            foreach (var (layer, screens) in _activeScreens)
+            if (_loadedPrefabs.TryGetValue(configId, out var prefab))
             {
-                var screen = screens.FirstOrDefault(s => s.name.StartsWith(id));
-                if (screen != null)
+                return prefab;
+            }
+
+            prefab = await _prefabProvider.LoadPrefabAsync(config, cancellationToken);
+            if (prefab == null)
+            {
+                throw new InvalidOperationException(
+                    $"Prefab for config '{configId}' returned null (path: {config.PrefabPath}).");
+            }
+
+            _loadedPrefabs[configId] = prefab;
+            return prefab;
+        }
+
+        private void RegisterScreen(UILayer layer, UIScreen screen)
+        {
+            if (!_activeScreens.TryGetValue(layer, out var screens))
+            {
+                screens = new List<UIScreen>();
+                _activeScreens[layer] = screens;
+            }
+
+            screens.Add(screen);
+            _screenLayers[screen] = layer;
+            _history.Add(screen);
+        }
+
+        private UIScreen FindInstance(Type screenType)
+        {
+            for (var i = _history.Count - 1; i >= 0; i--)
+            {
+                var screen = _history[i];
+                if (screenType.IsInstanceOfType(screen))
                 {
-                    await screen.HideAsync();
-                    screens.Remove(screen);
-                    Object.Destroy(screen.gameObject);
-                    _history.Remove(id);
-                    return;
+                    return screen;
                 }
             }
-        }
 
-        public async Task HideScreensOnLayer(UILayer layer)
-        {
-            if (_activeScreens.TryGetValue(layer, out var screens))
-            {
-                foreach (var screen in screens.ToList())
-                {
-                    await screen.HideAsync();
-                    Object.Destroy(screen.gameObject);
-                    _history.RemoveAll(x => screen.name.StartsWith(x));
-                }
-                screens.Clear();
-            }
-        }
-
-        public async Task HideTopScreen()
-        {
-            if (_history.Count == 0) return;
-
-            var lastId = _history[^1];
-            await HideScreen(lastId);
-        }
-
-        public Task Clear()
-        {
-            foreach (var (layer, screens) in _activeScreens)
-            {
-                foreach (var screen in screens)
-                {
-                    Object.Destroy(screen.gameObject);
-                }
-                screens.Clear();
-            }
-
-            _activeScreens.Clear();
-            _history.Clear();
-            return Task.CompletedTask;
-        }
-
-        public TC GetActiveScreen<TC>() where TC : UIScreen
-        {
-            if (_history.Count == 0) return null;
-
-            var lastId = _history[^1];
-            foreach (var screens in _activeScreens.Values)
-            {
-                var screen = screens.FirstOrDefault(s => s.name.StartsWith(lastId));
-                if (screen != null && screen is TC typedScreen)
-                {
-                    return typedScreen;
-                }
-            }
             return null;
+        }
+
+        private Transform GetLayerRoot(UILayer layer)
+        {
+            if (_layerRoots.TryGetValue(layer, out var root))
+                return root;
+
+            InitializeLayerRoots();
+            return _layerRoots[layer];
         }
     }
 }

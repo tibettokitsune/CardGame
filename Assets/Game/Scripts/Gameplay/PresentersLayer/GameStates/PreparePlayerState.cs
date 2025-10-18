@@ -1,5 +1,5 @@
+using Game.Scripts.Gameplay.PresentersLayer.Contracts.UI;
 using Game.Scripts.Infrastructure.SceneManagment;
-using Game.Scripts.Infrastructure.TimeManagement;
 using Game.Scripts.UI;
 using UnityEngine;
 using UnityHFSM;
@@ -22,14 +22,14 @@ namespace Game.Scripts.Gameplay.PresentersLayer.GameStates
         {
             Debug.Log("PreparePlayerState Enter");
             _sceneManagerService.LoadScene("GameplayPrepare", SceneLayer.GameplayElement, true);
-            _uiService.ShowScreen("TimerScreen");
+            _ = _uiService.ShowAsync<ITimerScreen>();
         }
 
         public override void OnExit()
         {
             Debug.Log("PreparePlayerState Exit");
             _sceneManagerService.UnloadScene("GameplayPrepare", SceneLayer.GameplayElement);
-            _uiService.Clear();
+            _ = _uiService.ClearAsync();
         }
     }
 }

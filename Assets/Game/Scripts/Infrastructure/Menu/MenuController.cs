@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Game.Scripts.Infrastructure.Loading;
+using Game.Scripts.Infrastructure.UI;
 using Game.Scripts.Infrastructure.SceneManagment;
 using Game.Scripts.UI;
 using UnityEngine;
@@ -16,7 +17,7 @@ namespace Game.Scripts.Infrastructure.Menu
         {
             Debug.Log("Loading menu...");
             using var loadingScreen = _loadingScreen.Show();
-            await uiService.ShowScreen("Menu");
+            await uiService.ShowAsync<MenuScreen>();
             await sceneManagerService.LoadScene("Menu", SceneLayer.GameStage);
             Debug.Log("Menu loaded");
         }
@@ -25,7 +26,7 @@ namespace Game.Scripts.Infrastructure.Menu
         {
             Debug.Log("Starting lobby...");
             using var loadingScreen = _loadingScreen.Show();
-            await uiService.Clear();
+            await uiService.ClearAsync();
             await sceneManagerService.LoadScene("Lobby", SceneLayer.GameStage, true);
             Debug.Log("Lobby started");
         }

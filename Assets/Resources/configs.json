@@ -1,5 +1,6 @@
 {
   "Menu": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.UIDataConfig, Cards.Infra",
     "PrefabPath": "Prefabs/UI/Menu/MenuScreen",
     "Layer": 0,
     "HideOtherScreensOnLayer": false,
@@ -8,6 +9,7 @@
     "ConfigType": "UIDataConfig"
   },
   "CharacterActiveCards": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.UIDataConfig, Cards.Infra",
     "PrefabPath": "Prefabs/UI/Gameplay/CharacterActiveCardsScreen",
     "Layer": 1,
     "HideOtherScreensOnLayer": false,
@@ -16,6 +18,7 @@
     "ConfigType": "UIDataConfig"
   },
   "CharacterStats": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.UIDataConfig, Cards.Infra",
     "PrefabPath": "Prefabs/UI/Gameplay/CharacterStatsScreen",
     "Layer": 1,
     "HideOtherScreensOnLayer": false,
@@ -24,6 +27,7 @@
     "ConfigType": "UIDataConfig"
   },
   "PlayerHand": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.UIDataConfig, Cards.Infra",
     "PrefabPath": "Prefabs/UI/Gameplay/PlayerHandScreen",
     "Layer": 1,
     "HideOtherScreensOnLayer": false,
@@ -32,6 +36,7 @@
     "ConfigType": "UIDataConfig"
   },
   "TimerScreen": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.UIDataConfig, Cards.Infra",
     "PrefabPath": "Prefabs/UI/Gameplay/TimerScreen",
     "Layer": 1,
     "HideOtherScreensOnLayer": false,
@@ -40,6 +45,7 @@
     "ConfigType": "UIDataConfig"
   },
   "OpenDoorScreen": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.UIDataConfig, Cards.Infra",
     "PrefabPath": "Prefabs/UI/Gameplay/OpenDoorScreen",
     "Layer": 1,
     "HideOtherScreensOnLayer": false,
@@ -48,6 +54,7 @@
     "ConfigType": "UIDataConfig"
   },
   "FadeScreen": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.UIDataConfig, Cards.Infra",
     "PrefabPath": "Prefabs/UI/Gameplay/FadeScreen",
     "Layer": 1,
     "HideOtherScreensOnLayer": false,
@@ -56,24 +63,9 @@
     "ConfigType": "UIDataConfig"
   },
   "head1": {
-    "Id": "head1",
-    "Kind": "Treasure",
-    "MainLayerId": "icons/head1",
-    "BackgroundLayerId": "backgroud",
-    "Name": "Mask of the Eastern Beast",
-    "Description": "A frightening appearance will help you avoid a dangerous battle",
-    "StatModifiers": [
-      {
-        "Stat": "Attack",
-        "Value": 5
-      },
-      {
-        "Stat": "Health",
-        "Value": 5
-      }
-    ],
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.TreasureCardConfig, Cards.Infra",
     "Equipment": {
-      "Slot": "Head",
+      "Slot": 1,
       "Description": "+1 battle power",
       "Overrides": [
         {
@@ -82,27 +74,28 @@
         }
       ]
     },
+    "StatModifiers": [
+      {
+        "Stat": 1,
+        "Value": 5.0
+      },
+      {
+        "Stat": 0,
+        "Value": 5.0
+      }
+    ],
+    "Kind": 0,
+    "MainLayerId": "icons/head1",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Mask of the Eastern Beast",
+    "Description": "A frightening appearance will help you avoid a dangerous battle",
+    "Id": "head1",
     "ConfigType": "TreasureCardConfig"
   },
   "head2": {
-    "Id": "head2",
-    "Kind": "Treasure",
-    "MainLayerId": "icons/head2",
-    "BackgroundLayerId": "backgroud",
-    "Name": "Adventurer's Hat",
-    "Description": "Adventures are calling",
-    "StatModifiers": [
-      {
-        "Stat": "Attack",
-        "Value": 5
-      },
-      {
-        "Stat": "Health",
-        "Value": 5
-      }
-    ],
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.TreasureCardConfig, Cards.Infra",
     "Equipment": {
-      "Slot": "Head",
+      "Slot": 1,
       "Description": "+2 battle power",
       "Overrides": [
         {
@@ -111,27 +104,28 @@
         }
       ]
     },
+    "StatModifiers": [
+      {
+        "Stat": 1,
+        "Value": 5.0
+      },
+      {
+        "Stat": 0,
+        "Value": 5.0
+      }
+    ],
+    "Kind": 0,
+    "MainLayerId": "icons/head2",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Adventurer's Hat",
+    "Description": "Adventures are calling",
+    "Id": "head2",
     "ConfigType": "TreasureCardConfig"
   },
   "head3": {
-    "Id": "head3",
-    "Kind": "Treasure",
-    "MainLayerId": "icons/head3",
-    "BackgroundLayerId": "backgroud",
-    "Name": "Knight's helmet",
-    "Description": "My head is safe, but where am I going?",
-    "StatModifiers": [
-      {
-        "Stat": "Attack",
-        "Value": 5
-      },
-      {
-        "Stat": "Health",
-        "Value": 5
-      }
-    ],
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.TreasureCardConfig, Cards.Infra",
     "Equipment": {
-      "Slot": "Head",
+      "Slot": 1,
       "Description": "+3 battle power",
       "Overrides": [
         {
@@ -140,27 +134,28 @@
         }
       ]
     },
+    "StatModifiers": [
+      {
+        "Stat": 1,
+        "Value": 5.0
+      },
+      {
+        "Stat": 0,
+        "Value": 5.0
+      }
+    ],
+    "Kind": 0,
+    "MainLayerId": "icons/head3",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Knight's helmet",
+    "Description": "My head is safe, but where am I going?",
+    "Id": "head3",
     "ConfigType": "TreasureCardConfig"
   },
   "head4": {
-    "Id": "head4",
-    "Kind": "Treasure",
-    "MainLayerId": "icons/head4",
-    "BackgroundLayerId": "backgroud",
-    "Name": "Plug-hat",
-    "Description": "Left over from a visit from a strange guy who suddenly disappeared into thin air",
-    "StatModifiers": [
-      {
-        "Stat": "Attack",
-        "Value": 5
-      },
-      {
-        "Stat": "Health",
-        "Value": 5
-      }
-    ],
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.TreasureCardConfig, Cards.Infra",
     "Equipment": {
-      "Slot": "Head",
+      "Slot": 1,
       "Description": "+1 to combat strength",
       "Overrides": [
         {
@@ -169,27 +164,28 @@
         }
       ]
     },
+    "StatModifiers": [
+      {
+        "Stat": 1,
+        "Value": 5.0
+      },
+      {
+        "Stat": 0,
+        "Value": 5.0
+      }
+    ],
+    "Kind": 0,
+    "MainLayerId": "icons/head4",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Plug-hat",
+    "Description": "Left over from a visit from a strange guy who suddenly disappeared into thin air",
+    "Id": "head4",
     "ConfigType": "TreasureCardConfig"
   },
   "head5": {
-    "Id": "head5",
-    "Kind": "Treasure",
-    "MainLayerId": "icons/head5",
-    "BackgroundLayerId": "backgroud",
-    "Name": "Fashionable wig",
-    "Description": "And let the poor envy your appearance",
-    "StatModifiers": [
-      {
-        "Stat": "Attack",
-        "Value": 5
-      },
-      {
-        "Stat": "Health",
-        "Value": 5
-      }
-    ],
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.TreasureCardConfig, Cards.Infra",
     "Equipment": {
-      "Slot": "Head",
+      "Slot": 1,
       "Description": "+1 to combat strength",
       "Overrides": [
         {
@@ -198,27 +194,28 @@
         }
       ]
     },
+    "StatModifiers": [
+      {
+        "Stat": 1,
+        "Value": 5.0
+      },
+      {
+        "Stat": 0,
+        "Value": 5.0
+      }
+    ],
+    "Kind": 0,
+    "MainLayerId": "icons/head5",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Fashionable wig",
+    "Description": "And let the poor envy your appearance",
+    "Id": "head5",
     "ConfigType": "TreasureCardConfig"
   },
   "chest1": {
-    "Id": "chest1",
-    "Kind": "Treasure",
-    "MainLayerId": "icons/chest1",
-    "BackgroundLayerId": "backgroud",
-    "Name": "Barbarian Hero's Cuirass",
-    "Description": "The former owner was insane and loved to drink blood from skulls",
-    "StatModifiers": [
-      {
-        "Stat": "Attack",
-        "Value": 5
-      },
-      {
-        "Stat": "Health",
-        "Value": 5
-      }
-    ],
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.TreasureCardConfig, Cards.Infra",
     "Equipment": {
-      "Slot": "Chest",
+      "Slot": 2,
       "Description": "+1 battle power",
       "Overrides": [
         {
@@ -227,27 +224,28 @@
         }
       ]
     },
+    "StatModifiers": [
+      {
+        "Stat": 1,
+        "Value": 5.0
+      },
+      {
+        "Stat": 0,
+        "Value": 5.0
+      }
+    ],
+    "Kind": 0,
+    "MainLayerId": "icons/chest1",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Barbarian Hero's Cuirass",
+    "Description": "The former owner was insane and loved to drink blood from skulls",
+    "Id": "chest1",
     "ConfigType": "TreasureCardConfig"
   },
   "chest2": {
-    "Id": "chest2",
-    "Kind": "Treasure",
-    "MainLayerId": "icons/chest2",
-    "BackgroundLayerId": "backgroud",
-    "Name": "Armor from the East",
-    "Description": "Strange armor but looks light and strong",
-    "StatModifiers": [
-      {
-        "Stat": "Attack",
-        "Value": 5
-      },
-      {
-        "Stat": "Health",
-        "Value": 5
-      }
-    ],
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.TreasureCardConfig, Cards.Infra",
     "Equipment": {
-      "Slot": "Chest",
+      "Slot": 2,
       "Description": "+3 battle power",
       "Overrides": [
         {
@@ -256,27 +254,28 @@
         }
       ]
     },
+    "StatModifiers": [
+      {
+        "Stat": 1,
+        "Value": 5.0
+      },
+      {
+        "Stat": 0,
+        "Value": 5.0
+      }
+    ],
+    "Kind": 0,
+    "MainLayerId": "icons/chest2",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Armor from the East",
+    "Description": "Strange armor but looks light and strong",
+    "Id": "chest2",
     "ConfigType": "TreasureCardConfig"
   },
   "chest3": {
-    "Id": "chest3",
-    "Kind": "Treasure",
-    "MainLayerId": "icons/chest3",
-    "BackgroundLayerId": "backgroud",
-    "Name": "Knight's cuirass",
-    "Description": "There's a hole in the back from a crossbow bolt, but it looks brand new.",
-    "StatModifiers": [
-      {
-        "Stat": "Attack",
-        "Value": 5
-      },
-      {
-        "Stat": "Health",
-        "Value": 5
-      }
-    ],
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.TreasureCardConfig, Cards.Infra",
     "Equipment": {
-      "Slot": "Chest",
+      "Slot": 2,
       "Description": "+3 battle power",
       "Overrides": [
         {
@@ -285,27 +284,28 @@
         }
       ]
     },
+    "StatModifiers": [
+      {
+        "Stat": 1,
+        "Value": 5.0
+      },
+      {
+        "Stat": 0,
+        "Value": 5.0
+      }
+    ],
+    "Kind": 0,
+    "MainLayerId": "icons/chest3",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Knight's cuirass",
+    "Description": "There's a hole in the back from a crossbow bolt, but it looks brand new.",
+    "Id": "chest3",
     "ConfigType": "TreasureCardConfig"
   },
   "chest4": {
-    "Id": "chest4",
-    "Kind": "Treasure",
-    "MainLayerId": "icons/chest4",
-    "BackgroundLayerId": "backgroud",
-    "Name": "Mercenary armor",
-    "Description": "To escape with the loot you need to run fast. A pile of metal on your chest will only get in the way",
-    "StatModifiers": [
-      {
-        "Stat": "Attack",
-        "Value": 5
-      },
-      {
-        "Stat": "Health",
-        "Value": 5
-      }
-    ],
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.TreasureCardConfig, Cards.Infra",
     "Equipment": {
-      "Slot": "Chest",
+      "Slot": 2,
       "Description": "+3 battle power",
       "Overrides": [
         {
@@ -314,296 +314,326 @@
         }
       ]
     },
+    "StatModifiers": [
+      {
+        "Stat": 1,
+        "Value": 5.0
+      },
+      {
+        "Stat": 0,
+        "Value": 5.0
+      }
+    ],
+    "Kind": 0,
+    "MainLayerId": "icons/chest4",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Mercenary armor",
+    "Description": "To escape with the loot you need to run fast. A pile of metal on your chest will only get in the way",
+    "Id": "chest4",
     "ConfigType": "TreasureCardConfig"
   },
   "boot1": {
-    "Id": "boot1",
-    "Kind": "Treasure",
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.TreasureCardConfig, Cards.Infra",
+    "Equipment": {
+      "Slot": 4,
+      "Description": "+3 battle power",
+      "Overrides": []
+    },
+    "StatModifiers": [
+      {
+        "Stat": 1,
+        "Value": 5.0
+      },
+      {
+        "Stat": 0,
+        "Value": 5.0
+      }
+    ],
+    "Kind": 0,
     "MainLayerId": "icons/boot1",
     "BackgroundLayerId": "backgroud",
     "Name": "Rider's boots",
     "Description": "Good comfortable shoes for all conditions",
-    "StatModifiers": [
-      {
-        "Stat": "Attack",
-        "Value": 5
-      },
-      {
-        "Stat": "Health",
-        "Value": 5
-      }
-    ],
-    "Equipment": {
-      "Slot": "Legs",
-      "Description": "+3 battle power",
-      "Overrides": []
-    },
+    "Id": "boot1",
     "ConfigType": "TreasureCardConfig"
   },
   "boot2": {
-    "Id": "boot2",
-    "Kind": "Treasure",
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.TreasureCardConfig, Cards.Infra",
+    "Equipment": {
+      "Slot": 4,
+      "Description": "+3 battle power",
+      "Overrides": []
+    },
+    "StatModifiers": [
+      {
+        "Stat": 1,
+        "Value": 5.0
+      },
+      {
+        "Stat": 0,
+        "Value": 5.0
+      }
+    ],
+    "Kind": 0,
     "MainLayerId": "icons/boot2",
     "BackgroundLayerId": "backgroud",
     "Name": "Knight's boots",
     "Description": "Shoes of an experienced warrior. Will protect from a shot to the knee",
-    "StatModifiers": [
-      {
-        "Stat": "Attack",
-        "Value": 5
-      },
-      {
-        "Stat": "Health",
-        "Value": 5
-      }
-    ],
-    "Equipment": {
-      "Slot": "Legs",
-      "Description": "+3 battle power",
-      "Overrides": []
-    },
+    "Id": "boot2",
     "ConfigType": "TreasureCardConfig"
   },
   "boot3": {
-    "Id": "boot3",
-    "Kind": "Treasure",
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.TreasureCardConfig, Cards.Infra",
+    "Equipment": {
+      "Slot": 4,
+      "Description": "+3 battle power",
+      "Overrides": []
+    },
+    "StatModifiers": [
+      {
+        "Stat": 1,
+        "Value": 5.0
+      },
+      {
+        "Stat": 0,
+        "Value": 5.0
+      }
+    ],
+    "Kind": 0,
     "MainLayerId": "icons/boot3",
     "BackgroundLayerId": "backgroud",
     "Name": "Monk's Sandals",
     "Description": "The wearer of this shoe is wiser than the shoe. Or at least tries to appear so.",
-    "StatModifiers": [
-      {
-        "Stat": "Attack",
-        "Value": 5
-      },
-      {
-        "Stat": "Health",
-        "Value": 5
-      }
-    ],
-    "Equipment": {
-      "Slot": "Legs",
-      "Description": "+3 battle power",
-      "Overrides": []
-    },
+    "Id": "boot3",
     "ConfigType": "TreasureCardConfig"
   },
   "boot4": {
-    "Id": "boot4",
-    "Kind": "Treasure",
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.TreasureCardConfig, Cards.Infra",
+    "Equipment": {
+      "Slot": 4,
+      "Description": "+3 battle power",
+      "Overrides": []
+    },
+    "StatModifiers": [
+      {
+        "Stat": 1,
+        "Value": 5.0
+      },
+      {
+        "Stat": 0,
+        "Value": 5.0
+      }
+    ],
+    "Kind": 0,
     "MainLayerId": "icons/boot4",
     "BackgroundLayerId": "backgroud",
     "Name": "Aristocrat's shoes",
     "Description": "Shoes expensive enough to pass for rich",
-    "StatModifiers": [
-      {
-        "Stat": "Attack",
-        "Value": 5
-      },
-      {
-        "Stat": "Health",
-        "Value": 5
-      }
-    ],
-    "Equipment": {
-      "Slot": "Legs",
-      "Description": "+3 battle power",
-      "Overrides": []
-    },
+    "Id": "boot4",
     "ConfigType": "TreasureCardConfig"
   },
   "boot5": {
-    "Id": "boot5",
-    "Kind": "Treasure",
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.TreasureCardConfig, Cards.Infra",
+    "Equipment": {
+      "Slot": 4,
+      "Description": "+3 battle power",
+      "Overrides": []
+    },
+    "StatModifiers": [
+      {
+        "Stat": 1,
+        "Value": 5.0
+      },
+      {
+        "Stat": 0,
+        "Value": 5.0
+      }
+    ],
+    "Kind": 0,
     "MainLayerId": "icons/boot5",
     "BackgroundLayerId": "backgroud",
     "Name": "Bandit Boots",
     "Description": "I hope this is dried tomato sauce stain",
-    "StatModifiers": [
-      {
-        "Stat": "Attack",
-        "Value": 5
-      },
-      {
-        "Stat": "Health",
-        "Value": 5
-      }
-    ],
-    "Equipment": {
-      "Slot": "Legs",
-      "Description": "+3 battle power",
-      "Overrides": []
-    },
+    "Id": "boot5",
     "ConfigType": "TreasureCardConfig"
   },
   "hand1": {
-    "Id": "hand1",
-    "Kind": "Treasure",
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.TreasureCardConfig, Cards.Infra",
+    "Equipment": {
+      "Slot": 3,
+      "Description": "+3 battle power",
+      "Overrides": []
+    },
+    "StatModifiers": [
+      {
+        "Stat": 1,
+        "Value": 5.0
+      },
+      {
+        "Stat": 0,
+        "Value": 5.0
+      }
+    ],
+    "Kind": 0,
     "MainLayerId": "icons/hand1",
     "BackgroundLayerId": "backgroud",
     "Name": "Knight's gloves",
     "Description": "A heavy hand that can drive nails with a blow",
-    "StatModifiers": [
-      {
-        "Stat": "Attack",
-        "Value": 5
-      },
-      {
-        "Stat": "Health",
-        "Value": 5
-      }
-    ],
-    "Equipment": {
-      "Slot": "Hands",
-      "Description": "+3 battle power",
-      "Overrides": []
-    },
+    "Id": "hand1",
     "ConfigType": "TreasureCardConfig"
   },
   "hand2": {
-    "Id": "hand2",
-    "Kind": "Treasure",
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.TreasureCardConfig, Cards.Infra",
+    "Equipment": {
+      "Slot": 3,
+      "Description": "+3 battle power",
+      "Overrides": []
+    },
+    "StatModifiers": [
+      {
+        "Stat": 1,
+        "Value": 5.0
+      },
+      {
+        "Stat": 0,
+        "Value": 5.0
+      }
+    ],
+    "Kind": 0,
     "MainLayerId": "icons/hand2",
     "BackgroundLayerId": "backgroud",
     "Name": "Thief gloves",
     "Description": "Meant to leave no trace",
-    "StatModifiers": [
-      {
-        "Stat": "Attack",
-        "Value": 5
-      },
-      {
-        "Stat": "Health",
-        "Value": 5
-      }
-    ],
-    "Equipment": {
-      "Slot": "Hands",
-      "Description": "+3 battle power",
-      "Overrides": []
-    },
+    "Id": "hand2",
     "ConfigType": "TreasureCardConfig"
   },
   "hand3": {
-    "Id": "hand3",
-    "Kind": "Treasure",
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.TreasureCardConfig, Cards.Infra",
+    "Equipment": {
+      "Slot": 3,
+      "Description": "+3 battle power",
+      "Overrides": []
+    },
+    "StatModifiers": [
+      {
+        "Stat": 1,
+        "Value": 5.0
+      },
+      {
+        "Stat": 0,
+        "Value": 5.0
+      }
+    ],
+    "Kind": 0,
     "MainLayerId": "icons/hand3",
     "BackgroundLayerId": "backgroud",
     "Name": "Blacksmith's gloves",
     "Description": "The heavy-handed tool of the creator",
-    "StatModifiers": [
-      {
-        "Stat": "Attack",
-        "Value": 5
-      },
-      {
-        "Stat": "Health",
-        "Value": 5
-      }
-    ],
-    "Equipment": {
-      "Slot": "Hands",
-      "Description": "+3 battle power",
-      "Overrides": []
-    },
+    "Id": "hand3",
     "ConfigType": "TreasureCardConfig"
   },
   "npc1": {
-    "Id": "npc1",
-    "Kind": "Door",
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.DoorCardConfig, Cards.Infra",
+    "StatModifiers": [
+      {
+        "Stat": 1,
+        "Value": 5.0
+      },
+      {
+        "Stat": 0,
+        "Value": 20.0
+      }
+    ],
+    "Kind": 1,
     "MainLayerId": "icons/npc1",
     "BackgroundLayerId": "backgroud",
     "Name": "Knight",
     "Description": "Strong buy with big sword",
-    "StatModifiers": [
-      {
-        "Stat": "Attack",
-        "Value": 5
-      },
-      {
-        "Stat": "Health",
-        "Value": 20
-      }
-    ],
+    "Id": "npc1",
     "ConfigType": "DoorCardConfig"
   },
   "npc2": {
-    "Id": "npc2",
-    "Kind": "Door",
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.DoorCardConfig, Cards.Infra",
+    "StatModifiers": [
+      {
+        "Stat": 1,
+        "Value": 5.0
+      },
+      {
+        "Stat": 0,
+        "Value": 20.0
+      }
+    ],
+    "Kind": 1,
     "MainLayerId": "icons/npc2",
     "BackgroundLayerId": "backgroud",
     "Name": "Monk",
     "Description": "Strong buy with big sword",
-    "StatModifiers": [
-      {
-        "Stat": "Attack",
-        "Value": 5
-      },
-      {
-        "Stat": "Health",
-        "Value": 20
-      }
-    ],
+    "Id": "npc2",
     "ConfigType": "DoorCardConfig"
   },
   "npc3": {
-    "Id": "npc3",
-    "Kind": "Door",
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.DoorCardConfig, Cards.Infra",
+    "StatModifiers": [
+      {
+        "Stat": 1,
+        "Value": 5.0
+      },
+      {
+        "Stat": 0,
+        "Value": 20.0
+      }
+    ],
+    "Kind": 1,
     "MainLayerId": "icons/npc3",
     "BackgroundLayerId": "backgroud",
     "Name": "Adventurer",
     "Description": "Strong buy with big sword",
-    "StatModifiers": [
-      {
-        "Stat": "Attack",
-        "Value": 5
-      },
-      {
-        "Stat": "Health",
-        "Value": 20
-      }
-    ],
+    "Id": "npc3",
     "ConfigType": "DoorCardConfig"
   },
   "npc4": {
-    "Id": "npc4",
-    "Kind": "Door",
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.DoorCardConfig, Cards.Infra",
+    "StatModifiers": [
+      {
+        "Stat": 1,
+        "Value": 5.0
+      },
+      {
+        "Stat": 0,
+        "Value": 20.0
+      }
+    ],
+    "Kind": 1,
     "MainLayerId": "icons/npc4",
     "BackgroundLayerId": "backgroud",
     "Name": "Rogue",
     "Description": "Strong buy with big sword",
-    "StatModifiers": [
-      {
-        "Stat": "Attack",
-        "Value": 5
-      },
-      {
-        "Stat": "Health",
-        "Value": 20
-      }
-    ],
+    "Id": "npc4",
     "ConfigType": "DoorCardConfig"
   },
   "npc5": {
-    "Id": "npc5",
-    "Kind": "Door",
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.DoorCardConfig, Cards.Infra",
+    "StatModifiers": [
+      {
+        "Stat": 1,
+        "Value": 5.0
+      },
+      {
+        "Stat": 0,
+        "Value": 20.0
+      }
+    ],
+    "Kind": 1,
     "MainLayerId": "icons/npc5",
     "BackgroundLayerId": "backgroud",
     "Name": "Pirate",
     "Description": "Strong buy with big sword",
-    "StatModifiers": [
-      {
-        "Stat": "Attack",
-        "Value": 5
-      },
-      {
-        "Stat": "Health",
-        "Value": 20
-      }
-    ],
+    "Id": "npc5",
     "ConfigType": "DoorCardConfig"
   },
   "card_main_layer_1": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.CardLayerDataConfig, Cards.Infra",
     "Layers": [
       {
         "SpritePath": "",
@@ -628,6 +658,7 @@
     "ConfigType": "CardLayerDataConfig"
   },
   "card_background_1": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.CardLayerDataConfig, Cards.Infra",
     "Layers": [
       {
         "SpritePath": "",
@@ -650,5 +681,14 @@
     ],
     "Id": "card_background_1",
     "ConfigType": "CardLayerDataConfig"
+  },
+  "TestScreen": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.UIDataConfig, Cards.Infra",
+    "PrefabPath": "Prefabs/UI/TScreen",
+    "Layer": 0,
+    "HideOtherScreensOnLayer": false,
+    "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.TScreen",
+    "Id": "TestScreen",
+    "ConfigType": "UIDataConfig"
   }
 }

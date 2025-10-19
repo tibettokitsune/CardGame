@@ -120,11 +120,19 @@ namespace Game.Scripts.Infrastructure.UI
 
         public async Task ClearAsync(CancellationToken cancellationToken = default)
         {
+            if (_history.Count == 0)
+                return;
+
             var copy = _history.ToArray();
+            var hideTasks = new List<Task>(copy.Length);
+
             foreach (var screen in copy)
             {
-                await HideAsync(screen, cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+                hideTasks.Add(HideAsync(screen, cancellationToken));
             }
+
+            await Task.WhenAll(hideTasks);
 
             _activeScreens.Clear();
             _screenLayers.Clear();

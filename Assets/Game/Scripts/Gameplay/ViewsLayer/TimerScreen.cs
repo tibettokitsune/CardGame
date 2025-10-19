@@ -14,10 +14,17 @@ namespace Game.Scripts.Gameplay.ViewsLayer
     {
         [Inject] private ITimerService _timerService;
         [SerializeField] private TextMeshProUGUI timerLbl;
+        private const string TimerId = "PrepareToRound";
 
         private void Update()
         {
-            var timer = _timerService.GetTimer("PrepareToRound");
+            if (!_timerService.HasTimer(TimerId))
+            {
+                timerLbl.text = TimeSpan.Zero.ToString(@"mm\:ss");
+                return;
+            }
+
+            var timer = _timerService.GetTimer(TimerId);
             timerLbl.text = timer.TimeLeft.ToString(@"mm\:ss");
         }
     }

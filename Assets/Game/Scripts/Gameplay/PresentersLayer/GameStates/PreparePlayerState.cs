@@ -20,7 +20,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.GameStates
         private readonly ILobbyDataProvider _lobbyDataProvider;
         private bool _timerHandlerRegistered;
         private bool _isExitInProgress;
-        private static readonly TimeSpan PrepareRoundDuration = TimeSpan.FromSeconds(10);
+        private static readonly TimeSpan PrepareRoundDuration = TimeSpan.FromSeconds(100);
         private const string PrepareRoundTimerId = "PrepareToRound";
         
         public PreparePlayerState(

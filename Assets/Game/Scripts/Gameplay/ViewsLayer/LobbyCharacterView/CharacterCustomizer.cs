@@ -1,235 +1,367 @@
+using System;
 using System.Collections.Generic;
-using Sirenix.OdinInspector;
+using System.Linq;
+using System.Threading.Tasks;
+using Synty.SidekickCharacters.API;
+using Synty.SidekickCharacters.Database;
+using Synty.SidekickCharacters.Database.DTO;
+using Synty.SidekickCharacters.Enums;
+using Synty.SidekickCharacters.Utils;
 using UnityEngine;
-
-[System.Serializable]
-public class CharacterObjectGroups
-{
-    public List<GameObject> headAllElements;
-    public List<GameObject> headNoElements;
-    public List<GameObject> eyebrow;
-    public List<GameObject> facialHair;
-    public List<GameObject> torso;
-    public List<GameObject> arm_Upper_Right;
-    public List<GameObject> arm_Upper_Left;
-    public List<GameObject> arm_Lower_Right;
-    public List<GameObject> arm_Lower_Left;
-    public List<GameObject> hand_Right;
-    public List<GameObject> hand_Left;
-    public List<GameObject> hips;
-    public List<GameObject> leg_Right;
-    public List<GameObject> leg_Left;
-}
-
-[System.Serializable]
-public class CharacterObjectListsAllGender
-{
-    public List<GameObject> headCoverings_Base_Hair;
-    public List<GameObject> headCoverings_No_FacialHair;
-    public List<GameObject> headCoverings_No_Hair;
-    public List<GameObject> all_Hair;
-    public List<GameObject> all_Head_Attachment;
-    public List<GameObject> chest_Attachment;
-    public List<GameObject> back_Attachment;
-    public List<GameObject> shoulder_Attachment_Right;
-    public List<GameObject> shoulder_Attachment_Left;
-    public List<GameObject> elbow_Attachment_Right;
-    public List<GameObject> elbow_Attachment_Left;
-    public List<GameObject> hips_Attachment;
-    public List<GameObject> knee_Attachement_Right;
-    public List<GameObject> knee_Attachement_Left;
-    public List<GameObject> all_12_Extra;
-    public List<GameObject> elf_Ear;
-}
+using Random = UnityEngine.Random;
 
 public class CharacterCustomizer : MonoBehaviour
 {
-    [Header("Слоты по частям тела")] public CharacterObjectGroups male = new CharacterObjectGroups();
-    public CharacterObjectGroups female = new CharacterObjectGroups();
-    public CharacterObjectListsAllGender allGender = new CharacterObjectListsAllGender();
+    [Header("Sidekick resources")]
+    [SerializeField] private string baseModelResourcePath = "Meshes/SK_BaseModel";
+    [SerializeField] private string baseMaterialResourcePath = "Materials/M_BaseMaterial";
+    [SerializeField] private RuntimeAnimatorController animatorController;
+    [SerializeField] private Transform characterRoot;
 
-    [Header("Активные объекты")] [HideInInspector]
-    public List<GameObject> enabledObjects = new();
+    private readonly List<(string key, int index)> _pendingOverrides = new();
+    private readonly Dictionary<PartGroup, SidekickPartPreset> _activePresets = new();
+    private readonly Dictionary<PartGroup, SidekickPartPreset> _defaultPresets = new();
 
-    public enum GenderType
-    {
-        Male,
-        Female
-    }
+    private DatabaseManager _databaseManager;
+    private SidekickRuntime _runtime;
+    private Dictionary<CharacterPartType, Dictionary<string, SidekickPart>> _partLibrary;
+    private List<SidekickBodyShapePreset> _bodyShapePresets;
+    private List<SidekickColorPreset> _colorPresets;
+    private SidekickBodyShapePreset _currentBodyShape;
+    private SidekickColorPreset _currentColorPreset;
+    private GameObject _currentCharacter;
+    private Animator _characterAnimator;
+    private bool _isInitialized;
+    private Dictionary<PartGroup, List<SidekickPartPreset>> _availablePresets = new();
+    private Dictionary<int, List<SidekickPartPresetRow>> _presetRowsCache = new();
+    private Dictionary<int, List<SidekickColorPresetRow>> _colorPresetRowsCache = new();
 
-    [Button]
-    void Start()
-    {
-        SetGender(GenderType.Male); // Можно указать Female
-    }
+    private static readonly string OutputModelName = "Sidekick Character";
 
-    [Button]
-    private void BuildLists()
-    {
-        // Мужские части
-        BuildList(male.headAllElements, "Male_Head_All_Elements");
-        BuildList(male.headNoElements, "Male_Head_No_Elements");
-        BuildList(male.eyebrow, "Male_01_Eyebrows");
-        BuildList(male.facialHair, "Male_02_FacialHair");
-        BuildList(male.torso, "Male_03_Torso");
-        BuildList(male.arm_Upper_Right, "Male_04_Arm_Upper_Right");
-        BuildList(male.arm_Upper_Left, "Male_05_Arm_Upper_Left");
-        BuildList(male.arm_Lower_Right, "Male_06_Arm_Lower_Right");
-        BuildList(male.arm_Lower_Left, "Male_07_Arm_Lower_Left");
-        BuildList(male.hand_Right, "Male_08_Hand_Right");
-        BuildList(male.hand_Left, "Male_09_Hand_Left");
-        BuildList(male.hips, "Male_10_Hips");
-        BuildList(male.leg_Right, "Male_11_Leg_Right");
-        BuildList(male.leg_Left, "Male_12_Leg_Left");
-
-        // Женские части
-        BuildList(female.headAllElements, "Female_Head_All_Elements");
-        BuildList(female.headNoElements, "Female_Head_No_Elements");
-        BuildList(female.eyebrow, "Female_01_Eyebrows");
-        BuildList(female.facialHair, "Female_02_FacialHair");
-        BuildList(female.torso, "Female_03_Torso");
-        BuildList(female.arm_Upper_Right, "Female_04_Arm_Upper_Right");
-        BuildList(female.arm_Upper_Left, "Female_05_Arm_Upper_Left");
-        BuildList(female.arm_Lower_Right, "Female_06_Arm_Lower_Right");
-        BuildList(female.arm_Lower_Left, "Female_07_Arm_Lower_Left");
-        BuildList(female.hand_Right, "Female_08_Hand_Right");
-        BuildList(female.hand_Left, "Female_09_Hand_Left");
-        BuildList(female.hips, "Female_10_Hips");
-        BuildList(female.leg_Right, "Female_11_Leg_Right");
-        BuildList(female.leg_Left, "Female_12_Leg_Left");
-
-        // Унисекс-элементы
-        BuildList(allGender.headCoverings_Base_Hair, "HeadCoverings_Base_Hair");
-        BuildList(allGender.headCoverings_No_FacialHair, "HeadCoverings_No_FacialHair");
-        BuildList(allGender.headCoverings_No_Hair, "HeadCoverings_No_Hair");
-        BuildList(allGender.all_Hair, "All_01_Hair");
-        BuildList(allGender.all_Head_Attachment, "All_02_Head_Attachment");
-        BuildList(allGender.chest_Attachment, "All_03_Chest_Attachment");
-        BuildList(allGender.back_Attachment, "All_04_Back_Attachment");
-        BuildList(allGender.shoulder_Attachment_Right, "All_05_Shoulder_Attachment_Right");
-        BuildList(allGender.shoulder_Attachment_Left, "All_06_Shoulder_Attachment_Left");
-        BuildList(allGender.elbow_Attachment_Right, "All_07_Elbow_Attachment_Right");
-        BuildList(allGender.elbow_Attachment_Left, "All_08_Elbow_Attachment_Left");
-        BuildList(allGender.hips_Attachment, "All_09_Hips_Attachment");
-        BuildList(allGender.knee_Attachement_Right, "All_10_Knee_Attachement_Right");
-        BuildList(allGender.knee_Attachement_Left, "All_11_Knee_Attachement_Left");
-        BuildList(allGender.all_12_Extra, "All_12_Extra");
-        BuildList(allGender.elf_Ear, "Elf_Ear");
-    }
-
-    private void BuildList(List<GameObject> list, string partName)
-    {
-        list.Clear();
-        var transforms = GetComponentsInChildren<Transform>(true);
-        foreach (var t in transforms)
+    private static readonly Dictionary<string, PartGroup> OverrideGroups =
+        new(StringComparer.OrdinalIgnoreCase)
         {
-            if (t.name == partName)
-            {
-                for (int i = 0; i < t.childCount; i++)
-                {
-                    var go = t.GetChild(i).gameObject;
-                    go.SetActive(false);
-                    list.Add(go);
-                }
+            {"head", PartGroup.Head},
+            {"headcoverings_base_hair", PartGroup.Head},
+            {"headcoverings_no_facialhair", PartGroup.Head},
+            {"headcoverings_no_hair", PartGroup.Head},
+            {"upperbody", PartGroup.UpperBody},
+            {"torso", PartGroup.UpperBody},
+            {"lowerbody", PartGroup.LowerBody},
+            {"legs", PartGroup.LowerBody}
+        };
 
-                break;
-            }
-        }
+    public bool IsInitialized => _isInitialized;
+    public Animator Animator => _characterAnimator;
+    public event Action<Animator> CharacterRebuilt;
+
+    private async void Start()
+    {
+        await InitializeAsync();
     }
 
-    public void SetGender(GenderType gender)
+    private void OnDestroy()
     {
-        DisableAll();
-        var group = gender == GenderType.Male ? male : female;
-
-        var defaultItemIndex = 5;
-        Enable(group.headAllElements, defaultItemIndex);
-        Enable(group.eyebrow, defaultItemIndex);
-        Enable(group.facialHair, defaultItemIndex);
-        Enable(group.torso, defaultItemIndex);
-        Enable(group.arm_Upper_Right, defaultItemIndex);
-        Enable(group.arm_Upper_Left, defaultItemIndex);
-        Enable(group.arm_Lower_Right, defaultItemIndex);
-        Enable(group.arm_Lower_Left, defaultItemIndex);
-        Enable(group.hand_Right, defaultItemIndex);
-        Enable(group.hand_Left, defaultItemIndex);
-        Enable(group.hips, defaultItemIndex);
-        Enable(group.leg_Right, defaultItemIndex);
-        Enable(group.leg_Left, defaultItemIndex);
-    }
-
-    private void Enable(List<GameObject> list, int index)
-    {
-        if (list == null || index < 0 || index >= list.Count) return;
-
-        var go = list[index];
-        go.SetActive(true);
-        enabledObjects.Add(go);
-    }
-
-    private void DisableAll()
-    {
-        foreach (var go in enabledObjects)
+        if (_currentCharacter != null)
         {
-            if (go) go.SetActive(false);
+            Destroy(_currentCharacter);
+            _currentCharacter = null;
         }
 
-        enabledObjects.Clear();
+        _databaseManager?.CloseConnection();
     }
-    
-    private List<GameObject> ResolveListByKey(string key)
-    {
-        var genderFields = typeof(CharacterObjectGroups).GetFields();
-        var allGenderFields = typeof(CharacterObjectListsAllGender).GetFields();
 
-        foreach (var field in genderFields)
-        {
-            if (field.Name.Equals(key, System.StringComparison.OrdinalIgnoreCase))
-            {
-                // Пробуем сначала у male
-                var value = field.GetValue(male) as List<GameObject>;
-                if (value != null && value.Count > 0) return value;
-
-                // Если в male ничего нет — fallback на female
-                return field.GetValue(female) as List<GameObject>;
-            }
-        }
-
-        foreach (var field in allGenderFields)
-        {
-            if (field.Name.Equals(key, System.StringComparison.OrdinalIgnoreCase))
-            {
-                return field.GetValue(allGender) as List<GameObject>;
-            }
-        }
-
-        Debug.LogWarning($"CharacterCustomizer: список с ключом '{key}' не найден.");
-        return null;
-    }
-    
     public void EnableItem(string key, int index)
     {
-        DisableItem(key);
-
-        var list = ResolveListByKey(key);
-        if (list != null && index >= 0 && index < list.Count)
+        if (!_isInitialized)
         {
-            GameObject go = list[index];
-            go.SetActive(true);
-            enabledObjects.Add(go);
+            _pendingOverrides.Add((key, index));
+            return;
+        }
+
+        if (!TryApplyOverride(key, index))
+        {
+            Debug.LogWarning($"CharacterCustomizer: unable to apply override '{key}'.");
         }
     }
 
     public void DisableItem(string key)
     {
-        var list = ResolveListByKey(key);
-        if (list == null) return;
-
-        foreach (var go in list)
+        if (!_isInitialized)
         {
-            if (go) go.SetActive(false);
+            _pendingOverrides.RemoveAll(o => string.Equals(o.key, key, StringComparison.OrdinalIgnoreCase));
+            return;
         }
 
-        enabledObjects.RemoveAll(obj => list.Contains(obj));
+        if (!TryResolveGroup(key, out var group))
+            return;
+
+        if (_defaultPresets.TryGetValue(group, out var preset))
+        {
+            _activePresets[group] = preset;
+            RebuildCharacter();
+        }
+    }
+
+    private async Task InitializeAsync()
+    {
+        if (_isInitialized)
+            return;
+
+        _databaseManager = new DatabaseManager();
+        if (_databaseManager.GetCurrentDbConnection() == null)
+        {
+            await Task.Run(() => _databaseManager.GetDbConnection(true));
+        }
+
+        var baseModel = Resources.Load<GameObject>(baseModelResourcePath);
+        var baseMaterial = Resources.Load<Material>(baseMaterialResourcePath);
+
+        if (baseModel == null || baseMaterial == null)
+        {
+            Debug.LogError("CharacterCustomizer: Failed to load Sidekick base resources.");
+            return;
+        }
+
+        if (animatorController == null)
+        {
+            Debug.LogWarning("CharacterCustomizer: Animator controller is not assigned. Character animations may not play.");
+        }
+
+        _runtime = new SidekickRuntime(baseModel, baseMaterial, animatorController, _databaseManager);
+        await SidekickRuntime.PopulateToolData(_runtime);
+
+        _partLibrary = _runtime.MappedPartDictionary;
+        Dictionary<PartGroup, List<SidekickPartPreset>> availablePresets = null;
+        Dictionary<int, List<SidekickPartPresetRow>> presetRows = null;
+        Dictionary<int, List<SidekickColorPresetRow>> colorRows = null;
+        List<SidekickBodyShapePreset> bodyShapes = null;
+        List<SidekickColorPreset> colorPresets = null;
+
+        await Task.Run(() =>
+        {
+            bodyShapes = SidekickBodyShapePreset.GetAll(_databaseManager);
+            colorPresets = SidekickColorPreset.GetAllByColorGroup(_databaseManager, ColorGroup.Outfits);
+            availablePresets = BuildAvailablePresets();
+            presetRows = BuildPresetRowsCache(availablePresets);
+            colorRows = BuildColorPresetRowsCache(colorPresets);
+        });
+
+        _bodyShapePresets = bodyShapes;
+        _colorPresets = colorPresets;
+        _availablePresets = availablePresets;
+        _presetRowsCache = presetRows;
+        _colorPresetRowsCache = colorRows;
+
+        InitializeDefaults();
+        RebuildCharacter();
+
+        _isInitialized = true;
+
+        if (_pendingOverrides.Count > 0)
+        {
+            var pending = _pendingOverrides.ToArray();
+            _pendingOverrides.Clear();
+            foreach (var request in pending)
+            {
+                TryApplyOverride(request.key, request.index);
+            }
+        }
+    }
+
+    private Dictionary<PartGroup, List<SidekickPartPreset>> BuildAvailablePresets()
+    {
+        var result = new Dictionary<PartGroup, List<SidekickPartPreset>>();
+        foreach (PartGroup group in Enum.GetValues(typeof(PartGroup)))
+        {
+            if (group != PartGroup.Head && group != PartGroup.UpperBody && group != PartGroup.LowerBody)
+                continue;
+
+            var presets = SidekickPartPreset
+                .GetAllByGroup(_databaseManager, group)
+                .Where(preset => preset.HasAllPartsAvailable(_databaseManager))
+                .ToList();
+
+            if (presets.Count > 0)
+            {
+                result[group] = presets;
+            }
+        }
+
+        return result;
+    }
+
+    private Dictionary<int, List<SidekickPartPresetRow>> BuildPresetRowsCache(
+        Dictionary<PartGroup, List<SidekickPartPreset>> availablePresets)
+    {
+        var cache = new Dictionary<int, List<SidekickPartPresetRow>>();
+        foreach (var presets in availablePresets.Values)
+        {
+            foreach (var preset in presets)
+            {
+                if (cache.ContainsKey(preset.ID))
+                    continue;
+
+                cache[preset.ID] = SidekickPartPresetRow.GetAllByPreset(_databaseManager, preset);
+            }
+        }
+
+        return cache;
+    }
+
+    private Dictionary<int, List<SidekickColorPresetRow>> BuildColorPresetRowsCache(
+        IEnumerable<SidekickColorPreset> colorPresets)
+    {
+        var cache = new Dictionary<int, List<SidekickColorPresetRow>>();
+        foreach (var preset in colorPresets)
+        {
+            cache[preset.ID] = SidekickColorPresetRow.GetAllByPreset(_databaseManager, preset);
+        }
+
+        return cache;
+    }
+
+    private void InitializeDefaults()
+    {
+        foreach (var kvp in _availablePresets)
+        {
+            var preset = kvp.Value[0];//Random.Range(0, kvp.Value.Count)];
+            _defaultPresets[kvp.Key] = preset;
+            _activePresets[kvp.Key] = preset;
+        }
+
+        if (_bodyShapePresets != null && _bodyShapePresets.Count > 0)
+        {
+            _currentBodyShape = _bodyShapePresets[0];//Random.Range(0, _bodyShapePresets.Count)];
+        }
+
+        if (_colorPresets != null && _colorPresets.Count > 0)
+        {
+            _currentColorPreset = _colorPresets[0];//Random.Range(0, _colorPresets.Count)];
+        }
+    }
+
+    private bool TryApplyOverride(string key, int index)
+    {
+        if (!TryResolveGroup(key, out var group))
+            return false;
+
+        if (!_availablePresets.TryGetValue(group, out var presets) || presets.Count == 0)
+            return false;
+
+        int targetIndex = index >= 0 && index < presets.Count
+            ? index
+            : Random.Range(0, presets.Count);
+
+        _activePresets[group] = presets[targetIndex];
+        RebuildCharacter();
+        return true;
+    }
+
+    private bool TryResolveGroup(string key, out PartGroup group)
+    {
+        if (OverrideGroups.TryGetValue(key, out group))
+            return true;
+
+        if (Enum.TryParse(key, true, out group))
+            return true;
+
+        return false;
+    }
+
+    private void RebuildCharacter()
+    {
+        if (_runtime == null)
+            return;
+
+        var presetsToApply = _activePresets.Values.Where(p => p != null).ToList();
+        if (presetsToApply.Count == 0)
+            return;
+
+        var partsToUse = new List<SkinnedMeshRenderer>();
+
+        foreach (var preset in presetsToApply)
+        {
+            if (!_presetRowsCache.TryGetValue(preset.ID, out var rows))
+                continue;
+            foreach (var row in rows)
+            {
+                if (string.IsNullOrEmpty(row.PartName))
+                    continue;
+
+                var partType = Enum.Parse<CharacterPartType>(CharacterPartTypeUtils.GetTypeNameFromShortcode(row.PartType));
+                if (!_partLibrary.TryGetValue(partType, out var locationDictionary))
+                    continue;
+                if (!locationDictionary.TryGetValue(row.PartName, out var part))
+                    continue;
+
+                var partModel = part.GetPartModel();
+                var mesh = partModel.GetComponentInChildren<SkinnedMeshRenderer>();
+                if (mesh != null)
+                {
+                    partsToUse.Add(mesh);
+                }
+            }
+        }
+
+        if (partsToUse.Count == 0)
+            return;
+
+        ApplyBodyShape();
+        ApplyColorPreset();
+
+        var targetRoot = characterRoot != null ? characterRoot : transform;
+        Vector3 cachedLocalPosition = Vector3.zero;
+        Quaternion cachedLocalRotation = Quaternion.identity;
+        Vector3 cachedLocalScale = Vector3.one;
+
+        if (_currentCharacter != null)
+        {
+            var currentTransform = _currentCharacter.transform;
+            cachedLocalPosition = currentTransform.localPosition;
+            cachedLocalRotation = currentTransform.localRotation;
+            cachedLocalScale = currentTransform.localScale;
+            Destroy(_currentCharacter);
+            _currentCharacter = null;
+            _characterAnimator = null;
+        }
+
+        var character = _runtime.CreateCharacter(OutputModelName, partsToUse, false, true);
+        character.transform.SetParent(targetRoot, false);
+        character.transform.localPosition = cachedLocalPosition;
+        character.transform.localRotation = cachedLocalRotation;
+        character.transform.localScale = cachedLocalScale;
+
+        _currentCharacter = character;
+        _characterAnimator = character.GetComponentInChildren<Animator>();
+        CharacterRebuilt?.Invoke(_characterAnimator);
+    }
+
+    private void ApplyBodyShape()
+    {
+        if (_currentBodyShape == null)
+            return;
+
+        _runtime.BodyTypeBlendValue = _currentBodyShape.BodyType;
+        _runtime.MusclesBlendValue = _currentBodyShape.Musculature;
+        _runtime.BodySizeHeavyBlendValue = _currentBodyShape.BodySize > 0 ? _currentBodyShape.BodySize : 0f;
+        _runtime.BodySizeSkinnyBlendValue = _currentBodyShape.BodySize < 0 ? -_currentBodyShape.BodySize : 0f;
+    }
+
+    private void ApplyColorPreset()
+    {
+        if (_currentColorPreset == null)
+            return;
+
+        if (!_colorPresetRowsCache.TryGetValue(_currentColorPreset.ID, out var colorRows))
+            return;
+        foreach (var row in colorRows)
+        {
+            var colorRow = SidekickColorRow.CreateFromPresetColorRow(row);
+            foreach (ColorType property in Enum.GetValues(typeof(ColorType)))
+            {
+                _runtime.UpdateColor(property, colorRow);
+            }
+        }
     }
 }

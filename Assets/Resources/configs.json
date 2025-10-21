@@ -69,8 +69,8 @@
       "Description": "+1 battle power",
       "Overrides": [
         {
-          "Item": "headCoverings_Base_Hair",
-          "Index": 1
+          "Item": "Head",
+          "Index": 0
         }
       ]
     },
@@ -99,8 +99,8 @@
       "Description": "+2 battle power",
       "Overrides": [
         {
-          "Item": "headCoverings_Base_Hair",
-          "Index": 2
+          "Item": "Head",
+          "Index": 1
         }
       ]
     },
@@ -129,8 +129,8 @@
       "Description": "+3 battle power",
       "Overrides": [
         {
-          "Item": "headCoverings_Base_Hair",
-          "Index": 3
+          "Item": "Head",
+          "Index": 2
         }
       ]
     },
@@ -159,8 +159,8 @@
       "Description": "+1 to combat strength",
       "Overrides": [
         {
-          "Item": "headCoverings_Base_Hair",
-          "Index": 4
+          "Item": "Head",
+          "Index": 3
         }
       ]
     },
@@ -189,8 +189,8 @@
       "Description": "+1 to combat strength",
       "Overrides": [
         {
-          "Item": "headCoverings_Base_Hair",
-          "Index": 5
+          "Item": "Head",
+          "Index": 4
         }
       ]
     },
@@ -219,8 +219,8 @@
       "Description": "+1 battle power",
       "Overrides": [
         {
-          "Item": "torso",
-          "Index": 5
+          "Item": "UpperBody",
+          "Index": 0
         }
       ]
     },
@@ -249,8 +249,8 @@
       "Description": "+3 battle power",
       "Overrides": [
         {
-          "Item": "torso",
-          "Index": 6
+          "Item": "UpperBody",
+          "Index": 1
         }
       ]
     },
@@ -279,8 +279,8 @@
       "Description": "+3 battle power",
       "Overrides": [
         {
-          "Item": "torso",
-          "Index": 7
+          "Item": "UpperBody",
+          "Index": 2
         }
       ]
     },
@@ -309,8 +309,8 @@
       "Description": "+3 battle power",
       "Overrides": [
         {
-          "Item": "torso",
-          "Index": 8
+          "Item": "UpperBody",
+          "Index": 3
         }
       ]
     },

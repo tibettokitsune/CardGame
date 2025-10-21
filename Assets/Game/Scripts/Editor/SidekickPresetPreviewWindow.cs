@@ -15,9 +15,21 @@ namespace Game.Scripts.Editor.Sidekick
 {
     public class SidekickPresetPreviewWindow : EditorWindow
     {
-        private const string WindowTitle = "Sidekick Presets";
-        private static readonly Color BackgroundColor = new Color(0.18f, 0.18f, 0.18f);
-        private static readonly Vector3 PreviewPivot = new Vector3(0f, 1.2f, 0f);
+        private const string WindowTitle = "Sidekick Preset Preview";
+        private static readonly Color PreviewBackgroundColor = new(0.18f, 0.18f, 0.18f);
+        private static readonly Vector3 PreviewPivot = new(0f, 1.2f, 0f);
+        private static readonly PartGroup[] OrderedPartGroups = { PartGroup.Head, PartGroup.UpperBody, PartGroup.LowerBody };
+        private static readonly CharacterPartType[] BodyConfigurationTypes = PartGroup.Head
+            .GetPartTypes()
+            .Concat(PartGroup.UpperBody.GetPartTypes())
+            .Concat(PartGroup.LowerBody.GetPartTypes())
+            .Where(type =>
+                type != CharacterPartType.AttachmentHead &&
+                type != CharacterPartType.AttachmentFace &&
+                type != CharacterPartType.AttachmentBack &&
+                !type.ToString().StartsWith("Attachment", StringComparison.Ordinal))
+            .Distinct()
+            .ToArray();
 
         private enum PreviewTab
         {
@@ -25,202 +37,65 @@ namespace Game.Scripts.Editor.Sidekick
             Body
         }
 
-        private enum BodyCategory
+        private sealed class PartRecord
         {
-            BodyShapes,
-            ColorPresets
+            public string Key;
+            public SidekickPart Part;
         }
-
-        private sealed class EquipmentCategoryDefinition
-        {
-            public string Id { get; set; }
-            public string Label { get; set; }
-            public PartGroup Group { get; set; }
-            public CharacterPartType[] RequiredTypes { get; set; } = Array.Empty<CharacterPartType>();
-        }
-
-        private sealed class EquipmentCategoryData
-        {
-            public EquipmentCategoryDefinition Definition { get; }
-            public List<SidekickPartPreset> Presets { get; }
-
-            public EquipmentCategoryData(EquipmentCategoryDefinition definition, List<SidekickPartPreset> presets)
-            {
-                Definition = definition;
-                Presets = presets;
-            }
-        }
-
-        private static readonly EquipmentCategoryDefinition[] EquipmentCategoryDefinitions =
-        {
-            new EquipmentCategoryDefinition
-            {
-                Id = "helmets",
-                Label = "Helmets",
-                Group = PartGroup.Head,
-                RequiredTypes = new[]
-                {
-                    CharacterPartType.Head,
-                    CharacterPartType.Hair,
-                    CharacterPartType.AttachmentHead,
-                    CharacterPartType.AttachmentFace
-                }
-            },
-            new EquipmentCategoryDefinition
-            {
-                Id = "masks",
-                Label = "Masks & Face",
-                Group = PartGroup.Head,
-                RequiredTypes = new[]
-                {
-                    CharacterPartType.AttachmentFace,
-                    CharacterPartType.Nose,
-                    CharacterPartType.EarLeft,
-                    CharacterPartType.EarRight
-                }
-            },
-            new EquipmentCategoryDefinition
-            {
-                Id = "torso",
-                Label = "Torso",
-                Group = PartGroup.UpperBody,
-                RequiredTypes = new[]
-                {
-                    CharacterPartType.Torso
-                }
-            },
-            new EquipmentCategoryDefinition
-            {
-                Id = "shoulders",
-                Label = "Shoulders",
-                Group = PartGroup.UpperBody,
-                RequiredTypes = new[]
-                {
-                    CharacterPartType.AttachmentShoulderLeft,
-                    CharacterPartType.AttachmentShoulderRight
-                }
-            },
-            new EquipmentCategoryDefinition
-            {
-                Id = "arms",
-                Label = "Arms & Hands",
-                Group = PartGroup.UpperBody,
-                RequiredTypes = new[]
-                {
-                    CharacterPartType.ArmUpperLeft,
-                    CharacterPartType.ArmUpperRight,
-                    CharacterPartType.ArmLowerLeft,
-                    CharacterPartType.ArmLowerRight,
-                    CharacterPartType.HandLeft,
-                    CharacterPartType.HandRight
-                }
-            },
-            new EquipmentCategoryDefinition
-            {
-                Id = "back",
-                Label = "Back Attachments",
-                Group = PartGroup.UpperBody,
-                RequiredTypes = new[]
-                {
-                    CharacterPartType.AttachmentBack
-                }
-            },
-            new EquipmentCategoryDefinition
-            {
-                Id = "belt",
-                Label = "Belts & Hips",
-                Group = PartGroup.LowerBody,
-                RequiredTypes = new[]
-                {
-                    CharacterPartType.AttachmentHipsFront,
-                    CharacterPartType.AttachmentHipsBack,
-                    CharacterPartType.AttachmentHipsLeft,
-                    CharacterPartType.AttachmentHipsRight,
-                    CharacterPartType.Hips
-                }
-            },
-            new EquipmentCategoryDefinition
-            {
-                Id = "legs",
-                Label = "Legs",
-                Group = PartGroup.LowerBody,
-                RequiredTypes = new[]
-                {
-                    CharacterPartType.LegLeft,
-                    CharacterPartType.LegRight
-                }
-            },
-            new EquipmentCategoryDefinition
-            {
-                Id = "knees",
-                Label = "Kneepads",
-                Group = PartGroup.LowerBody,
-                RequiredTypes = new[]
-                {
-                    CharacterPartType.AttachmentKneeLeft,
-                    CharacterPartType.AttachmentKneeRight
-                }
-            },
-            new EquipmentCategoryDefinition
-            {
-                Id = "feet",
-                Label = "Boots & Feet",
-                Group = PartGroup.LowerBody,
-                RequiredTypes = new[]
-                {
-                    CharacterPartType.FootLeft,
-                    CharacterPartType.FootRight
-                }
-            }
-        };
 
         private PreviewRenderUtility _previewUtility;
         private GameObject _previewInstance;
         private SidekickRuntime _runtime;
         private DatabaseManager _databaseManager;
 
-        private Dictionary<CharacterPartType, Dictionary<string, SidekickPart>> _partLibrary;
-        private readonly Dictionary<PartGroup, List<SidekickPartPreset>> _presetsByGroup = new();
-        private readonly Dictionary<int, List<SidekickPartPresetRow>> _presetRowsCache = new();
-        private readonly Dictionary<PartGroup, SidekickPartPreset> _activePresets = new();
+        private Dictionary<CharacterPartType, Dictionary<string, SidekickPart>> _runtimeLibrary;
+        private readonly Dictionary<CharacterPartType, List<PartRecord>> _partsByType = new();
+        private readonly Dictionary<CharacterPartType, PartRecord> _baseSelections = new();
+        private readonly Dictionary<CharacterPartType, PartRecord> _equipmentSelections = new();
 
-        private readonly List<EquipmentCategoryData> _equipmentCategories = new();
-        private readonly Dictionary<string, SidekickPartPreset> _activeCategorySelections = new();
-        private string[] _equipmentCategoryLabels = Array.Empty<string>();
-        private int _selectedEquipmentCategoryIndex;
         private Vector2 _equipmentScroll;
+        private Vector2 _bodyScroll;
+        private Vector2 _previewAngles = new(135f, -10f);
+        private float _previewZoom = 4.5f;
+
+        private PreviewTab _activeTab = PreviewTab.Equipment;
+        private PartGroup _selectedEquipmentGroup = PartGroup.Head;
+        private CharacterPartType _selectedEquipmentPartType = CharacterPartType.Head;
+        private string _equipmentSearch = string.Empty;
+        private bool _includeBasePartsInEquipment;
+
+        private List<SidekickSpecies> _species;
+        private SidekickSpecies _activeSpecies;
+        private SidekickSpecies _unrestrictedSpecies;
 
         private readonly Dictionary<int, List<SidekickColorPresetRow>> _colorPresetRowsCache = new();
         private List<SidekickBodyShapePreset> _bodyShapes = new();
         private List<SidekickColorPreset> _colorPresets = new();
         private SidekickBodyShapePreset _activeBodyShape;
         private SidekickColorPreset _activeColorPreset;
-        private readonly string[] _bodyCategoryLabels = { "Body Shapes", "Color Presets" };
-        private int _selectedBodyCategoryIndex;
-        private Vector2 _bodyScroll;
-
-        private PreviewTab _activeTab = PreviewTab.Equipment;
-        private Vector2 _previewAngles = new(135f, -10f);
-        private float _previewZoom = 4.5f;
 
         private bool _isInitialized;
         private bool _initializationFailed;
 
-        private GUIStyle _presetButtonStyle;
-        private GUIStyle _presetButtonSelectedStyle;
+        private GUIStyle _listButtonStyle;
+        private GUIStyle _listButtonSelectedStyle;
+
+        private string[] _groupLabels;
 
         [MenuItem("Tools/Sidekick/Preset Preview")]
         public static void ShowWindow()
         {
-            var window = GetWindow<SidekickPresetPreviewWindow>();
-            window.titleContent = new GUIContent(WindowTitle);
+            var window = GetWindow<SidekickPresetPreviewWindow>(true, WindowTitle);
+            window.minSize = new Vector2(720f, 420f);
             window.Show();
         }
 
         private async void OnEnable()
         {
-            InitializeStyles();
-            CreatePreviewUtility();
+            SetupPreviewUtility();
+            _groupLabels ??= OrderedPartGroups
+                .Select(group => ObjectNames.NicifyVariableName(group.ToString()))
+                .ToArray();
             await InitializeAsync();
             Repaint();
         }
@@ -228,45 +103,57 @@ namespace Game.Scripts.Editor.Sidekick
         private void OnDisable()
         {
             DestroyPreviewInstance();
-            if (_previewUtility != null)
-            {
-                _previewUtility.Cleanup();
-                _previewUtility = null;
-            }
+            _previewUtility?.Cleanup();
+            _previewUtility = null;
 
             _runtime = null;
+            _runtimeLibrary = null;
 
             _databaseManager?.CloseConnection();
             _databaseManager = null;
 
-            _presetsByGroup.Clear();
-            _presetRowsCache.Clear();
-            _activePresets.Clear();
-            _equipmentCategories.Clear();
-            _activeCategorySelections.Clear();
-            _equipmentCategoryLabels = Array.Empty<string>();
-            _selectedEquipmentCategoryIndex = 0;
-            _equipmentScroll = Vector2.zero;
+            _partsByType.Clear();
+            _baseSelections.Clear();
+            _equipmentSelections.Clear();
+            _species = null;
+            _activeSpecies = null;
+            _unrestrictedSpecies = null;
             _bodyShapes.Clear();
             _colorPresets.Clear();
             _colorPresetRowsCache.Clear();
-            _activeBodyShape = null;
-            _activeColorPreset = null;
-            _selectedBodyCategoryIndex = 0;
-            _bodyScroll = Vector2.zero;
-            _activeTab = PreviewTab.Equipment;
+
             _isInitialized = false;
             _initializationFailed = false;
         }
 
-        private void CreatePreviewUtility()
+        private void InitializeStyles()
+        {
+            _listButtonStyle = new GUIStyle(EditorStyles.miniButton)
+            {
+                alignment = TextAnchor.MiddleLeft,
+                fixedHeight = 22f,
+                richText = false
+            };
+
+            _listButtonSelectedStyle = new GUIStyle(_listButtonStyle)
+            {
+                normal =
+                {
+                    background = _listButtonStyle.onNormal.background,
+                    textColor = EditorStyles.miniButton.onNormal.textColor
+                },
+                fontStyle = FontStyle.Bold
+            };
+        }
+
+        private void SetupPreviewUtility()
         {
             _previewUtility = new PreviewRenderUtility(true);
             _previewUtility.camera.fieldOfView = 30f;
             _previewUtility.camera.nearClipPlane = 0.1f;
             _previewUtility.camera.farClipPlane = 100f;
             _previewUtility.camera.clearFlags = CameraClearFlags.SolidColor;
-            _previewUtility.camera.backgroundColor = BackgroundColor;
+            _previewUtility.camera.backgroundColor = PreviewBackgroundColor;
 
             var primaryLight = _previewUtility.lights[0];
             primaryLight.intensity = 1.4f;
@@ -275,25 +162,6 @@ namespace Game.Scripts.Editor.Sidekick
             var secondaryLight = _previewUtility.lights[1];
             secondaryLight.intensity = 0.8f;
             secondaryLight.transform.rotation = Quaternion.Euler(340f, 210f, 0f);
-        }
-
-        private void InitializeStyles()
-        {
-            _presetButtonStyle = new GUIStyle(EditorStyles.miniButton)
-            {
-                alignment = TextAnchor.MiddleLeft,
-                fixedHeight = 24f
-            };
-
-            _presetButtonSelectedStyle = new GUIStyle(_presetButtonStyle)
-            {
-                normal =
-                {
-                    background = _presetButtonStyle.onNormal.background,
-                    textColor = EditorStyles.miniButton.onNormal.textColor
-                },
-                fontStyle = FontStyle.Bold
-            };
         }
 
         private async Task InitializeAsync()
@@ -314,24 +182,24 @@ namespace Game.Scripts.Editor.Sidekick
 
                 if (baseModel == null || baseMaterial == null)
                 {
-                    Debug.LogError("SidekickPresetPreviewWindow: Failed to load required Sidekick base resources.");
+                    Debug.LogError("SidekickPresetPreviewWindow: Failed to load base Sidekick resources.");
                     _initializationFailed = true;
                     return;
                 }
 
                 _runtime = new SidekickRuntime(baseModel, baseMaterial, null, _databaseManager);
                 await SidekickRuntime.PopulateToolData(_runtime);
+                _runtimeLibrary = _runtime.MappedPartDictionary;
 
-                _partLibrary = _runtime.MappedPartDictionary;
-                BuildPresetCatalog();
+                _species = SidekickSpecies.GetAll(_databaseManager);
+                _unrestrictedSpecies = _species.FirstOrDefault(s =>
+                    string.Equals(s.Name, "Unrestricted", StringComparison.OrdinalIgnoreCase));
+                _activeSpecies = _species.FirstOrDefault(s =>
+                    string.Equals(s.Name, "Humans", StringComparison.OrdinalIgnoreCase)) ?? _species.FirstOrDefault();
+
+                BuildPartCollections();
                 LoadBodyCustomizationData();
-
-                if (_equipmentCategories.Count == 0 && _bodyShapes.Count == 0 && _colorPresets.Count == 0)
-                {
-                    Debug.LogWarning("SidekickPresetPreviewWindow: No presets were found in the Sidekick database.");
-                    _initializationFailed = true;
-                    return;
-                }
+                EnsureDefaultSelections();
 
                 _isInitialized = true;
                 RebuildCharacter();
@@ -343,166 +211,19 @@ namespace Game.Scripts.Editor.Sidekick
             }
         }
 
-        private void BuildPresetCatalog()
-        {
-            _presetsByGroup.Clear();
-            _activePresets.Clear();
-
-            foreach (PartGroup group in Enum.GetValues(typeof(PartGroup)))
-            {
-                var presets = SidekickPartPreset.GetAllByGroup(_databaseManager, group)
-                    .OrderBy(preset => preset.Name, StringComparer.OrdinalIgnoreCase)
-                    .ToList();
-
-                if (presets.Count == 0)
-                    continue;
-
-                _presetsByGroup[group] = presets;
-                if (!_activePresets.TryGetValue(group, out var existing) ||
-                    presets.All(preset => preset.ID != existing.ID))
-                {
-                    _activePresets[group] = presets.First();
-                }
-            }
-
-            BuildEquipmentCategories();
-        }
-
-        private void BuildEquipmentCategories()
-        {
-            _equipmentCategories.Clear();
-            _equipmentCategoryLabels = Array.Empty<string>();
-
-            foreach (var category in EquipmentCategoryDefinitions)
-            {
-                if (!_presetsByGroup.TryGetValue(category.Group, out var presets))
-                    continue;
-
-                var filtered = FilterPresetsByCategory(presets, category);
-                if (filtered.Count == 0)
-                    continue;
-
-                var data = new EquipmentCategoryData(category, filtered);
-                _equipmentCategories.Add(data);
-
-                if (_activeCategorySelections.TryGetValue(category.Id, out var existingSelection) &&
-                    filtered.Any(preset => preset.ID == existingSelection.ID))
-                {
-                    // keep current selection
-                }
-                else if (_activePresets.TryGetValue(category.Group, out var groupSelection) &&
-                         filtered.Any(preset => preset.ID == groupSelection.ID))
-                {
-                    _activeCategorySelections[category.Id] = filtered.First(preset => preset.ID == groupSelection.ID);
-                }
-                else
-                {
-                    var firstPreset = filtered.First();
-                    _activeCategorySelections[category.Id] = firstPreset;
-                    _activePresets[category.Group] = firstPreset;
-                }
-            }
-
-            if (_equipmentCategories.Count > 0)
-            {
-                _equipmentCategoryLabels = _equipmentCategories
-                    .Select(data => data.Definition.Label)
-                    .ToArray();
-                _selectedEquipmentCategoryIndex = Mathf.Clamp(_selectedEquipmentCategoryIndex, 0,
-                    _equipmentCategoryLabels.Length - 1);
-
-                var validIds = new HashSet<string>(_equipmentCategories.Select(data => data.Definition.Id));
-                foreach (var key in _activeCategorySelections.Keys.Where(id => !validIds.Contains(id)).ToList())
-                {
-                    _activeCategorySelections.Remove(key);
-                }
-            }
-            else
-            {
-                _selectedEquipmentCategoryIndex = 0;
-            }
-        }
-
-        private void LoadBodyCustomizationData()
-        {
-            _bodyShapes = SidekickBodyShapePreset.GetAll(_databaseManager) ?? new List<SidekickBodyShapePreset>();
-            _bodyShapes = _bodyShapes
-                .OrderBy(shape => shape.Name ?? string.Empty, StringComparer.OrdinalIgnoreCase)
-                .ToList();
-
-            if (_bodyShapes.Count > 0)
-            {
-                if (_activeBodyShape == null ||
-                    _bodyShapes.All(shape => shape.ID != _activeBodyShape.ID))
-                {
-                    _activeBodyShape = _bodyShapes.First();
-                }
-            }
-            else
-            {
-                _activeBodyShape = null;
-            }
-
-            _colorPresets = SidekickColorPreset.GetAllByColorGroup(_databaseManager, ColorGroup.Outfits) ??
-                            new List<SidekickColorPreset>();
-            _colorPresets = _colorPresets
-                .OrderBy(preset => preset.Name ?? string.Empty, StringComparer.OrdinalIgnoreCase)
-                .ToList();
-
-            if (_colorPresets.Count > 0)
-            {
-                if (_activeColorPreset == null ||
-                    _colorPresets.All(preset => preset.ID != _activeColorPreset.ID))
-                {
-                    _activeColorPreset = _colorPresets.First();
-                }
-            }
-            else
-            {
-                _activeColorPreset = null;
-            }
-        }
-
-        private List<SidekickPartPreset> FilterPresetsByCategory(
-            List<SidekickPartPreset> presets,
-            EquipmentCategoryDefinition category)
-        {
-            if (category.RequiredTypes == null || category.RequiredTypes.Length == 0)
-                return new List<SidekickPartPreset>(presets);
-
-            var requiredTypes = new HashSet<CharacterPartType>(category.RequiredTypes);
-            var result = new List<SidekickPartPreset>();
-
-            foreach (var preset in presets)
-            {
-                var rows = GetRowsForPreset(preset);
-                if (rows.Any(row =>
-                        TryResolveCharacterPartType(row.PartType, out var partType) &&
-                        requiredTypes.Contains(partType)))
-                {
-                    result.Add(preset);
-                }
-            }
-
-            return result;
-        }
-
-        private static bool TryResolveCharacterPartType(string shortcode, out CharacterPartType partType)
-        {
-            try
-            {
-                string typeName = CharacterPartTypeUtils.GetTypeNameFromShortcode(shortcode);
-                return Enum.TryParse(typeName, out partType);
-            }
-            catch
-            {
-                partType = default;
-                return false;
-            }
-        }
-
         private void OnGUI()
         {
+            if (_listButtonStyle == null || _listButtonSelectedStyle == null)
+            {
+                InitializeStyles();
+            }
+            if (_groupLabels == null || _groupLabels.Length != OrderedPartGroups.Length)
+            {
+                _groupLabels = OrderedPartGroups
+                    .Select(group => ObjectNames.NicifyVariableName(group.ToString()))
+                    .ToArray();
+            }
+
             if (_previewUtility == null)
             {
                 EditorGUILayout.HelpBox("Preview utility not ready.", MessageType.Warning);
@@ -515,12 +236,14 @@ namespace Game.Scripts.Editor.Sidekick
                 return;
             }
 
+            DrawSpeciesSelector();
             DrawMainTabToolbar();
+
             GUILayout.Space(4f);
 
             using (new EditorGUILayout.HorizontalScope())
             {
-                DrawActiveTabPanel();
+                DrawActivePanel();
                 DrawPreview();
             }
         }
@@ -529,7 +252,7 @@ namespace Game.Scripts.Editor.Sidekick
         {
             if (_initializationFailed)
             {
-                EditorGUILayout.HelpBox("Failed to initialize Sidekick preset preview. See the console for details.", MessageType.Error);
+                EditorGUILayout.HelpBox("Failed to initialize Sidekick preview. See the console for details.", MessageType.Error);
                 if (GUILayout.Button("Retry"))
                 {
                     _initializationFailed = false;
@@ -541,6 +264,27 @@ namespace Game.Scripts.Editor.Sidekick
             EditorGUILayout.HelpBox("Loading Sidekick data...", MessageType.Info);
         }
 
+        private void DrawSpeciesSelector()
+        {
+            if (_species == null || _species.Count == 0)
+                return;
+
+            EditorGUILayout.BeginHorizontal();
+
+            EditorGUILayout.LabelField("Species", GUILayout.Width(60f));
+            var speciesNames = _species.Select(s => s.Name).ToArray();
+            var currentIndex = Mathf.Max(0, _species.IndexOf(_activeSpecies));
+            EditorGUI.BeginChangeCheck();
+            var newIndex = EditorGUILayout.Popup(currentIndex, speciesNames);
+            if (EditorGUI.EndChangeCheck() && newIndex >= 0 && newIndex < _species.Count)
+            {
+                SetActiveSpecies(_species[newIndex]);
+            }
+
+            EditorGUILayout.EndHorizontal();
+            GUILayout.Space(4f);
+        }
+
         private void DrawMainTabToolbar()
         {
             using (new EditorGUILayout.HorizontalScope(EditorStyles.toolbar))
@@ -549,11 +293,12 @@ namespace Game.Scripts.Editor.Sidekick
                 if (selected != (int)_activeTab)
                 {
                     _activeTab = (PreviewTab)selected;
+                    RebuildCharacter();
                 }
             }
         }
 
-        private void DrawActiveTabPanel()
+        private void DrawActivePanel()
         {
             switch (_activeTab)
             {
@@ -571,155 +316,198 @@ namespace Game.Scripts.Editor.Sidekick
 
         private void DrawEquipmentPanel()
         {
-            using (new EditorGUILayout.VerticalScope(GUILayout.Width(280f)))
+            using (new EditorGUILayout.VerticalScope(GUILayout.Width(320f)))
             {
-                if (_equipmentCategories.Count == 0)
+                int newGroupIndex = GUILayout.Toolbar(Array.IndexOf(OrderedPartGroups, _selectedEquipmentGroup), _groupLabels);
+                if (newGroupIndex >= 0 && OrderedPartGroups[newGroupIndex] != _selectedEquipmentGroup)
                 {
-                    EditorGUILayout.HelpBox("No equipment presets available.", MessageType.Info);
-                    return;
+                    _selectedEquipmentGroup = OrderedPartGroups[newGroupIndex];
+                    EnsureValidPartTypeSelection();
+                    RebuildCharacter();
                 }
 
-                using (new EditorGUILayout.HorizontalScope(EditorStyles.toolbar))
+                GUILayout.Space(4f);
+
+                var partTypes = _selectedEquipmentGroup.GetPartTypes();
+                var partTypeNames = partTypes
+                    .Select(type => ObjectNames.NicifyVariableName(type.ToString()))
+                    .ToArray();
+                int currentTypeIndex = Mathf.Max(0, partTypes.IndexOf(_selectedEquipmentPartType));
+                EditorGUI.BeginChangeCheck();
+                int newTypeIndex = EditorGUILayout.Popup("Part Type", currentTypeIndex, partTypeNames);
+                if (EditorGUI.EndChangeCheck())
                 {
-                    _selectedEquipmentCategoryIndex = GUILayout.Toolbar(
-                        _selectedEquipmentCategoryIndex,
-                        _equipmentCategoryLabels,
-                        EditorStyles.toolbarButton);
+                    _selectedEquipmentPartType = partTypes[Mathf.Clamp(newTypeIndex, 0, partTypes.Count - 1)];
+                    RebuildCharacter();
                 }
 
-                var categoryData = _equipmentCategories[Mathf.Clamp(_selectedEquipmentCategoryIndex, 0,
-                    _equipmentCategories.Count - 1)];
-                string heading = $"{categoryData.Definition.Label} Presets";
-                EditorGUILayout.LabelField(heading, EditorStyles.boldLabel);
+                _equipmentSearch = EditorGUILayout.TextField("Search", _equipmentSearch);
+                _includeBasePartsInEquipment = EditorGUILayout.Toggle("Include Base Parts", _includeBasePartsInEquipment);
 
-                using (var scrollScope =
-                       new EditorGUILayout.ScrollViewScope(_equipmentScroll, GUILayout.ExpandHeight(true)))
+                DrawSelectedEquipmentInfo();
+
+                using (var scroll = new EditorGUILayout.ScrollViewScope(_equipmentScroll, GUILayout.ExpandHeight(true)))
                 {
-                    _equipmentScroll = scrollScope.scrollPosition;
+                    _equipmentScroll = scroll.scrollPosition;
 
-                    foreach (var preset in categoryData.Presets)
+                    foreach (var record in GetEquipmentCandidates(_selectedEquipmentPartType))
                     {
-                        bool isActive = _activeCategorySelections.TryGetValue(categoryData.Definition.Id,
-                                            out var activePreset) &&
-                                        activePreset.ID == preset.ID;
-
-                        string label = $"{preset.ID}: {preset.Name}";
-                        var style = isActive ? _presetButtonSelectedStyle : _presetButtonStyle;
-
-                        if (GUILayout.Button(label, style))
-                        {
-                            if (!isActive)
-                            {
-                                ApplyEquipmentSelection(categoryData, preset);
-                            }
-                        }
+                        DrawEquipmentRecord(record);
                     }
                 }
+
+                if (_equipmentSelections.TryGetValue(_selectedEquipmentPartType, out var selected) && selected != null)
+                {
+                    if (GUILayout.Button("Clear Selection"))
+                    {
+                        _equipmentSelections.Remove(_selectedEquipmentPartType);
+                        RebuildCharacter();
+                    }
+                }
+            }
+        }
+
+        private void DrawEquipmentRecord(PartRecord record)
+        {
+            if (record?.Part == null)
+                return;
+
+            bool isSelected = _equipmentSelections.TryGetValue(record.Part.Type, out var current) &&
+                              current != null &&
+                              current.Part.ID == record.Part.ID;
+
+            var style = isSelected ? _listButtonSelectedStyle : _listButtonStyle;
+            string label = FormatPartLabel(record);
+            var tooltip = record.Part.FileName ?? record.Key ?? label;
+
+            if (GUILayout.Button(new GUIContent(label, tooltip), style))
+            {
+                _equipmentSelections[record.Part.Type] = record;
+                RebuildCharacter();
+            }
+        }
+
+        private void DrawSelectedEquipmentInfo()
+        {
+            if (_equipmentSelections.TryGetValue(_selectedEquipmentPartType, out var record) && record != null)
+            {
+                string info = $"Selected: [{record.Part.ID}] {GetDisplayName(record)}";
+                EditorGUILayout.HelpBox(info, MessageType.None);
+            }
+            else
+            {
+                EditorGUILayout.HelpBox("No equipment selected for this part type.", MessageType.Info);
             }
         }
 
         private void DrawBodyPanel()
         {
-            using (new EditorGUILayout.VerticalScope(GUILayout.Width(280f)))
+            using (new EditorGUILayout.VerticalScope(GUILayout.Width(340f)))
             {
-                using (new EditorGUILayout.HorizontalScope(EditorStyles.toolbar))
-                {
-                    _selectedBodyCategoryIndex = GUILayout.Toolbar(
-                        _selectedBodyCategoryIndex,
-                        _bodyCategoryLabels,
-                        EditorStyles.toolbarButton);
-                }
+                DrawBodyShapeControls();
+                DrawColorPresetControls();
 
-                using (var scrollScope =
-                       new EditorGUILayout.ScrollViewScope(_bodyScroll, GUILayout.ExpandHeight(true)))
+                EditorGUILayout.Space();
+                EditorGUILayout.LabelField("Base Body Configuration", EditorStyles.boldLabel);
+
+                using (var scroll = new EditorGUILayout.ScrollViewScope(_bodyScroll, GUILayout.ExpandHeight(true)))
                 {
-                    _bodyScroll = scrollScope.scrollPosition;
-                    switch ((BodyCategory)_selectedBodyCategoryIndex)
+                    _bodyScroll = scroll.scrollPosition;
+
+                    foreach (var group in OrderedPartGroups)
                     {
-                        case BodyCategory.BodyShapes:
-                            DrawBodyShapeList();
-                            break;
-                        case BodyCategory.ColorPresets:
-                            DrawColorPresetList();
-                            break;
-                        default:
-                            DrawBodyShapeList();
-                            break;
+                        EditorGUILayout.LabelField(ObjectNames.NicifyVariableName(group.ToString()), EditorStyles.miniBoldLabel);
+                        EditorGUI.indentLevel++;
+                        foreach (var partType in BodyConfigurationTypes.Where(t => group.GetPartTypes().Contains(t)))
+                        {
+                            DrawBasePartSelector(partType);
+                        }
+                        EditorGUI.indentLevel--;
+                        GUILayout.Space(4f);
                     }
                 }
             }
         }
 
-        private void DrawBodyShapeList()
+        private void DrawBodyShapeControls()
         {
             if (_bodyShapes == null || _bodyShapes.Count == 0)
-            {
-                EditorGUILayout.HelpBox("No body shape presets found.", MessageType.Info);
                 return;
-            }
 
-            foreach (var shape in _bodyShapes)
+            var labels = _bodyShapes
+                .Select(shape => string.IsNullOrWhiteSpace(shape.Name)
+                    ? $"Body Shape #{shape.ID}"
+                    : $"{shape.Name} (#{shape.ID})")
+                .ToArray();
+            int currentIndex = Mathf.Max(0, _bodyShapes.FindIndex(shape => _activeBodyShape != null && shape.ID == _activeBodyShape.ID));
+            EditorGUI.BeginChangeCheck();
+            int newIndex = EditorGUILayout.Popup("Body Shape", currentIndex, labels);
+            if (EditorGUI.EndChangeCheck())
             {
-                bool isActive = _activeBodyShape != null && _activeBodyShape.ID == shape.ID;
-                string displayName = string.IsNullOrWhiteSpace(shape.Name)
-                    ? $"Body Shape {shape.ID}"
-                    : $"{shape.ID}: {shape.Name}";
-                var style = isActive ? _presetButtonSelectedStyle : _presetButtonStyle;
-
-                if (GUILayout.Button(displayName, style))
-                {
-                    if (!isActive)
-                    {
-                        _activeBodyShape = shape;
-                        RebuildCharacter();
-                    }
-                }
+                _activeBodyShape = _bodyShapes[Mathf.Clamp(newIndex, 0, _bodyShapes.Count - 1)];
+                RebuildCharacter();
             }
         }
 
-        private void DrawColorPresetList()
+        private void DrawColorPresetControls()
         {
             if (_colorPresets == null || _colorPresets.Count == 0)
-            {
-                EditorGUILayout.HelpBox("No color presets found.", MessageType.Info);
                 return;
-            }
 
-            foreach (var preset in _colorPresets)
+            var labels = _colorPresets
+                .Select(preset => string.IsNullOrWhiteSpace(preset.Name)
+                    ? $"Color Preset #{preset.ID}"
+                    : $"{preset.Name} (#{preset.ID})")
+                .ToArray();
+            int currentIndex = Mathf.Max(0, _colorPresets.FindIndex(preset => _activeColorPreset != null && preset.ID == _activeColorPreset.ID));
+            EditorGUI.BeginChangeCheck();
+            int newIndex = EditorGUILayout.Popup("Color Preset", currentIndex, labels);
+            if (EditorGUI.EndChangeCheck())
             {
-                bool isActive = _activeColorPreset != null && _activeColorPreset.ID == preset.ID;
-                string displayName = string.IsNullOrWhiteSpace(preset.Name)
-                    ? $"Color Preset {preset.ID}"
-                    : $"{preset.ID}: {preset.Name}";
-                var style = isActive ? _presetButtonSelectedStyle : _presetButtonStyle;
-
-                if (GUILayout.Button(displayName, style))
-                {
-                    if (!isActive)
-                    {
-                        _activeColorPreset = preset;
-                        RebuildCharacter();
-                    }
-                }
+                _activeColorPreset = _colorPresets[Mathf.Clamp(newIndex, 0, _colorPresets.Count - 1)];
+                RebuildCharacter();
             }
         }
 
-        private void ApplyEquipmentSelection(EquipmentCategoryData categoryData, SidekickPartPreset preset)
+        private void DrawBasePartSelector(CharacterPartType partType)
         {
-            _activeCategorySelections[categoryData.Definition.Id] = preset;
-            _activePresets[categoryData.Definition.Group] = preset;
+            var candidates = GetBaseCandidates(partType).ToList();
 
-            foreach (var data in _equipmentCategories.Where(data => data.Definition.Group == categoryData.Definition.Group))
+            var displayOptions = new List<string> { "None" };
+            displayOptions.AddRange(candidates.Select(FormatPartLabel));
+
+            _baseSelections.TryGetValue(partType, out var currentRecord);
+            int currentIndex = 0;
+            if (currentRecord != null)
             {
-                _activeCategorySelections[data.Definition.Id] = preset;
+                int foundIndex = candidates.FindIndex(record => record.Part.ID == currentRecord.Part.ID);
+                if (foundIndex >= 0)
+                {
+                    currentIndex = foundIndex + 1;
+                }
             }
 
-            RebuildCharacter();
+            string label = ObjectNames.NicifyVariableName(partType.ToString());
+            EditorGUI.BeginChangeCheck();
+            int newIndex = EditorGUILayout.Popup(label, currentIndex, displayOptions.ToArray());
+            if (EditorGUI.EndChangeCheck())
+            {
+                if (newIndex <= 0)
+                {
+                    _baseSelections.Remove(partType);
+                }
+                else
+                {
+                    _baseSelections[partType] = candidates[newIndex - 1];
+                }
+                RebuildCharacter();
+            }
         }
 
         private void DrawPreview()
         {
             GUILayout.Space(8f);
+
             Rect previewRect = GUILayoutUtility.GetRect(10, 10, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
             if (Event.current.type == EventType.Repaint)
             {
@@ -729,10 +517,11 @@ namespace Game.Scripts.Editor.Sidekick
                 }
                 else
                 {
-                    EditorGUI.DrawRect(previewRect, BackgroundColor);
+                    EditorGUI.DrawRect(previewRect, PreviewBackgroundColor);
                     GUI.Label(previewRect, "No preview available", EditorStyles.centeredGreyMiniLabel);
                 }
             }
+
             HandlePreviewInput(previewRect);
         }
 
@@ -779,42 +568,46 @@ namespace Game.Scripts.Editor.Sidekick
 
         private void RebuildCharacter()
         {
-            if (_runtime == null || _partLibrary == null)
+            if (_runtime == null || _runtimeLibrary == null)
                 return;
 
-            var renderers = new List<SkinnedMeshRenderer>();
+            var selectedPartNames = new Dictionary<CharacterPartType, string>();
 
-            foreach (var preset in _activePresets.Values.Where(p => p != null))
+            foreach (var kvp in _baseSelections)
             {
-                foreach (var row in GetRowsForPreset(preset))
+                if (kvp.Value != null)
                 {
-                    if (string.IsNullOrEmpty(row.PartName))
-                        continue;
-
-                    if (!TryResolveCharacterPartType(row.PartType, out var partType))
-                        continue;
-
-                    if (!_partLibrary.TryGetValue(partType, out var partsByName))
-                        continue;
-                    if (!partsByName.TryGetValue(row.PartName, out var part))
-                        continue;
-
-                    var model = part.GetPartModel();
-                    var mesh = model != null ? model.GetComponentInChildren<SkinnedMeshRenderer>() : null;
-                    if (mesh != null)
-                    {
-                        renderers.Add(mesh);
-                    }
+                    selectedPartNames[kvp.Key] = kvp.Value.Key;
                 }
             }
 
-            if (renderers.Count == 0)
+            foreach (var kvp in _equipmentSelections.Where(pair => pair.Value != null))
             {
-                DestroyPreviewInstance();
-                return;
+                selectedPartNames[kvp.Key] = kvp.Value.Key;
+            }
+
+            var renderers = new List<SkinnedMeshRenderer>();
+
+            foreach (var entry in selectedPartNames.OrderBy(entry => (int)entry.Key))
+            {
+                if (!_runtimeLibrary.TryGetValue(entry.Key, out var partsByName))
+                    continue;
+                if (!partsByName.TryGetValue(entry.Value, out var part))
+                    continue;
+
+                var model = part.GetPartModel();
+                var mesh = model != null ? model.GetComponentInChildren<SkinnedMeshRenderer>() : null;
+                if (mesh != null)
+                {
+                    renderers.Add(mesh);
+                }
             }
 
             DestroyPreviewInstance();
+
+            if (renderers.Count == 0)
+                return;
+
             ApplyBodyShape();
             ApplyColorPreset();
 
@@ -859,17 +652,6 @@ namespace Game.Scripts.Editor.Sidekick
             }
         }
 
-        private List<SidekickPartPresetRow> GetRowsForPreset(SidekickPartPreset preset)
-        {
-            if (!_presetRowsCache.TryGetValue(preset.ID, out var rows))
-            {
-                rows = SidekickPartPresetRow.GetAllByPreset(_databaseManager, preset);
-                _presetRowsCache[preset.ID] = rows;
-            }
-
-            return rows;
-        }
-
         private void PreparePreviewInstance(GameObject character)
         {
             _previewInstance = character;
@@ -900,6 +682,264 @@ namespace Game.Scripts.Editor.Sidekick
 
             DestroyImmediate(_previewInstance);
             _previewInstance = null;
+        }
+
+        private IEnumerable<PartRecord> GetEquipmentCandidates(CharacterPartType partType)
+        {
+            if (!_partsByType.TryGetValue(partType, out var list))
+                yield break;
+
+            string term = _equipmentSearch?.Trim() ?? string.Empty;
+            bool hasSearch = !string.IsNullOrEmpty(term);
+            term = term.ToLowerInvariant();
+
+            foreach (var record in list)
+            {
+                if (record?.Part == null)
+                    continue;
+
+                bool isBase = IsBasePart(record);
+                if (!_includeBasePartsInEquipment && isBase)
+                    continue;
+
+                if (hasSearch)
+                {
+                    if (!MatchesSearch(record, term))
+                        continue;
+                }
+
+                yield return record;
+            }
+        }
+
+        private IEnumerable<PartRecord> GetBaseCandidates(CharacterPartType partType)
+        {
+            if (!_partsByType.TryGetValue(partType, out var list))
+                return Enumerable.Empty<PartRecord>();
+
+            var baseRecords = list
+                .Where(IsBasePart)
+                .ToList();
+
+            if (baseRecords.Count > 0)
+                return baseRecords;
+
+            return list.Take(1); // fallback
+        }
+
+        private bool MatchesSearch(PartRecord record, string term)
+        {
+            if (record?.Part == null)
+                return false;
+
+            string name = record.Part.Name ?? string.Empty;
+            string fileName = record.Part.FileName ?? string.Empty;
+            string key = record.Key ?? string.Empty;
+
+            if (name.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0)
+                return true;
+            if (fileName.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0)
+                return true;
+            if (key.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0)
+                return true;
+            if (record.Part.ID.ToString().IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0)
+                return true;
+
+            return false;
+        }
+
+        private static string FormatPartLabel(PartRecord record)
+        {
+            if (record?.Part == null)
+                return "Unknown";
+
+            string displayName = GetDisplayName(record);
+            return $"[{record.Part.ID}] {displayName}";
+        }
+
+        private static string GetDisplayName(PartRecord record)
+        {
+            if (record?.Part == null)
+                return "Unknown";
+
+            if (!string.IsNullOrWhiteSpace(record.Part.Name))
+                return record.Part.Name;
+            if (!string.IsNullOrWhiteSpace(record.Part.FileName))
+                return record.Part.FileName;
+            if (!string.IsNullOrWhiteSpace(record.Key))
+                return record.Key;
+
+            return $"Part #{record.Part.ID}";
+        }
+
+        private void SetActiveSpecies(SidekickSpecies species)
+        {
+            if (species == null || _activeSpecies == species)
+                return;
+
+            _activeSpecies = species;
+            BuildPartCollections();
+            EnsureDefaultSelections();
+            RebuildCharacter();
+        }
+
+        private void BuildPartCollections()
+        {
+            _partsByType.Clear();
+
+            if (_runtimeLibrary == null)
+                return;
+
+            foreach (var kvp in _runtimeLibrary)
+            {
+                var partType = kvp.Key;
+                var perTypeRecords = new Dictionary<int, PartRecord>();
+
+                foreach (var entry in kvp.Value)
+                {
+                    var part = entry.Value;
+                    if (part == null)
+                        continue;
+
+                    if (!PartMatchesActiveSpecies(part))
+                        continue;
+
+                    if (perTypeRecords.ContainsKey(part.ID))
+                        continue;
+
+                    perTypeRecords[part.ID] = new PartRecord
+                    {
+                        Key = entry.Key,
+                        Part = part
+                    };
+                }
+
+                if (perTypeRecords.Count == 0)
+                    continue;
+
+                var ordered = perTypeRecords.Values
+                    .OrderBy(record => record.Part.Name ?? record.Part.FileName ?? record.Key)
+                    .ThenBy(record => record.Part.ID)
+                    .ToList();
+
+                _partsByType[partType] = ordered;
+            }
+        }
+
+        private void EnsureDefaultSelections()
+        {
+            foreach (var type in BodyConfigurationTypes)
+            {
+                if (_baseSelections.TryGetValue(type, out var record) && record != null &&
+                    _partsByType.TryGetValue(type, out var list) &&
+                    list.Any(item => item.Part.ID == record.Part.ID))
+                {
+                    continue;
+                }
+
+                var baseCandidate = GetBaseCandidates(type).FirstOrDefault();
+                if (baseCandidate != null)
+                {
+                    _baseSelections[type] = baseCandidate;
+                }
+                else
+                {
+                    _baseSelections.Remove(type);
+                }
+            }
+
+            var keysToRemove = _equipmentSelections
+                .Where(kvp => kvp.Value == null || !_partsByType.TryGetValue(kvp.Key, out var list) ||
+                              !list.Any(record => record.Part.ID == kvp.Value.Part.ID))
+                .Select(kvp => kvp.Key)
+                .ToList();
+
+            foreach (var key in keysToRemove)
+            {
+                _equipmentSelections.Remove(key);
+            }
+
+            EnsureValidPartTypeSelection();
+        }
+
+        private void EnsureValidPartTypeSelection()
+        {
+            var partTypes = _selectedEquipmentGroup.GetPartTypes();
+            if (!partTypes.Contains(_selectedEquipmentPartType))
+            {
+                _selectedEquipmentPartType = partTypes.FirstOrDefault();
+            }
+        }
+
+        private bool PartMatchesActiveSpecies(SidekickPart part)
+        {
+            if (part?.Species == null)
+                return true;
+
+            if (_activeSpecies == null)
+                return true;
+
+            if (part.Species.ID == _activeSpecies.ID)
+                return true;
+
+            if (_unrestrictedSpecies != null && part.Species.ID == _unrestrictedSpecies.ID)
+                return true;
+
+            return false;
+        }
+
+        private void LoadBodyCustomizationData()
+        {
+            _bodyShapes = SidekickBodyShapePreset.GetAll(_databaseManager) ?? new List<SidekickBodyShapePreset>();
+            _bodyShapes = _bodyShapes
+                .OrderBy(shape => shape.Name ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            if (_bodyShapes.Count > 0)
+            {
+                if (_activeBodyShape == null ||
+                    _bodyShapes.All(shape => shape.ID != _activeBodyShape.ID))
+                {
+                    _activeBodyShape = _bodyShapes.First();
+                }
+            }
+            else
+            {
+                _activeBodyShape = null;
+            }
+
+            _colorPresets = SidekickColorPreset.GetAllByColorGroup(_databaseManager, ColorGroup.Outfits) ??
+                            new List<SidekickColorPreset>();
+            _colorPresets = _colorPresets
+                .OrderBy(preset => preset.Name ?? string.Empty, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            if (_colorPresets.Count > 0)
+            {
+                if (_activeColorPreset == null ||
+                    _colorPresets.All(preset => preset.ID != _activeColorPreset.ID))
+                {
+                    _activeColorPreset = _colorPresets.First();
+                }
+            }
+            else
+            {
+                _activeColorPreset = null;
+            }
+        }
+
+        private static bool IsBasePart(PartRecord record)
+        {
+            if (record?.Part == null)
+                return false;
+
+            string fileName = record.Part.FileName ?? string.Empty;
+            string name = record.Part.Name ?? string.Empty;
+
+            return fileName.IndexOf("_BASE_", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                   name.IndexOf("_BASE_", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                   fileName.IndexOf("BASE", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                   name.IndexOf("BASE", StringComparison.OrdinalIgnoreCase) >= 0;
         }
     }
 }

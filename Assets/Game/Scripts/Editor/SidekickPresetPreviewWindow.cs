@@ -37,6 +37,13 @@ namespace Game.Scripts.Editor.Sidekick
             Body
         }
 
+        private const float DefaultPrimaryYaw = 40f;
+        private const float DefaultPrimaryPitch = 40f;
+        private const float DefaultPrimaryIntensity = 1.4f;
+        private const float DefaultSecondaryYaw = 210f;
+        private const float DefaultSecondaryPitch = -20f;
+        private const float DefaultSecondaryIntensity = 0.8f;
+
         private sealed class PartRecord
         {
             public string Key;
@@ -57,6 +64,13 @@ namespace Game.Scripts.Editor.Sidekick
         private Vector2 _bodyScroll;
         private Vector2 _previewAngles = new(135f, -10f);
         private float _previewZoom = 4.5f;
+
+        private float _primaryLightYaw = DefaultPrimaryYaw;
+        private float _primaryLightPitch = DefaultPrimaryPitch;
+        private float _primaryLightIntensity = DefaultPrimaryIntensity;
+        private float _secondaryLightYaw = DefaultSecondaryYaw;
+        private float _secondaryLightPitch = DefaultSecondaryPitch;
+        private float _secondaryLightIntensity = DefaultSecondaryIntensity;
 
         private PreviewTab _activeTab = PreviewTab.Equipment;
         private PartGroup _selectedEquipmentGroup = PartGroup.Head;
@@ -154,14 +168,7 @@ namespace Game.Scripts.Editor.Sidekick
             _previewUtility.camera.farClipPlane = 100f;
             _previewUtility.camera.clearFlags = CameraClearFlags.SolidColor;
             _previewUtility.camera.backgroundColor = PreviewBackgroundColor;
-
-            var primaryLight = _previewUtility.lights[0];
-            primaryLight.intensity = 1.4f;
-            primaryLight.transform.rotation = Quaternion.Euler(40f, 40f, 0f);
-
-            var secondaryLight = _previewUtility.lights[1];
-            secondaryLight.intensity = 0.8f;
-            secondaryLight.transform.rotation = Quaternion.Euler(340f, 210f, 0f);
+            ApplyLightSettings();
         }
 
         private async Task InitializeAsync()
@@ -506,23 +513,28 @@ namespace Game.Scripts.Editor.Sidekick
 
         private void DrawPreview()
         {
-            GUILayout.Space(8f);
-
-            Rect previewRect = GUILayoutUtility.GetRect(10, 10, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
-            if (Event.current.type == EventType.Repaint)
+            using (new EditorGUILayout.VerticalScope(GUILayout.ExpandWidth(true)))
             {
-                if (_previewInstance != null)
-                {
-                    RenderPreview(previewRect);
-                }
-                else
-                {
-                    EditorGUI.DrawRect(previewRect, PreviewBackgroundColor);
-                    GUI.Label(previewRect, "No preview available", EditorStyles.centeredGreyMiniLabel);
-                }
-            }
+                GUILayout.Space(8f);
 
-            HandlePreviewInput(previewRect);
+                Rect previewRect = GUILayoutUtility.GetRect(10, 10, GUILayout.ExpandHeight(true), GUILayout.ExpandWidth(true));
+                if (Event.current.type == EventType.Repaint)
+                {
+                    if (_previewInstance != null)
+                    {
+                        RenderPreview(previewRect);
+                    }
+                    else
+                    {
+                        EditorGUI.DrawRect(previewRect, PreviewBackgroundColor);
+                        GUI.Label(previewRect, "No preview available", EditorStyles.centeredGreyMiniLabel);
+                    }
+                }
+
+                HandlePreviewInput(previewRect);
+                GUILayout.Space(6f);
+                DrawLightingControls();
+            }
         }
 
         private void RenderPreview(Rect rect)
@@ -682,6 +694,58 @@ namespace Game.Scripts.Editor.Sidekick
 
             DestroyImmediate(_previewInstance);
             _previewInstance = null;
+        }
+
+        private void DrawLightingControls()
+        {
+            EditorGUILayout.LabelField("Lighting", EditorStyles.boldLabel);
+            EditorGUI.indentLevel++;
+
+            EditorGUI.BeginChangeCheck();
+            _primaryLightIntensity = EditorGUILayout.Slider("Key Intensity", _primaryLightIntensity, 0f, 3f);
+            _primaryLightYaw = EditorGUILayout.Slider("Key Yaw", _primaryLightYaw, -180f, 180f);
+            _primaryLightPitch = EditorGUILayout.Slider("Key Pitch", _primaryLightPitch, -90f, 90f);
+            _secondaryLightIntensity = EditorGUILayout.Slider("Fill Intensity", _secondaryLightIntensity, 0f, 3f);
+            _secondaryLightYaw = EditorGUILayout.Slider("Fill Yaw", _secondaryLightYaw, -180f, 180f);
+            _secondaryLightPitch = EditorGUILayout.Slider("Fill Pitch", _secondaryLightPitch, -90f, 90f);
+            if (EditorGUI.EndChangeCheck())
+            {
+                ApplyLightSettings();
+                Repaint();
+            }
+
+            if (GUILayout.Button("Reset Lighting"))
+            {
+                ResetLighting();
+            }
+
+            EditorGUI.indentLevel--;
+        }
+
+        private void ApplyLightSettings()
+        {
+            if (_previewUtility == null || _previewUtility.lights == null || _previewUtility.lights.Length < 2)
+                return;
+
+            var primaryLight = _previewUtility.lights[0];
+            primaryLight.intensity = Mathf.Max(0f, _primaryLightIntensity);
+            primaryLight.transform.rotation = Quaternion.Euler(_primaryLightPitch, _primaryLightYaw, 0f);
+
+            var secondaryLight = _previewUtility.lights[1];
+            secondaryLight.intensity = Mathf.Max(0f, _secondaryLightIntensity);
+            secondaryLight.transform.rotation = Quaternion.Euler(_secondaryLightPitch, _secondaryLightYaw, 0f);
+        }
+
+        private void ResetLighting()
+        {
+            _primaryLightYaw = DefaultPrimaryYaw;
+            _primaryLightPitch = DefaultPrimaryPitch;
+            _primaryLightIntensity = DefaultPrimaryIntensity;
+            _secondaryLightYaw = DefaultSecondaryYaw;
+            _secondaryLightPitch = DefaultSecondaryPitch;
+            _secondaryLightIntensity = DefaultSecondaryIntensity;
+            ApplyLightSettings();
+            Repaint();
         }
 
         private IEnumerable<PartRecord> GetEquipmentCandidates(CharacterPartType partType)

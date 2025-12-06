@@ -15,8 +15,23 @@ namespace Game.Scripts.Gameplay.PresentersLayer
             //todo: core service 
             Container.Resolve<UIScreenFactory>().SetGameplayContainer(Container);
             
-            Container.BindInterfacesAndSelfTo<LobbyPresenter>().AsSingle();
+            Container.BindInterfacesAndSelfTo<GameplayFlowPresenter>().AsSingle();
             Container.BindInterfacesAndSelfTo<DeckPresenter>().AsSingle();
+            
+            // State effects
+            Container.BindInterfacesAndSelfTo<ShowInitialGameplayUiEffect>().AsSingle();
+            Container.BindInterfacesAndSelfTo<FillStartHandEffect>().AsSingle();
+            Container.BindInterfacesAndSelfTo<LoadPrepareSceneEffect>().AsSingle();
+            Container.BindInterfacesAndSelfTo<ShowPrepareTimerUiEffect>().AsSingle();
+            Container.BindInterfacesAndSelfTo<PrepareRoundTimerEffect>().AsSingle();
+            Container.BindInterfacesAndSelfTo<CleanupPreparePlayerEffect>().AsSingle();
+            Container.BindInterfacesAndSelfTo<TakeEventCardFlowEffect>().AsSingle();
+            Container.BindInterfacesAndSelfTo<UnloadEventCardScenesEffect>().AsSingle();
+            Container.BindInterfacesAndSelfTo<LoadBattleSceneEffect>().AsSingle();
+            Container.BindInterfacesAndSelfTo<UnloadBattleSceneEffect>().AsSingle();
+            Container.BindInterfacesAndSelfTo<FinishTakeEventCardStateUseCase>().AsSingle();
+
+            // States
             Container.BindInterfacesAndSelfTo<FirstEnterInGameState>().AsSingle();
             Container.BindInterfacesAndSelfTo<PreparePlayerState>().AsSingle();
             Container.BindInterfacesAndSelfTo<TakeEventCardState>().AsSingle();

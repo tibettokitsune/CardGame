@@ -1,45 +1,15 @@
-using System.Threading.Tasks;
-using Game.Scripts.Gameplay.PresentersLayer.Contracts.UI;
-using Game.Scripts.Gameplay.PresentersLayer.Player;
-using Game.Scripts.UI;
-using UnityEngine;
-using UnityHFSM;
+using System.Collections.Generic;
 
 namespace Game.Scripts.Gameplay.PresentersLayer.GameStates
 {
-    public class FirstEnterInGameState : StateBase
+    public class FirstEnterInGameState : EffectDrivenState<FirstEnterInGameState>
     {
-        private readonly IFillStartHandUseCase _fillStartHandUseCase;
-        private readonly IUIService _uiService;
-        public FirstEnterInGameState(IFillStartHandUseCase fillStartHandUseCase, IUIService uiService) 
-            : base(needsExitTime: false, isGhostState: false)
+        public FirstEnterInGameState(
+            IEnumerable<IStateEnterEffect<FirstEnterInGameState>> enterEffects,
+            IEnumerable<IStateExitEffect<FirstEnterInGameState>> exitEffects,
+            IEnumerable<IStateExitRequestEffect<FirstEnterInGameState>> exitRequestEffects)
+            : base(enterEffects, exitEffects, exitRequestEffects, needsExitTime: false, isGhostState: false)
         {
-            _fillStartHandUseCase = fillStartHandUseCase;
-            _uiService = uiService;
-        }
-        
-        public override void Init() { }
-
-        public override async void OnEnter()
-        {
-            Debug.Log("FirstEnterInGameState Enter");
-            await _uiService.ShowAsync<ICharacterActiveCardsScreen>();
-            await _uiService.ShowAsync<ICharacterStatsScreen>();
-            await _uiService.ShowAsync<IPlayerHandScreen>();
-            await FillPlayerStartHand();
-        }
-        public override void OnLogic() { }
-
-        public override void OnExit()
-        {
-            Debug.Log("FirstEnterInGame Exit");
-        }
-
-        public override void OnExitRequest() { }
-
-        private async Task FillPlayerStartHand()
-        {
-            await _fillStartHandUseCase.Execute();
         }
     }
 }

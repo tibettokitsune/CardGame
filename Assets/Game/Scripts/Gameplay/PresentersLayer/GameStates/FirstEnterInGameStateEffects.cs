@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Game.Scripts.Gameplay.PresentersLayer.Contracts.UI;
+using Game.Scripts.UIContracts;
 using Game.Scripts.Gameplay.PresentersLayer.Player;
 using Game.Scripts.UI;
 

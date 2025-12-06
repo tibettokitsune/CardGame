@@ -1,4 +1,4 @@
-namespace Game.Scripts.Gameplay.PresentersLayer.Contracts.UI
+namespace Game.Scripts.UIContracts
 {
     /// <summary>
     /// Marker interface for the CharacterActiveCards screen contract.

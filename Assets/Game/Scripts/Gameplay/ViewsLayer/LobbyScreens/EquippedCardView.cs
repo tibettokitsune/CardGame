@@ -1,5 +1,5 @@
 using System.Threading;
-using Game.Scripts.Gameplay.PresentersLayer.Player;
+using Game.Scripts.UIContracts;
 using Game.Scripts.Infrastructure.AsyncAssets;
 using TMPro;
 using UnityEngine;
@@ -14,7 +14,7 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
         [SerializeField] private Image mainIcon;
         [SerializeField] private Image bgIcon;
         private CancellationTokenSource _cancellationTokenSource;
-        public async void Setup(EquipmentCardEntity cardEntity, ISpriteService spriteService)
+        public async void Setup(EquipmentCardViewData cardEntity, ISpriteService spriteService)
         {
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource = new CancellationTokenSource();

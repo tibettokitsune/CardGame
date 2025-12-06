@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Game.Scripts.Gameplay.DataLayer;
-using Game.Scripts.Gameplay.PresentersLayer.Contracts.UI;
+using Game.Scripts.UIContracts;
 using Game.Scripts.Infrastructure.SceneManagment;
 using Game.Scripts.Infrastructure.TimeManagement;
 using Game.Scripts.UI;

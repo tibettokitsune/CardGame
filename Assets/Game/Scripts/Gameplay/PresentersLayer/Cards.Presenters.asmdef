@@ -6,7 +6,8 @@
         "UnityHFSM",
         "Cards.Infra",
         "Zenject",
-        "UniRx"
+        "UniRx",
+        "Cards.UIContracts"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

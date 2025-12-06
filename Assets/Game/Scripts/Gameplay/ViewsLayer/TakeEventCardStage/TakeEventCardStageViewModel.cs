@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
-using Game.Scripts.Gameplay.PresentersLayer.Contracts.UI;
 using Game.Scripts.Gameplay.PresentersLayer.GameStates;
 using Game.Scripts.Gameplay.PresentersLayer.Player;
 using Game.Scripts.Infrastructure;
 using Game.Scripts.UI;
+using Game.Scripts.UIContracts;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Rendering.Universal;

@@ -4,15 +4,15 @@ using System.Linq;
 using Game.Scripts.Gameplay.DataLayer.Models;
 using Game.Scripts.Infrastructure.Configs.Configs;
 
-namespace Game.Scripts.Gameplay.PresentersLayer.Player
+namespace Game.Scripts.UIContracts
 {
-    public class CardEntity
+    public class CardViewData
     {
         private static readonly IReadOnlyList<StatModifier> EmptyStatModifiers = Array.Empty<StatModifier>();
 
         protected readonly IBaseCard Card;
 
-        public string ID => Card.ID;
+        public string Id => Card.ID;
         public CardKind Kind => Card.Kind;
         public string Name => Card.Name;
         public string Description => Card.Description;
@@ -20,13 +20,13 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
         public string BackgroundLayer => Card.BackgroundLayer;
         public IReadOnlyList<StatModifier> StatModifiers => Card.StatModifiers ?? EmptyStatModifiers;
 
-        public CardEntity(IBaseCard card)
+        public CardViewData(IBaseCard card)
         {
             Card = card ?? throw new ArgumentNullException(nameof(card));
         }
     }
 
-    public class EquipmentCardEntity : CardEntity
+    public class EquipmentCardViewData : CardViewData
     {
         private static readonly IReadOnlyList<AppearanceOverride> EmptyAppearanceOverrides = Array.Empty<AppearanceOverride>();
 
@@ -34,7 +34,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
         public string EquipmentDescription => Card.Equipment?.Description ?? FormatStatDescription();
         public IReadOnlyList<AppearanceOverride> Overrides { get; }
 
-        public EquipmentCardEntity(IBaseCard card) : base(card)
+        public EquipmentCardViewData(IBaseCard card) : base(card)
         {
             Overrides = Card.Equipment?.Overrides ?? EmptyAppearanceOverrides;
         }
@@ -52,9 +52,9 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
         }
     }
 
-    public class DoorCardEntity : CardEntity
+    public class DoorCardViewData : CardViewData
     {
-        public DoorCardEntity(IBaseCard card) : base(card)
+        public DoorCardViewData(IBaseCard card) : base(card)
         {
         }
     }

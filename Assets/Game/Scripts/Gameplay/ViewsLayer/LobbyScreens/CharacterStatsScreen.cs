@@ -1,8 +1,8 @@
-using Game.Scripts.Gameplay.PresentersLayer.Contracts.UI;
 using Game.Scripts.Gameplay.PresentersLayer.Player;
 using Game.Scripts.Infrastructure.AsyncAssets;
 using Game.Scripts.Infrastructure.UI;
 using Game.Scripts.UI;
+using Game.Scripts.UIContracts;
 using UniRx;
 using UnityEngine;
 using Zenject;

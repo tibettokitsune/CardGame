@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using Game.Scripts.Gameplay.PresentersLayer.Player;
+using Game.Scripts.UIContracts;
 using Game.Scripts.Infrastructure.AsyncAssets;
 using TMPro;
 using UnityEngine;
@@ -27,7 +27,7 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
 
         private CancellationTokenSource _loadCancellation;
         private Tween _idleTween;
-        private CardEntity _cardEntity;
+        private CardViewData _cardEntity;
         private string _cardId;
         private bool _dragCallbacksRegistered;
         private Vector3 _baseScale = Vector3.one;
@@ -65,7 +65,7 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
             CancelSpriteLoading();
         }
 
-        public async void Setup(CardEntity cardEntity, ISpriteService spriteService)
+        public async void Setup(CardViewData cardEntity, ISpriteService spriteService)
         {
             if (cardEntity == null) throw new ArgumentNullException(nameof(cardEntity));
             if (spriteService == null) throw new ArgumentNullException(nameof(spriteService));
@@ -73,7 +73,7 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
             CancelSpriteLoading();
 
             _cardEntity = cardEntity;
-            _cardId = cardEntity.ID;
+            _cardId = cardEntity.Id;
 
             dragAndDropWidget?.Setup(_cardId);
             StopIdleAnimation(resetScale: true);
@@ -105,12 +105,12 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
                 layoutElement.enabled = true;
         }
 
-        protected virtual string BuildDescription(CardEntity card)
+        protected virtual string BuildDescription(CardViewData card)
         {
             return $"{card.Name}\n{card.Description}";
         }
 
-        protected virtual void OnCardAssigned(CardEntity card)
+        protected virtual void OnCardAssigned(CardViewData card)
         {
         }
 
@@ -118,7 +118,7 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
         {
         }
 
-        private void ApplyCardInfo(CardEntity card)
+        private void ApplyCardInfo(CardViewData card)
         {
             if (descriptionLabel != null)
                 descriptionLabel.text = BuildDescription(card);
@@ -135,7 +135,7 @@ namespace Game.Scripts.Gameplay.ViewsLayer.LobbyScreens
                 backgroundIcon.sprite = null;
         }
 
-        private async UniTask LoadSpritesAsync(ISpriteService spriteService, CardEntity card, CancellationToken token)
+        private async UniTask LoadSpritesAsync(ISpriteService spriteService, CardViewData card, CancellationToken token)
         {
             if (mainIcon == null || backgroundIcon == null)
                 return;

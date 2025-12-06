@@ -1,10 +1,9 @@
 {
-    "name": "Cards.Infra",
+    "name": "Cards.UIContracts",
     "rootNamespace": "",
     "references": [
-        "UniTask",
-        "Zenject",
-        "UniRx"
+        "Cards.DataLayer",
+        "Cards.Infra"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

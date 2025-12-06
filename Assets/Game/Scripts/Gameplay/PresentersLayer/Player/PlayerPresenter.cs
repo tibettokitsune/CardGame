@@ -5,6 +5,7 @@ using Game.Scripts.Gameplay.DataLayer;
 using Game.Scripts.Gameplay.Lobby.Player;
 using Game.Scripts.Gameplay.PresentersLayer.Deck;
 using Game.Scripts.Infrastructure.Configs.Configs;
+using Game.Scripts.UIContracts;
 using UniRx;
 
 namespace Game.Scripts.Gameplay.PresentersLayer.Player
@@ -20,11 +21,11 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
         ITakeEventCardUseCase,
         IDisposable
     {
-        public ReactiveCollection<CardEntity> PlayerHand { get; } = new();
-        public ReactiveCollection<EquipmentCardEntity> PlayerEquipment { get; } = new();
+        public ReactiveCollection<CardViewData> PlayerHand { get; } = new();
+        public ReactiveCollection<EquipmentCardViewData> PlayerEquipment { get; } = new();
         public ReactiveDictionary<string, StatEntity> PlayerStats { get; } = new();
         
-        public ReactiveProperty<DoorCardEntity> CurrentDoor { get; } = new();
+        public ReactiveProperty<DoorCardViewData> CurrentDoor { get; } = new();
 
         private readonly IDeckPresenter _deckPresenter;
         private readonly IPlayerDataProvider _playerDataProvider;
@@ -109,28 +110,28 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
 
         private void OnHandChange(CollectionAddEvent<string> collectionAddEvent)
         {
-            PlayerHand.Add(new CardEntity(_deckPresenter.GetCardById(collectionAddEvent.Value)));
+            PlayerHand.Add(new CardViewData(_deckPresenter.GetCardById(collectionAddEvent.Value)));
         }
 
         private void OnHandChange(CollectionRemoveEvent<string> collectionRemoveEvent)
         {
-            PlayerHand.Remove(PlayerHand.First(x => x.ID == collectionRemoveEvent.Value));
+            PlayerHand.Remove(PlayerHand.First(x => x.Id == collectionRemoveEvent.Value));
         }
 
         private void OnEquipmentChange(CollectionAddEvent<string> collectionAddEvent)
         {
-            PlayerEquipment.Add(new EquipmentCardEntity(_deckPresenter.GetCardById(collectionAddEvent.Value)));
+            PlayerEquipment.Add(new EquipmentCardViewData(_deckPresenter.GetCardById(collectionAddEvent.Value)));
         }
 
         private void OnEquipmentChange(CollectionRemoveEvent<string> collectionRemoveEvent)
         {
-            PlayerEquipment.Remove(PlayerEquipment.First(x => x.ID == collectionRemoveEvent.Value));
+            PlayerEquipment.Remove(PlayerEquipment.First(x => x.Id == collectionRemoveEvent.Value));
         }
 
         private async void TakeEventCard()
         {
             var card =  await _deckPresenter.TakeDoorCard();
-            CurrentDoor.Value = new DoorCardEntity(_deckPresenter.GetCardById(card));
+            CurrentDoor.Value = new DoorCardViewData(_deckPresenter.GetCardById(card));
         }
 
         #region usecases
@@ -157,7 +158,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
         async Task ITakeEventCardUseCase.Execute()
         {
             var card =  await _deckPresenter.TakeDoorCard();
-            CurrentDoor.Value = new DoorCardEntity(_deckPresenter.GetCardById(card));
+            CurrentDoor.Value = new DoorCardViewData(_deckPresenter.GetCardById(card));
         }
 
         private async Task AddRandomCardByType()

@@ -1,8 +1,8 @@
 using System;
-using Game.Scripts.Gameplay.PresentersLayer.Contracts.UI;
 using Game.Scripts.Infrastructure.TimeManagement;
 using Game.Scripts.Infrastructure.UI;
 using Game.Scripts.UI;
+using Game.Scripts.UIContracts;
 using TMPro;
 using UnityEngine;
 using Zenject;

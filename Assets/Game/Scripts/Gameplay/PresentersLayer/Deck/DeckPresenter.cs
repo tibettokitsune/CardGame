@@ -71,7 +71,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Deck
                 return;
             }
 
-            if (CardTypeUtils.IsDoor(typeId) || CardTypeUtils.IsMonster(typeId) || CardTypeUtils.IsEvent(typeId))
+            if (CardTypeUtils.IsDoor(typeId))
             {
                 _doorCards.Enqueue(card);
                 return;

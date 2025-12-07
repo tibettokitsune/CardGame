@@ -37,7 +37,9 @@ namespace Game.Scripts.Gameplay.DataLayer.Models
         public static bool IsDoor(string typeId)
         {
             var normalized = Normalize(typeId);
-            return normalized is CardTypeIds.Door or DoorConfigType;
+            return normalized is CardTypeIds.Door or DoorConfigType
+                or CardTypeIds.Monster or MonsterConfigType
+                or CardTypeIds.Event or EventConfigType;
         }
     }
 }

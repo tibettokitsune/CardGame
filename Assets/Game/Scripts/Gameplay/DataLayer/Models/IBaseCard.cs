@@ -23,4 +23,10 @@ namespace Game.Scripts.Gameplay.DataLayer.Models
     {
         EquipmentConfig Equipment { get; }
     }
+
+    public interface IMonsterCard : IBaseCard
+    {
+        MonsterParameters Parameters { get; }
+        string ViewId { get; }
+    }
 }

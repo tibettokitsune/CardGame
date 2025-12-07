@@ -14,8 +14,8 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Deck
     {
         private readonly IConfigService _configService;
 
-        private readonly Queue<BaseCard> _treasuresCards = new();
-        private readonly Queue<BaseCard> _doorsCards = new();
+        private readonly Queue<BaseCard> _equipmentCards = new();
+        private readonly Queue<BaseCard> _doorCards = new();
 
         private readonly Dictionary<string, BaseCard> _cardsCollection = new();
 
@@ -35,25 +35,11 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Deck
                 var card = CreateCard(config);
                 _cardsCollection[card.ID] = card;
 
-                switch (card.Kind)
-                {
-                    case CardKind.Treasure:
-                        _treasuresCards.Enqueue(card);
-                        break;
-                    case CardKind.Door:
-                        _doorsCards.Enqueue(card);
-                        break;
-                    case CardKind.Event:
-                        // Event cards are queued elsewhere when such gameplay is added.
-                        break;
-                    default:
-                        Debug.LogWarning($"Unhandled card kind: {card.Kind} for card {card.ID}");
-                        break;
-                }
+                EnqueueCard(card);
             }
 
-            Shuffle(_treasuresCards);
-            Shuffle(_doorsCards);
+            Shuffle(_equipmentCards);
+            Shuffle(_doorCards);
         }
 
         private BaseCard CreateCard(CardDataConfig config)
@@ -66,13 +52,45 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Deck
             if (CardTypeUtils.IsEvent(typeId) && config is EventCardConfig eventConfig)
                 return new EventCard(eventConfig);
 
-            if (CardTypeUtils.IsDoor(typeId) && config is DoorCardConfig doorCardConfig)
-                return new DoorCard(doorCardConfig);
+            if (CardTypeUtils.IsMonster(typeId) && config is MonsterCardConfig monsterCardConfig)
+                return new MonsterCard(monsterCardConfig);
 
             if (config is CardWithStatModifiersConfig statsConfig)
                 return new CardWithStatModifiers(statsConfig);
 
             return new BaseCard(config);
+        }
+
+        private void EnqueueCard(BaseCard card)
+        {
+            var typeId = CardTypeUtils.Normalize(card.TypeId);
+
+            if (CardTypeUtils.IsEquipment(typeId))
+            {
+                _equipmentCards.Enqueue(card);
+                return;
+            }
+
+            if (CardTypeUtils.IsDoor(typeId) || CardTypeUtils.IsMonster(typeId) || CardTypeUtils.IsEvent(typeId))
+            {
+                _doorCards.Enqueue(card);
+                return;
+            }
+
+            switch (card.Kind)
+            {
+                case CardKind.Treasure:
+                    _equipmentCards.Enqueue(card);
+                    break;
+                case CardKind.Door:
+                case CardKind.Event:
+                case CardKind.Monster:
+                    _doorCards.Enqueue(card);
+                    break;
+                default:
+                    Debug.LogWarning($"Unhandled card kind: {card.Kind} for card {card.ID}");
+                    break;
+            }
         }
 
         private void Shuffle(Queue<BaseCard> cardsCollection)
@@ -91,14 +109,14 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Deck
                 cardsCollection.Enqueue(item);
         }
 
-        public async Task<string> TakeTreasureCard()
+        public async Task<string> TakeEquipmentCard()
         {
-            return DequeueCard(_treasuresCards, "treasure");
+            return DequeueCard(_equipmentCards, "equipment");
         }
 
         public async Task<string> TakeDoorCard()
         {
-            return DequeueCard(_doorsCards, "door");
+            return DequeueCard(_doorCards, "door");
         }
 
         private string DequeueCard(Queue<BaseCard> source, string deckName)

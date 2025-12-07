@@ -5,8 +5,9 @@ namespace Game.Scripts.Gameplay.DataLayer.Models
     public static class CardTypeUtils
     {
         private const string TreasureConfigType = "treasurecardconfig";
-        private const string DoorConfigType = "doorcardconfig";
         private const string EventConfigType = "eventcardconfig";
+        private const string MonsterConfigType = "monstercardconfig";
+        private const string DoorConfigType = "doorcardconfig";
 
         public static string Normalize(string typeId)
         {
@@ -25,6 +26,12 @@ namespace Game.Scripts.Gameplay.DataLayer.Models
         {
             var normalized = Normalize(typeId);
             return normalized is CardTypeIds.Event or EventConfigType;
+        }
+
+        public static bool IsMonster(string typeId)
+        {
+            var normalized = Normalize(typeId);
+            return normalized is CardTypeIds.Monster or MonsterConfigType;
         }
 
         public static bool IsDoor(string typeId)

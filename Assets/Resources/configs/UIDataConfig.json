@@ -1,0 +1,74 @@
+{
+  "Menu": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.UIDataConfig, Cards.Infra",
+    "PrefabPath": "Prefabs/UI/Menu/MenuScreen",
+    "Layer": 0,
+    "HideOtherScreensOnLayer": false,
+    "ScreenType": "Game.Scripts.Infrastructure.UI.MenuScreen",
+    "Id": "Menu",
+    "ConfigType": "UIDataConfig"
+  },
+  "CharacterActiveCards": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.UIDataConfig, Cards.Infra",
+    "PrefabPath": "Prefabs/UI/Gameplay/CharacterActiveCardsScreen",
+    "Layer": 1,
+    "HideOtherScreensOnLayer": false,
+    "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.LobbyScreens.CharacterActiveCardsScreen",
+    "Id": "CharacterActiveCards",
+    "ConfigType": "UIDataConfig"
+  },
+  "CharacterStats": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.UIDataConfig, Cards.Infra",
+    "PrefabPath": "Prefabs/UI/Gameplay/CharacterStatsScreen",
+    "Layer": 1,
+    "HideOtherScreensOnLayer": false,
+    "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.LobbyScreens.CharacterStatsScreen",
+    "Id": "CharacterStats",
+    "ConfigType": "UIDataConfig"
+  },
+  "PlayerHand": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.UIDataConfig, Cards.Infra",
+    "PrefabPath": "Prefabs/UI/Gameplay/PlayerHandScreen",
+    "Layer": 1,
+    "HideOtherScreensOnLayer": false,
+    "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.LobbyScreens.PlayerHandScreen",
+    "Id": "PlayerHand",
+    "ConfigType": "UIDataConfig"
+  },
+  "TimerScreen": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.UIDataConfig, Cards.Infra",
+    "PrefabPath": "Prefabs/UI/Gameplay/TimerScreen",
+    "Layer": 1,
+    "HideOtherScreensOnLayer": false,
+    "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.TimerScreen",
+    "Id": "TimerScreen",
+    "ConfigType": "UIDataConfig"
+  },
+  "OpenDoorScreen": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.UIDataConfig, Cards.Infra",
+    "PrefabPath": "Prefabs/UI/Gameplay/OpenDoorScreen",
+    "Layer": 1,
+    "HideOtherScreensOnLayer": false,
+    "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.OpenDoorScreen",
+    "Id": "OpenDoorScreen",
+    "ConfigType": "UIDataConfig"
+  },
+  "FadeScreen": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.UIDataConfig, Cards.Infra",
+    "PrefabPath": "Prefabs/UI/Gameplay/FadeScreen",
+    "Layer": 1,
+    "HideOtherScreensOnLayer": false,
+    "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.FadeScreen",
+    "Id": "FadeScreen",
+    "ConfigType": "UIDataConfig"
+  },
+  "TestScreen": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.UIDataConfig, Cards.Infra",
+    "PrefabPath": "Prefabs/UI/TScreen",
+    "Layer": 0,
+    "HideOtherScreensOnLayer": false,
+    "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.TScreen",
+    "Id": "TestScreen",
+    "ConfigType": "UIDataConfig"
+  }
+}

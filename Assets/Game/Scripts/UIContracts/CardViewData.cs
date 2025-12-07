@@ -65,4 +65,18 @@ namespace Game.Scripts.UIContracts
         {
         }
     }
+
+    public class MonsterCardViewData : CardViewData
+    {
+        private readonly IMonsterCard _monsterCard;
+
+        public MonsterParameters Parameters => _monsterCard.Parameters;
+        public string ViewId => _monsterCard.ViewId;
+
+        public MonsterCardViewData(IBaseCard card) : base(card)
+        {
+            _monsterCard = card as IMonsterCard
+                           ?? throw new ArgumentException("Card must contain monster data", nameof(card));
+        }
+    }
 }

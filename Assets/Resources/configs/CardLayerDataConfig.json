@@ -1,0 +1,52 @@
+{
+  "card_main_layer_1": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.CardLayerDataConfig, Cards.Infra",
+    "Layers": [
+      {
+        "SpritePath": "",
+        "Offset": {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0
+        },
+        "Scale": {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0
+        }
+      }
+    ],
+    "Id": "card_main_layer_1",
+    "ConfigType": "CardLayerDataConfig"
+  },
+  "card_background_1": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.CardLayerDataConfig, Cards.Infra",
+    "Layers": [
+      {
+        "SpritePath": "",
+        "Offset": {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0
+        },
+        "Scale": {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0
+        },
+        "Rotation": {
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0
+        }
+      }
+    ],
+    "Id": "card_background_1",
+    "ConfigType": "CardLayerDataConfig"
+  }
+}

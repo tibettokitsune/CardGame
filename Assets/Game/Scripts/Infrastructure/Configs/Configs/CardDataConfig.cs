@@ -59,19 +59,33 @@ namespace Game.Scripts.Infrastructure.Configs.Configs
     }
 
     [Serializable]
+    public class DoorCardConfig : CardDataConfig
+    {
+    }
+
+    [Serializable]
+    public class MonsterParameters
+    {
+        public float Health { get; set; } = 10f;
+        public float Damage { get; set; } = 1f;
+        public float Reward { get; set; } = 1f;
+    }
+
+    [Serializable]
+    public class MonsterCardConfig : DoorCardConfig
+    {
+        public MonsterParameters Parameters { get; set; } = new();
+        public string ViewId { get; set; }
+    }
+
+    [Serializable]
     public class TreasureCardConfig : CardWithStatModifiersConfig
     {
         public EquipmentConfig Equipment { get; set; } = new();
     }
 
     [Serializable]
-    public class DoorCardConfig : CardWithStatModifiersConfig
+    public class EventCardConfig : DoorCardConfig
     {
-    }
-
-    [Serializable]
-    public class EventCardConfig : CardWithStatModifiersConfig
-    {
-        public bool IsPersistent { get; set; }
     }
 }

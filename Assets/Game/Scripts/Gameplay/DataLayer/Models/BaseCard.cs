@@ -68,23 +68,27 @@ namespace Game.Scripts.Gameplay.DataLayer.Models
         }
     }
 
-    public class DoorCard : CardWithStatModifiers
+    public class EventCard : BaseCard
     {
-        public DoorCard(DoorCardConfig config) : base(config)
-        {
-        }
-    }
-
-    public class EventCard : CardWithStatModifiers
-    {
-        public bool IsPersistent { get; }
-
         public EventCard(EventCardConfig config) : base(config)
         {
             if (config == null)
                 throw new ArgumentNullException(nameof(config));
+        }
+    }
 
-            IsPersistent = config.IsPersistent;
+    public class MonsterCard : BaseCard, IMonsterCard
+    {
+        public MonsterParameters Parameters { get; }
+        public string ViewId { get; }
+
+        public MonsterCard(MonsterCardConfig config) : base(config)
+        {
+            if (config == null)
+                throw new ArgumentNullException(nameof(config));
+
+            Parameters = config.Parameters ?? new MonsterParameters();
+            ViewId = config.ViewId;
         }
     }
 }

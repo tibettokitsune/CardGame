@@ -37,7 +37,8 @@ public class GameCardEditor : EditorWindow
         StatModifiers,
         Treasure,
         Door,
-        Event
+        Event,
+        Monster
     }
 
     public async void CreateGUI()
@@ -130,6 +131,7 @@ public class GameCardEditor : EditorWindow
             return;
 
         card.ConfigType = card.GetType().Name;
+        card.CardTypeId ??= ResolveDefaultTypeId(card);
 
         if (card is CardWithStatModifiersConfig statsCard)
         {
@@ -140,6 +142,11 @@ public class GameCardEditor : EditorWindow
         {
             treasureCard.Equipment ??= new EquipmentConfig();
             treasureCard.Equipment.Overrides ??= new List<AppearanceOverride>();
+        }
+
+        if (card is MonsterCardConfig monsterCard)
+        {
+            monsterCard.Parameters ??= new MonsterParameters();
         }
     }
 
@@ -178,6 +185,11 @@ public class GameCardEditor : EditorWindow
         _detailPanel.Add(variantField);
 
         _detailPanel.Add(CreateIdField(card));
+        _detailPanel.Add(CreateTextField("Card Type Id", card.CardTypeId, newValue =>
+        {
+            card.CardTypeId = newValue;
+            MarkDirty();
+        }));
         _detailPanel.Add(CreateTextField("Name", card.Name, newValue =>
         {
             card.Name = newValue;
@@ -218,15 +230,9 @@ public class GameCardEditor : EditorWindow
             _detailPanel.Add(CreateStatModifiersSection(statsCard));
         }
 
-        if (card is EventCardConfig eventCard)
+        if (card is MonsterCardConfig monsterCard)
         {
-            var persistentToggle = new Toggle("Persistent Effect") { value = eventCard.IsPersistent };
-            persistentToggle.RegisterValueChangedCallback(evt =>
-            {
-                eventCard.IsPersistent = evt.newValue;
-                MarkDirty();
-            });
-            _detailPanel.Add(persistentToggle);
+            _detailPanel.Add(CreateMonsterSection(monsterCard));
         }
     }
 
@@ -590,13 +596,51 @@ public class GameCardEditor : EditorWindow
         return foldout;
     }
 
+    private VisualElement CreateMonsterSection(MonsterCardConfig card)
+    {
+        var foldout = new Foldout { text = "Monster", value = true };
+
+        foldout.Add(CreateTextField("View Id", card.ViewId, newValue =>
+        {
+            card.ViewId = newValue;
+            MarkDirty();
+        }));
+
+        var healthField = new FloatField("Health") { value = card.Parameters.Health };
+        healthField.RegisterValueChangedCallback(evt =>
+        {
+            card.Parameters.Health = evt.newValue;
+            MarkDirty();
+        });
+        foldout.Add(healthField);
+
+        var damageField = new FloatField("Damage") { value = card.Parameters.Damage };
+        damageField.RegisterValueChangedCallback(evt =>
+        {
+            card.Parameters.Damage = evt.newValue;
+            MarkDirty();
+        });
+        foldout.Add(damageField);
+
+        var rewardField = new FloatField("Reward") { value = card.Parameters.Reward };
+        rewardField.RegisterValueChangedCallback(evt =>
+        {
+            card.Parameters.Reward = evt.newValue;
+            MarkDirty();
+        });
+        foldout.Add(rewardField);
+
+        return foldout;
+    }
+
     private CardConfigVariant GetVariant(CardDataConfig card)
     {
         return card switch
         {
+            MonsterCardConfig => CardConfigVariant.Monster,
+            EventCardConfig => CardConfigVariant.Event,
             TreasureCardConfig => CardConfigVariant.Treasure,
             DoorCardConfig => CardConfigVariant.Door,
-            EventCardConfig => CardConfigVariant.Event,
             CardWithStatModifiersConfig => CardConfigVariant.StatModifiers,
             _ => CardConfigVariant.Base
         };
@@ -630,6 +674,7 @@ public class GameCardEditor : EditorWindow
             CardConfigVariant.Treasure => new TreasureCardConfig(),
             CardConfigVariant.Door => new DoorCardConfig(),
             CardConfigVariant.Event => new EventCardConfig(),
+            CardConfigVariant.Monster => new MonsterCardConfig(),
             _ => new CardDataConfig()
         };
 
@@ -644,6 +689,12 @@ public class GameCardEditor : EditorWindow
         if (target is TreasureCardConfig treasureTarget)
         {
             treasureTarget.Equipment = CloneEquipment((source as TreasureCardConfig)?.Equipment);
+        }
+
+        if (target is MonsterCardConfig monsterTarget && source is MonsterCardConfig monsterSource)
+        {
+            monsterTarget.Parameters = CloneMonsterParameters(monsterSource.Parameters);
+            monsterTarget.ViewId = monsterSource.ViewId;
         }
 
         EnsureCollections(target);
@@ -672,6 +723,7 @@ public class GameCardEditor : EditorWindow
         target.Id = source.Id;
         target.ConfigType = target.GetType().Name;
         target.Kind = ResolveKindForVariant(targetVariant, source.Kind);
+        target.CardTypeId = ResolveTypeIdForVariant(targetVariant, source.CardTypeId, target);
         target.Name = source.Name;
         target.Description = source.Description;
         target.MainLayerId = source.MainLayerId;
@@ -685,8 +737,38 @@ public class GameCardEditor : EditorWindow
             CardConfigVariant.Treasure => CardKind.Treasure,
             CardConfigVariant.Door => CardKind.Door,
             CardConfigVariant.Event => CardKind.Event,
+            CardConfigVariant.Monster => CardKind.Monster,
             _ => current
         };
+    }
+
+    private static string ResolveTypeIdForVariant(CardConfigVariant variant, string currentTypeId, CardDataConfig target)
+    {
+        return variant switch
+        {
+            CardConfigVariant.Treasure => CardTypeIds.Equipment,
+            CardConfigVariant.Event => CardTypeIds.Event,
+            CardConfigVariant.Monster => CardTypeIds.Monster,
+            CardConfigVariant.Door => CardTypeIds.Door,
+            _ => ResolveDefaultTypeId(target, currentTypeId)
+        };
+    }
+
+    private static string ResolveDefaultTypeId(CardDataConfig config, string current = null)
+    {
+        if (!string.IsNullOrWhiteSpace(current))
+            return current;
+
+        if (config == null)
+            return string.Empty;
+
+        if (!string.IsNullOrWhiteSpace(config.CardTypeId))
+            return config.CardTypeId;
+
+        if (!string.IsNullOrWhiteSpace(config.ConfigType))
+            return config.ConfigType;
+
+        return config.GetType().Name;
     }
 
     private static List<StatModifier> CloneStatModifiers(CardWithStatModifiersConfig source)
@@ -712,6 +794,19 @@ public class GameCardEditor : EditorWindow
         };
     }
 
+    private static MonsterParameters CloneMonsterParameters(MonsterParameters parameters)
+    {
+        if (parameters == null)
+            return new MonsterParameters();
+
+        return new MonsterParameters
+        {
+            Health = parameters.Health,
+            Damage = parameters.Damage,
+            Reward = parameters.Reward
+        };
+    }
+
     private static List<AppearanceOverride> CloneAppearanceOverrides(IEnumerable<AppearanceOverride> overrides)
     {
         if (overrides == null)
@@ -728,6 +823,7 @@ public class GameCardEditor : EditorWindow
         {
             Id = GenerateUniqueId(),
             Kind = CardKind.Treasure,
+            CardTypeId = CardTypeIds.Equipment,
             Name = "New Card",
             Description = string.Empty,
             MainLayerId = string.Empty,

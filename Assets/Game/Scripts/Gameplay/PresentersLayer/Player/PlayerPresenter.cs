@@ -163,7 +163,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
 
         private async Task AddRandomCardByType()
         {
-            var cardId = await _deckPresenter.TakeTreasureCard();
+            var cardId = await _deckPresenter.TakeEquipmentCard();
             await _playerDataProvider.ClaimCard(cardId);
         }
 

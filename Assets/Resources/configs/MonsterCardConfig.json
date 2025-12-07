@@ -1,0 +1,87 @@
+{
+  "npc1": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.MonsterCardConfig, Cards.Infra",
+    "Parameters": {
+      "Health": 20.0,
+      "Damage": 5.0,
+      "Reward": 1.0
+    },
+    "ViewId": "npc1",
+    "Kind": 1,
+    "MainLayerId": "icons/npc1",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Knight",
+    "Description": "Strong buy with big sword",
+    "CardTypeId": "monster",
+    "Id": "npc1",
+    "ConfigType": "MonsterCardConfig"
+  },
+  "npc2": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.MonsterCardConfig, Cards.Infra",
+    "Parameters": {
+      "Health": 20.0,
+      "Damage": 5.0,
+      "Reward": 1.0
+    },
+    "ViewId": "npc2",
+    "Kind": 1,
+    "MainLayerId": "icons/npc2",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Monk",
+    "Description": "Strong buy with big sword",
+    "CardTypeId": "monster",
+    "Id": "npc2",
+    "ConfigType": "MonsterCardConfig"
+  },
+  "npc3": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.MonsterCardConfig, Cards.Infra",
+    "Parameters": {
+      "Health": 20.0,
+      "Damage": 5.0,
+      "Reward": 1.0
+    },
+    "ViewId": "npc3",
+    "Kind": 1,
+    "MainLayerId": "icons/npc3",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Adventurer",
+    "Description": "Strong buy with big sword",
+    "CardTypeId": "monster",
+    "Id": "npc3",
+    "ConfigType": "MonsterCardConfig"
+  },
+  "npc4": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.MonsterCardConfig, Cards.Infra",
+    "Parameters": {
+      "Health": 20.0,
+      "Damage": 5.0,
+      "Reward": 1.0
+    },
+    "ViewId": "npc4",
+    "Kind": 1,
+    "MainLayerId": "icons/npc4",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Rogue",
+    "Description": "Strong buy with big sword",
+    "CardTypeId": "monster",
+    "Id": "npc4",
+    "ConfigType": "MonsterCardConfig"
+  },
+  "npc5": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.MonsterCardConfig, Cards.Infra",
+    "Parameters": {
+      "Health": 20.0,
+      "Damage": 5.0,
+      "Reward": 1.0
+    },
+    "ViewId": "npc5",
+    "Kind": 1,
+    "MainLayerId": "icons/npc5",
+    "BackgroundLayerId": "backgroud",
+    "Name": "Pirate",
+    "Description": "Strong buy with big sword",
+    "CardTypeId": "monster",
+    "Id": "npc5",
+    "ConfigType": "MonsterCardConfig"
+  }
+}

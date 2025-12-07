@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
@@ -18,66 +19,78 @@ namespace Game.Scripts.Infrastructure.Helpers
     {
         public static async Task LoadJsonData(Dictionary<string, BaseConfig> source)
         {
-            var request = Resources.LoadAsync<TextAsset>("configs");
-            await UniTask.WaitUntil(() => request.isDone);
-            var jsonFile = request.asset as TextAsset;
+            var assets = new List<TextAsset>();
 
-            if (!jsonFile)
+            // Load any files under Resources/configs/*
+            assets.AddRange(Resources.LoadAll<TextAsset>("configs") ?? Array.Empty<TextAsset>());
+
+            // Fallback to legacy single file Resources/configs.json (name "configs")
+            var legacyAsset = Resources.Load<TextAsset>("configs");
+            if (legacyAsset != null && assets.All(a => a != null && a.name != legacyAsset.name))
+                assets.Add(legacyAsset);
+
+            if (assets.Count == 0)
             {
-                Debug.LogError("Не удалось загрузить JSON файл.");
+                Debug.LogError("Не удалось загрузить JSON файлы конфигураций.");
                 return;
             }
 
-            var data = JsonConvert.DeserializeObject<Dictionary<string, JObject>>(jsonFile.text);
-
-            if (data == null)
+            foreach (var asset in assets)
             {
-                Debug.LogWarning("Конфигурационный файл пустой или содержит неверные данные.");
-                return;
-            }
+                if (asset == null)
+                    continue;
 
-            foreach (var pair in data)
-            {
-                var id = pair.Key;
-                var payload = pair.Value;
+                var data = JsonConvert.DeserializeObject<Dictionary<string, JObject>>(asset.text);
 
-                if (payload == null)
+                if (data == null)
                 {
-                    Debug.LogWarning($"Конфигурация с id \"{id}\" имеет пустое значение и будет пропущена.");
+                    Debug.LogWarning($"Конфигурационный файл \"{asset.name}\" пустой или содержит неверные данные.");
                     continue;
                 }
 
-                var typeName = payload.Value<string>(nameof(BaseConfig.ConfigType));
-                var configType = ResolveConfigType(typeName);
-
-                if (configType == null)
+                foreach (var pair in data)
                 {
-                    Debug.LogWarning($"Тип конфигурации \"{typeName}\" не найден. Конфигурация с id \"{id}\" будет пропущена.");
-                    continue;
+                    var id = pair.Key;
+                    var payload = pair.Value;
+
+                    if (payload == null)
+                    {
+                        Debug.LogWarning($"Конфигурация с id \"{id}\" имеет пустое значение и будет пропущена. Файл: {asset.name}");
+                        continue;
+                    }
+
+                    var typeName = payload.Value<string>(nameof(BaseConfig.ConfigType));
+                    var configType = ResolveConfigType(typeName);
+
+                    if (configType == null)
+                    {
+                        Debug.LogWarning($"Тип конфигурации \"{typeName}\" не найден. Конфигурация с id \"{id}\" будет пропущена. Файл: {asset.name}");
+                        continue;
+                    }
+
+                    var config = (BaseConfig)payload.ToObject(configType);
+
+                    if (config == null)
+                    {
+                        Debug.LogWarning($"Не удалось десериализовать конфигурацию с id \"{id}\". Файл: {asset.name}");
+                        continue;
+                    }
+
+                    config.ConfigType = configType.Name;
+
+                    if (string.IsNullOrWhiteSpace(config.Id))
+                    {
+                        config.Id = id;
+                    }
+
+                    if (source.TryAdd(id, config))
+                    {
+                        Debug.Log($"{config.ConfigType} {id} loaded from {asset.name}");
+                        continue;
+                    }
+
+                    Debug.LogWarning($"Конфигурация с id \"{id}\" уже существует и будет пропущена. Файл: {asset.name}");
                 }
-
-                var config = (BaseConfig)payload.ToObject(configType);
-
-                if (config == null)
-                {
-                    Debug.LogWarning($"Не удалось десериализовать конфигурацию с id \"{id}\".");
-                    continue;
-                }
-
-                config.ConfigType = configType.Name;
-
-                if (string.IsNullOrWhiteSpace(config.Id))
-                {
-                    config.Id = id;
-                }
-
-                if (source.TryAdd(id, config))
-                {
-                    Debug.Log($"{config.ConfigType} {id} loaded");
-                    continue;
-                }
-
-                Debug.LogWarning($"Конфигурация с id \"{id}\" уже существует и будет пропущена.");
             }
         }
         
@@ -89,46 +102,49 @@ namespace Game.Scripts.Infrastructure.Helpers
                 Formatting = Formatting.Indented
             };
 
-            var data = new Dictionary<string, BaseConfig>();
-
-            foreach (var pair in source)
-            {
-                var id = pair.Key;
-                var config = pair.Value;
-
-                if (config == null)
-                {
-                    Debug.LogWarning($"Конфигурация с id \"{id}\" имеет пустое значение и будет пропущена.");
-                    continue;
-                }
-
-                config.ConfigType = config.GetType().Name;
-
-                if (string.IsNullOrWhiteSpace(config.Id))
-                {
-                    config.Id = id;
-                }
-
-                data[id] = config;
-            }
-
-            string json = JsonConvert.SerializeObject(data, settings);
-
 #if UNITY_EDITOR
-            string resourcePath = Path.Combine(Application.dataPath, "Resources/configs.json");
+            var resourceFolder = Path.Combine(Application.dataPath, "Resources", "configs");
+            Directory.CreateDirectory(resourceFolder);
 
-            try
-            {
-                File.WriteAllText(resourcePath, json);
-                Debug.Log($"Конфигурации успешно сохранены в {resourcePath}");
+            var groupedByType = source
+                .Where(pair => pair.Value != null)
+                .GroupBy(pair => pair.Value.ConfigType ?? pair.Value.GetType().Name);
 
-                // Обновим ассеты
-                AssetDatabase.Refresh();
-            }
-            catch (Exception ex)
+            foreach (var group in groupedByType)
             {
-                Debug.LogError($"Ошибка при сохранении конфигураций: {ex.Message}");
+                var payload = new Dictionary<string, BaseConfig>();
+
+                foreach (var pair in group)
+                {
+                    var id = pair.Key;
+                    var config = pair.Value;
+
+                    config.ConfigType = config.GetType().Name;
+
+                    if (string.IsNullOrWhiteSpace(config.Id))
+                    {
+                        config.Id = id;
+                    }
+
+                    payload[id] = config;
+                }
+
+                var json = JsonConvert.SerializeObject(payload, settings);
+                var fileName = $"{group.Key}.json";
+                var filePath = Path.Combine(resourceFolder, fileName);
+
+                try
+                {
+                    File.WriteAllText(filePath, json);
+                    Debug.Log($"Конфигурации типа {group.Key} сохранены в {filePath}");
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"Ошибка при сохранении конфигураций ({group.Key}): {ex.Message}");
+                }
             }
+
+            AssetDatabase.Refresh();
 #else
         Debug.LogWarning("Сохранение в Resources запрещено во время выполнения вне редактора. Используйте Application.persistentDataPath вместо этого.");
 #endif

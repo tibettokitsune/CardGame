@@ -44,6 +44,7 @@ namespace Game.Scripts.Infrastructure.Configs.Configs
     [Serializable]
     public class CardDataConfig : BaseConfig
     {
+        public string CardTypeId { get; set; }
         public CardKind Kind { get; set; }
         public string MainLayerId { get; set; }
         public string BackgroundLayerId { get; set; }

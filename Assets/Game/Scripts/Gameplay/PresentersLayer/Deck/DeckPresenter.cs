@@ -32,7 +32,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Deck
                 if (config == null)
                     continue;
 
-                var card = new BaseCard(config);
+                var card = CreateCard(config);
                 _cardsCollection[card.ID] = card;
 
                 switch (card.Kind)
@@ -54,6 +54,25 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Deck
 
             Shuffle(_treasuresCards);
             Shuffle(_doorsCards);
+        }
+
+        private BaseCard CreateCard(CardDataConfig config)
+        {
+            var typeId = CardTypeUtils.Normalize(BaseCard.ResolveTypeId(config));
+
+            if (CardTypeUtils.IsEquipment(typeId) && config is TreasureCardConfig treasureConfig)
+                return new EquipmentCard(treasureConfig);
+
+            if (CardTypeUtils.IsEvent(typeId) && config is EventCardConfig eventConfig)
+                return new EventCard(eventConfig);
+
+            if (CardTypeUtils.IsDoor(typeId) && config is DoorCardConfig doorCardConfig)
+                return new DoorCard(doorCardConfig);
+
+            if (config is CardWithStatModifiersConfig statsConfig)
+                return new CardWithStatModifiers(statsConfig);
+
+            return new BaseCard(config);
         }
 
         private void Shuffle(Queue<BaseCard> cardsCollection)

@@ -11,6 +11,7 @@ namespace Game.Scripts.UIContracts
         private static readonly IReadOnlyList<StatModifier> EmptyStatModifiers = Array.Empty<StatModifier>();
 
         protected readonly IBaseCard Card;
+        private readonly ICardWithStatModifiers _cardWithStatModifiers;
 
         public string Id => Card.ID;
         public CardKind Kind => Card.Kind;
@@ -18,11 +19,13 @@ namespace Game.Scripts.UIContracts
         public string Description => Card.Description;
         public string MainLayer => Card.MainLayer;
         public string BackgroundLayer => Card.BackgroundLayer;
-        public IReadOnlyList<StatModifier> StatModifiers => Card.StatModifiers ?? EmptyStatModifiers;
+        public string TypeId => Card.TypeId;
+        public IReadOnlyList<StatModifier> StatModifiers => _cardWithStatModifiers?.StatModifiers ?? EmptyStatModifiers;
 
         public CardViewData(IBaseCard card)
         {
             Card = card ?? throw new ArgumentNullException(nameof(card));
+            _cardWithStatModifiers = card as ICardWithStatModifiers;
         }
     }
 
@@ -30,13 +33,17 @@ namespace Game.Scripts.UIContracts
     {
         private static readonly IReadOnlyList<AppearanceOverride> EmptyAppearanceOverrides = Array.Empty<AppearanceOverride>();
 
-        public EquipmentSlot Slot => Card.Equipment?.Slot ?? EquipmentSlot.None;
-        public string EquipmentDescription => Card.Equipment?.Description ?? FormatStatDescription();
+        private readonly IEquipmentCard _equipmentCard;
+
+        public EquipmentSlot Slot => _equipmentCard?.Equipment?.Slot ?? EquipmentSlot.None;
+        public string EquipmentDescription => _equipmentCard?.Equipment?.Description ?? FormatStatDescription();
         public IReadOnlyList<AppearanceOverride> Overrides { get; }
 
         public EquipmentCardViewData(IBaseCard card) : base(card)
         {
-            Overrides = Card.Equipment?.Overrides ?? EmptyAppearanceOverrides;
+            _equipmentCard = card as IEquipmentCard
+                             ?? throw new ArgumentException("Card must contain equipment data", nameof(card));
+            Overrides = _equipmentCard.Equipment?.Overrides ?? EmptyAppearanceOverrides;
         }
 
         private string FormatStatDescription()

@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Game.Scripts.Gameplay.DataLayer;
-using Game.Scripts.UIContracts;
 using Game.Scripts.Infrastructure.SceneManagment;
 using Game.Scripts.Infrastructure.TimeManagement;
 using Game.Scripts.UI;
+using Game.Scripts.UIContracts;
 using UnityEngine;
 
 namespace Game.Scripts.Gameplay.PresentersLayer.GameStates
@@ -34,18 +35,24 @@ namespace Game.Scripts.Gameplay.PresentersLayer.GameStates
     }
 
     [EffectOrder(-10)]
-    public class ShowPrepareTimerUiEffect : IStateEnterEffect<PreparePlayerState>
+    public class ShowInitialGameplayUiEffect : IStateEnterEffect<PreparePlayerState>
     {
         private readonly IUIService _uiService;
 
-        public ShowPrepareTimerUiEffect(IUIService uiService)
+        public ShowInitialGameplayUiEffect(IUIService uiService)
         {
             _uiService = uiService;
         }
 
         public async Task OnEnterAsync()
         {
-            await _uiService.ShowAsync<ITimerScreen>();
+            await UniTask.WhenAll(new List<UniTask>()
+            {
+                _uiService.ShowAsync<ICharacterActiveCardsScreen>(),
+                _uiService.ShowAsync<ICharacterStatsScreen>(),
+                _uiService.ShowAsync<IPlayerHandScreen>(),
+                _uiService.ShowAsync<ITimerScreen>()
+            });
         }
     }
 
@@ -53,7 +60,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.GameStates
     public class PrepareRoundTimerEffect : IStateEnterEffect<PreparePlayerState>, IStateExitEffect<PreparePlayerState>, ITimerHandler
     {
         private const string PrepareRoundTimerId = "PrepareToRound";
-        private static readonly TimeSpan PrepareRoundDuration = TimeSpan.FromSeconds(100);
+        private static readonly TimeSpan PrepareRoundDuration = TimeSpan.FromSeconds(10);
 
         private readonly ITimerService _timerService;
         private readonly ITimerUpdateService _timerUpdateService;
@@ -132,7 +139,13 @@ namespace Game.Scripts.Gameplay.PresentersLayer.GameStates
         {
             try
             {
-                await _uiService.ClearAsync();
+                await UniTask.WhenAll(new List<UniTask>()
+                {
+                    _uiService.HideAsync<ICharacterActiveCardsScreen>(),
+                    _uiService.HideAsync<ICharacterStatsScreen>(),
+                    _uiService.HideAsync<IPlayerHandScreen>(),
+                    _uiService.HideAsync<ITimerScreen>()
+                });
                 await _sceneManagerService.UnloadScene("GameplayPrepare", SceneLayer.GameplayElement);
             }
             catch (Exception exception)

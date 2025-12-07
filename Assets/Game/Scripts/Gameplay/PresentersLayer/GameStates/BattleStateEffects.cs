@@ -19,7 +19,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.GameStates
         {
             try
             {
-                await _sceneManagerService.LoadScene("Battle", SceneLayer.GameplayElement, false);
+                
             }
             catch (Exception exception)
             {
@@ -42,7 +42,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.GameStates
         {
             try
             {
-                await _sceneManagerService.UnloadScene("Battle", SceneLayer.GameplayElement);
+                
             }
             catch (Exception exception)
             {

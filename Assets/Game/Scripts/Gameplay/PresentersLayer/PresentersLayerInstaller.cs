@@ -22,7 +22,6 @@ namespace Game.Scripts.Gameplay.PresentersLayer
             Container.BindInterfacesAndSelfTo<ShowInitialGameplayUiEffect>().AsSingle();
             Container.BindInterfacesAndSelfTo<FillStartHandEffect>().AsSingle();
             Container.BindInterfacesAndSelfTo<LoadPrepareSceneEffect>().AsSingle();
-            Container.BindInterfacesAndSelfTo<ShowPrepareTimerUiEffect>().AsSingle();
             Container.BindInterfacesAndSelfTo<PrepareRoundTimerEffect>().AsSingle();
             Container.BindInterfacesAndSelfTo<CleanupPreparePlayerEffect>().AsSingle();
             Container.BindInterfacesAndSelfTo<TakeEventCardFlowEffect>().AsSingle();

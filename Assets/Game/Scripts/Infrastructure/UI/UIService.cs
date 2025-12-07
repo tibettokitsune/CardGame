@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Game.Scripts.Infrastructure.Configs;
 using Game.Scripts.Infrastructure.Configs.Configs;
 using Game.Scripts.UI;
@@ -35,7 +36,7 @@ namespace Game.Scripts.Infrastructure.UI
             await Task.CompletedTask;
         }
 
-        public async Task<TScreen> ShowAsync<TScreen>(CancellationToken cancellationToken = default)
+        public async UniTask<TScreen> ShowAsync<TScreen>(CancellationToken cancellationToken = default)
             where TScreen : class
         {
             var metadata = UIScreenMetadataCache.For<TScreen>();
@@ -63,7 +64,7 @@ namespace Game.Scripts.Infrastructure.UI
             return typedScreen;
         }
 
-        public async Task HideAsync<TScreen>(CancellationToken cancellationToken = default)
+        public async UniTask HideAsync<TScreen>(CancellationToken cancellationToken = default)
             where TScreen : class
         {
             var instance = FindInstance(typeof(TScreen));

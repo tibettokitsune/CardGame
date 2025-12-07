@@ -1,15 +1,16 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Game.Scripts.Infrastructure.Configs.Configs;
 
 namespace Game.Scripts.UI
 {
     public interface IUIService
     {
-        Task<TScreen> ShowAsync<TScreen>(CancellationToken cancellationToken = default)
+        UniTask<TScreen> ShowAsync<TScreen>(CancellationToken cancellationToken = default)
             where TScreen : class;
 
-        Task HideAsync<TScreen>(CancellationToken cancellationToken = default)
+        UniTask HideAsync<TScreen>(CancellationToken cancellationToken = default)
             where TScreen : class;
 
         Task HideAsync(UIScreen screen, CancellationToken cancellationToken = default);

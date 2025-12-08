@@ -26,9 +26,11 @@ namespace Game.Scripts.Gameplay.PresentersLayer
             Container.BindInterfacesAndSelfTo<CleanupPreparePlayerEffect>().AsSingle();
             Container.BindInterfacesAndSelfTo<TakeEventCardFlowEffect>().AsSingle();
             Container.BindInterfacesAndSelfTo<UnloadEventCardScenesEffect>().AsSingle();
+            Container.BindInterfacesAndSelfTo<BattleFlowEffect>().AsSingle();
             Container.BindInterfacesAndSelfTo<LoadBattleSceneEffect>().AsSingle();
             Container.BindInterfacesAndSelfTo<UnloadBattleSceneEffect>().AsSingle();
             Container.BindInterfacesAndSelfTo<FinishTakeEventCardStateUseCase>().AsSingle();
+            Container.BindInterfacesAndSelfTo<BattleVictoryUseCase>().AsSingle();
 
             // States
             Container.BindInterfacesAndSelfTo<FirstEnterInGameState>().AsSingle();

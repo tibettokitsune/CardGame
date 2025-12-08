@@ -45,8 +45,12 @@ namespace Game.Scripts.Gameplay.PresentersLayer
                 condition => _lobbyDataProvider.LobbyState.Value == LobbyState.PrepareToRound));
             _gameStateMachine.AddTransition(new Transition("PrepareRound", "TakeEventCard", 
                 condition => _lobbyDataProvider.LobbyState.Value == LobbyState.TakeEventCard));
+            _gameStateMachine.AddTransition(new Transition("TakeEventCard", "PrepareRound", 
+                condition => _lobbyDataProvider.LobbyState.Value == LobbyState.PrepareToRound));
             _gameStateMachine.AddTransition(new Transition("TakeEventCard", "Battle", 
                 condition => _lobbyDataProvider.LobbyState.Value == LobbyState.Battle));
+            _gameStateMachine.AddTransition(new Transition("Battle", "PrepareRound",
+                condition => _lobbyDataProvider.LobbyState.Value == LobbyState.PrepareToRound));
 
             _gameStateMachine.SetStartState("FirstEnter");
             

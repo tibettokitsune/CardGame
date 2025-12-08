@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Game.Scripts.Gameplay.DataLayer;
+using Game.Scripts.Gameplay.DataLayer.Models;
 using Game.Scripts.Gameplay.PresentersLayer.Player;
 using Game.Scripts.UI;
 using Game.Scripts.UIContracts;
@@ -75,15 +76,35 @@ namespace Game.Scripts.Gameplay.PresentersLayer.GameStates
     public class FinishTakeEventCardStateUseCase : IFinishTakeEventCardStateUseCase
     {
         private readonly ILobbyDataProvider _lobbyDataProvider;
+        private readonly IPlayerPresenter _playerPresenter;
 
-        public FinishTakeEventCardStateUseCase(ILobbyDataProvider lobbyDataProvider)
+        public FinishTakeEventCardStateUseCase(
+            ILobbyDataProvider lobbyDataProvider,
+            IPlayerPresenter playerPresenter)
         {
             _lobbyDataProvider = lobbyDataProvider;
+            _playerPresenter = playerPresenter;
         }
 
         public void Execute()
         {
-            _lobbyDataProvider.LobbyState.Value = LobbyState.Battle;
+            var doorCard = _playerPresenter.CurrentDoor.Value;
+            if (doorCard == null)
+            {
+                Debug.LogWarning("Cannot resolve next state: player has no current door card.");
+                _lobbyDataProvider.LobbyState.Value = LobbyState.PrepareToRound;
+                return;
+            }
+
+            _lobbyDataProvider.LobbyState.Value = ResolveNextState(doorCard);
+        }
+
+        private static LobbyState ResolveNextState(DoorCardViewData doorCard)
+        {
+            var typeId = CardTypeUtils.Normalize(doorCard.TypeId);
+            return CardTypeUtils.IsMonster(typeId)
+                ? LobbyState.Battle
+                : LobbyState.PrepareToRound;
         }
     }
 }

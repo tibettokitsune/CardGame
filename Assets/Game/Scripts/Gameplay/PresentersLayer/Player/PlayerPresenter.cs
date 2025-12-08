@@ -128,12 +128,6 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
             PlayerEquipment.Remove(PlayerEquipment.First(x => x.Id == collectionRemoveEvent.Value));
         }
 
-        private async void TakeEventCard()
-        {
-            var card =  await _deckPresenter.TakeDoorCard();
-            CurrentDoor.Value = new DoorCardViewData(_deckPresenter.GetCardById(card));
-        }
-
         #region usecases
 
         async Task<EquipCardResult> IEquipCardUseCase.Execute(string cardId)

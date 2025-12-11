@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Game.Scripts.Gameplay.DataLayer;
+using Game.Scripts.Gameplay.DataLayer.Models;
 using Game.Scripts.Gameplay.Lobby.Player;
 using Game.Scripts.Gameplay.PresentersLayer.Deck;
 using Game.Scripts.Infrastructure.Configs.Configs;
@@ -22,6 +23,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
         IDisposable
     {
         public ReactiveCollection<CardViewData> PlayerHand { get; } = new();
+        public ReactiveCollection<CardViewData> BattleHand { get; } = new();
         public ReactiveCollection<EquipmentCardViewData> PlayerEquipment { get; } = new();
         public ReactiveDictionary<string, StatEntity> PlayerStats { get; } = new();
         
@@ -152,13 +154,20 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
         async Task ITakeEventCardUseCase.Execute()
         {
             var card =  await _deckPresenter.TakeDoorCard();
-            CurrentDoor.Value = new DoorCardViewData(_deckPresenter.GetCardById(card));
+            CurrentDoor.Value = CreateDoorViewData(_deckPresenter.GetCardById(card));
         }
 
         private async Task AddRandomCardByType()
         {
             var cardId = await _deckPresenter.TakeEquipmentCard();
             await _playerDataProvider.ClaimCard(cardId);
+        }
+
+        public void SyncBattleHand()
+        {
+            BattleHand.Clear();
+            foreach (var card in PlayerHand)
+                BattleHand.Add(card);
         }
 
         #endregion
@@ -168,6 +177,15 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
             PlayerHand?.Dispose();
             PlayerEquipment?.Dispose();
             _statsSyncDisposables?.Dispose();
+        }
+
+        private DoorCardViewData CreateDoorViewData(BaseCard card)
+        {
+            var typeId = CardTypeUtils.Normalize(card.TypeId);
+            if (CardTypeUtils.IsMonster(typeId))
+                return new MonsterCardViewData(card);
+
+            return new DoorCardViewData(card);
         }
     }
 }

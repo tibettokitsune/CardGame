@@ -1,4 +1,5 @@
 using Game.Scripts.Gameplay.DataLayer;
+using Game.Scripts.Gameplay.DataLayer.Battle;
 using Zenject;
 
 namespace Game.Scripts.Gameplay.Lobby.Player
@@ -9,6 +10,7 @@ namespace Game.Scripts.Gameplay.Lobby.Player
         {
             Container.BindInterfacesAndSelfTo<PlayerDataProvider>().AsSingle();
             Container.BindInterfacesAndSelfTo<LobbyDataProvider>().AsSingle();
+            Container.BindInterfacesAndSelfTo<BattleDataProvider>().AsSingle();
         }
     }
 }

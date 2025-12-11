@@ -66,7 +66,7 @@ namespace Game.Scripts.UIContracts
         }
     }
 
-    public class MonsterCardViewData : CardViewData
+    public class MonsterCardViewData : DoorCardViewData
     {
         private readonly IMonsterCard _monsterCard;
 

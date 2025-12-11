@@ -44,6 +44,33 @@
     "Id": "TimerScreen",
     "ConfigType": "UIDataConfig"
   },
+  "BattleHud": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.UIDataConfig, Cards.Infra",
+    "PrefabPath": "Prefabs/UI/Gameplay/BattleHudScreen",
+    "Layer": 1,
+    "HideOtherScreensOnLayer": false,
+    "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.BattleScreens.BattleHudScreen",
+    "Id": "BattleHud",
+    "ConfigType": "UIDataConfig"
+  },
+  "BattleHand": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.UIDataConfig, Cards.Infra",
+    "PrefabPath": "Prefabs/UI/Gameplay/BattleHandScreen",
+    "Layer": 1,
+    "HideOtherScreensOnLayer": false,
+    "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.BattleScreens.BattleHandScreen",
+    "Id": "BattleHand",
+    "ConfigType": "UIDataConfig"
+  },
+  "BattleStage": {
+    "$type": "Game.Scripts.Infrastructure.Configs.Configs.UIDataConfig, Cards.Infra",
+    "PrefabPath": "Prefabs/UI/Gameplay/BattleStageScreen",
+    "Layer": 1,
+    "HideOtherScreensOnLayer": false,
+    "ScreenType": "Game.Scripts.Gameplay.ViewsLayer.BattleScreens.BattleStageScreen",
+    "Id": "BattleStage",
+    "ConfigType": "UIDataConfig"
+  },
   "OpenDoorScreen": {
     "$type": "Game.Scripts.Infrastructure.Configs.Configs.UIDataConfig, Cards.Infra",
     "PrefabPath": "Prefabs/UI/Gameplay/OpenDoorScreen",

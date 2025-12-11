@@ -3,6 +3,7 @@ using Game.Scripts.Gameplay.Lobby.Player;
 using Game.Scripts.Gameplay.PresentersLayer.Deck;
 using Game.Scripts.Gameplay.PresentersLayer.GameStates;
 using Game.Scripts.Gameplay.PresentersLayer.Player;
+using Game.Scripts.Gameplay.PresentersLayer.Battle;
 using Game.Scripts.Infrastructure.UI;
 using Zenject;
 
@@ -31,6 +32,7 @@ namespace Game.Scripts.Gameplay.PresentersLayer
             Container.BindInterfacesAndSelfTo<UnloadBattleSceneEffect>().AsSingle();
             Container.BindInterfacesAndSelfTo<FinishTakeEventCardStateUseCase>().AsSingle();
             Container.BindInterfacesAndSelfTo<BattleVictoryUseCase>().AsSingle();
+            Container.BindInterfacesAndSelfTo<BattlePreparationCoordinator>().AsSingle();
 
             // States
             Container.BindInterfacesAndSelfTo<FirstEnterInGameState>().AsSingle();

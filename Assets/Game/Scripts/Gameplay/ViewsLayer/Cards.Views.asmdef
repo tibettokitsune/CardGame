@@ -3,6 +3,7 @@
     "rootNamespace": "",
     "references": [
         "Cards.Presenters",
+        "Cards.DataLayer",
         "Zenject",
         "Cards.Infra",
         "Unity.TextMeshPro",

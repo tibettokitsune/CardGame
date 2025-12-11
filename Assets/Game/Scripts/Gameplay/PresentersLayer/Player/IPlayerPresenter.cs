@@ -8,8 +8,10 @@ namespace Game.Scripts.Gameplay.PresentersLayer.Player
     public interface IPlayerPresenter
     {
         ReactiveCollection<CardViewData> PlayerHand { get; }
+        ReactiveCollection<CardViewData> BattleHand { get; }
         ReactiveCollection<EquipmentCardViewData> PlayerEquipment { get; }
         ReactiveDictionary<string ,StatEntity> PlayerStats { get; }
         ReactiveProperty<DoorCardViewData> CurrentDoor { get; }
+        void SyncBattleHand();
     }
 }
